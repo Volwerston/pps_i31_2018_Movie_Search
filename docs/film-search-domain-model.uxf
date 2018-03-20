@@ -4,95 +4,65 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>288</x>
-      <y>488</y>
+      <x>304</x>
+      <y>480</y>
       <w>168</w>
-      <h>80</h>
+      <h>88</h>
     </coordinates>
     <panel_attributes>_User_
 --
-id: Long
 name: String
 surname: String
-email: String</panel_attributes>
+email: String
+categories: List&lt;Category&gt;
+posts: List&lt;Post&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>568</x>
-      <y>480</y>
+      <x>584</x>
+      <y>472</y>
       <w>168</w>
       <h>88</h>
     </coordinates>
     <panel_attributes>_Film_
 --
-id: Long
 title: String
 releaseDate: DateTime
-genreId: String
-performance: Float</panel_attributes>
+performance: Float
+genres: List&lt;Genre&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>568</x>
-      <y>232</y>
+      <x>584</x>
+      <y>224</y>
       <w>168</w>
       <h>88</h>
     </coordinates>
     <panel_attributes>_PersonRole_
 --
-id: Long
-actorId: Long
-roleId: Long
-filmId: Long
+name: String
 performance: Float
+movieRole: List&lt;MovieRole&gt;
+films: List&lt;Films&gt;
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>648</x>
-      <y>160</y>
-      <w>24</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>640</x>
-      <y>312</y>
-      <w>24</w>
-      <h>184</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;210.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1224</x>
-      <y>392</y>
+      <x>848</x>
+      <y>640</y>
       <w>168</w>
       <h>72</h>
     </coordinates>
     <panel_attributes>_Poster_
 --
-id: Long
 addingTime: DateTime
-text: RTFString
+text: String
 
 </panel_attributes>
     <additional_attributes/>
@@ -100,14 +70,13 @@ text: RTFString
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>368</x>
-      <y>256</y>
+      <x>384</x>
+      <y>248</y>
       <w>168</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>_Category_
 --
-id: Long
 title: String
 </panel_attributes>
     <additional_attributes/>
@@ -115,85 +84,26 @@ title: String
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>288</x>
-      <y>360</y>
-      <w>168</w>
-      <h>64</h>
-    </coordinates>
-    <panel_attributes>_UserCategory_
---
-userId: Long
-categoryId: Long
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>432</x>
-      <y>192</y>
-      <w>24</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=n
-</panel_attributes>
-    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>392</x>
-      <y>304</y>
-      <w>24</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>360</x>
-      <y>416</y>
-      <w>24</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>832</x>
-      <y>520</y>
+      <x>848</x>
+      <y>512</y>
       <w>168</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>_Genre_
 --
-id: Long
 name: String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1304</x>
-      <y>56</y>
+      <x>848</x>
+      <y>80</y>
       <w>144</w>
       <h>104</h>
     </coordinates>
     <panel_attributes>_File_
 --
-id: Long
 fileName: String
 path: String
 updloadDate: DateTime
@@ -203,253 +113,48 @@ type: String</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>856</x>
-      <y>120</y>
-      <w>112</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>_Image_
---
-id: Long
-fileId: Long
-imageGroupId: id</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1096</x>
-      <y>144</y>
-      <w>168</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>_ImageGroup_
---
-id: Long</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>960</x>
-      <y>152</y>
-      <w>152</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;20.0;170.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>960</x>
-      <y>72</y>
-      <w>360</w>
-      <h>112</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;110.0;430.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>728</x>
-      <y>128</y>
-      <w>144</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;20.0;160.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>568</x>
-      <y>64</y>
+      <x>584</x>
+      <y>56</y>
       <w>168</w>
       <h>104</h>
     </coordinates>
     <panel_attributes>_Person_
 --
-id: Long
 name: String
 surname: String
 birthDate: DateTime
-photoId: Long
-country: String</panel_attributes>
+photo: File
+country: String
+roles: List&lt;PersonRole&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
-    <coordinates>
-      <x>848</x>
-      <y>264</y>
-      <w>168</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>_MovieRole_
---
-id: Long
-name: String
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>728</x>
-      <y>272</y>
-      <w>136</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;20.0;150.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>728</x>
-      <y>528</y>
-      <w>120</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;20.0;130.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>840</x>
-      <y>368</y>
-      <w>168</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>_PersonPerformance_
---
-id: Long
-personRoleId: Long
-userId: Long
-performance: Float
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>448</x>
-      <y>416</y>
-      <w>408</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=n
-</panel_attributes>
-    <additional_attributes>10.0;130.0;160.0;10.0;490.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>728</x>
-      <y>200</y>
-      <w>376</w>
-      <h>224</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>350.0;250.0;450.0;250.0;450.0;20.0;90.0;20.0;90.0;80.0;10.0;80.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>568</x>
-      <y>632</y>
-      <w>168</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>_FilmPerformance_
---
-id: Long
-filmId: Long
-userId: Long
-performance: Float
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>640</x>
-      <y>560</y>
-      <w>24</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
     <coordinates>
       <x>360</x>
-      <y>560</y>
-      <w>224</w>
-      <h>136</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=n
-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;140.0;260.0;140.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>344</x>
-      <y>120</y>
+      <y>112</y>
       <w>168</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>_Newsletter_
 --
-id: 
 name: String
-text: RTFString
-categoryId: Long</panel_attributes>
+text: String
+userCategories: List&lt;Category&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1224</x>
-      <y>480</y>
+      <x>592</x>
+      <y>640</y>
       <w>168</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>_Post_
 --
-id: Long
 title: String
-text: RTFString
+text: String
 creationDate: DateTime
 
 </panel_attributes>
@@ -458,207 +163,153 @@ creationDate: DateTime
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1224</x>
-      <y>592</y>
-      <w>160</w>
+      <x>856</x>
+      <y>776</y>
+      <w>168</w>
       <h>136</h>
     </coordinates>
-    <panel_attributes>_PostComment_
+    <panel_attributes>_Comment_
 --
-id: Long
 text: String
-postId: Long
-userId: Long
-commentRate: Long
+commentRate: Integer
 creationDate: DateTime
-
-parentId: Long
-
+subComments: List&lt;Comment&gt;
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLClass</id>
+    <id>Relation</id>
     <coordinates>
-      <x>960</x>
-      <y>704</y>
-      <w>160</w>
+      <x>744</x>
+      <y>104</y>
+      <w>120</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>432</x>
+      <y>184</y>
+      <w>24</w>
       <h>80</h>
     </coordinates>
-    <panel_attributes>_PostCommentOpinion_
---
-id: Long
-opinion: Boolean
-postId: Long
-opinionId: Long
-
-
-</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>216</x>
-      <y>504</y>
-      <w>760</w>
-      <h>368</h>
+      <x>440</x>
+      <y>296</y>
+      <w>24</w>
+      <h>200</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>90.0;10.0;10.0;10.0;10.0;430.0;930.0;430.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1112</x>
-      <y>608</y>
-      <w>128</w>
-      <h>176</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>140.0;10.0;60.0;10.0;60.0;190.0;10.0;190.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1376</x>
-      <y>496</y>
-      <w>72</w>
-      <h>176</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>20.0;10.0;70.0;10.0;70.0;190.0;10.0;190.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>336</x>
-      <y>560</y>
-      <w>1112</w>
-      <h>344</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=n
-</panel_attributes>
-    <additional_attributes>1310.0;120.0;1370.0;120.0;1370.0;410.0;10.0;410.0;10.0;10.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;230.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>760</x>
-      <y>632</y>
+      <x>864</x>
+      <y>256</y>
       <w>168</w>
       <h>88</h>
     </coordinates>
-    <panel_attributes>_FilmReview_
+    <panel_attributes>_MovieRole_
 --
-id: Long
-filmPerformance: Long
-text: String
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>960</x>
-      <y>800</y>
-      <w>160</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>_Opinion_
---
-id: Long
-opinion: Boolean
-userId: Long
-
-
+name: String
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>888</x>
-      <y>760</y>
-      <w>88</w>
+      <x>656</x>
+      <y>152</y>
+      <w>24</w>
       <h>88</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=1
-</panel_attributes>
-    <additional_attributes>90.0;10.0;10.0;10.0;10.0;80.0;90.0;80.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1032</x>
-      <y>512</y>
-      <w>160</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>_FilmReviewOpinion_
---
-id: Long
-opinion: Boolean
-filmReviewId: Long
-opinionId: Long
-
-
-</panel_attributes>
-    <additional_attributes/>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1112</x>
-      <y>576</y>
-      <w>112</w>
-      <h>272</h>
+      <x>744</x>
+      <y>272</y>
+      <w>136</w>
+      <h>24</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=1
-</panel_attributes>
-    <additional_attributes>100.0;10.0;120.0;10.0;120.0;310.0;10.0;310.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;150.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>920</x>
+      <x>656</x>
+      <y>304</y>
+      <w>24</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;210.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>744</x>
+      <y>528</y>
+      <w>120</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>400</x>
       <y>560</y>
-      <w>128</w>
+      <w>208</w>
       <h>136</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=n
-</panel_attributes>
-    <additional_attributes>140.0;10.0;110.0;10.0;110.0;140.0;10.0;140.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;240.0;150.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1376</x>
-      <y>608</y>
-      <w>56</w>
-      <h>120</h>
+      <x>664</x>
+      <y>712</y>
+      <w>208</w>
+      <h>136</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=n
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;10.0;50.0;10.0;50.0;120.0;10.0;120.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;240.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>928</x>
+      <y>704</y>
+      <w>24</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1016</x>
+      <y>800</y>
+      <w>120</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0;130.0;120.0;10.0;120.0</additional_attributes>
   </element>
 </diagram>
