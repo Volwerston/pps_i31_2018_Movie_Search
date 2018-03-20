@@ -1,68 +1,67 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.2">
-  <zoom_level>8</zoom_level>
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="13.3">
+  <zoom_level>9</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>304</x>
-      <y>480</y>
-      <w>168</w>
-      <h>88</h>
+      <x>288</x>
+      <y>486</y>
+      <w>189</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>_User_
 --
-name: String
-surname: String
-email: String
-categories: List&lt;Category&gt;
-posts: List&lt;Post&gt;</panel_attributes>
+-name: String
+-surname: String
+-email: String
+-categories: List&lt;Category&gt;
+-posts: List&lt;Post&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>584</x>
-      <y>472</y>
-      <w>168</w>
-      <h>88</h>
+      <x>603</x>
+      <y>477</y>
+      <w>189</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>_Film_
 --
-title: String
-releaseDate: DateTime
-performance: Float
-genres: List&lt;Genre&gt;</panel_attributes>
+-title: String
+-releaseDate: DateTime
+-performance: Float
+-genres: List&lt;Genre&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>584</x>
-      <y>224</y>
-      <w>168</w>
-      <h>88</h>
+      <x>603</x>
+      <y>198</y>
+      <w>189</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>_PersonRole_
 --
-name: String
-performance: Float
-movieRole: List&lt;MovieRole&gt;
-films: List&lt;Films&gt;
+-name: String
+-performance: Float
+-movieRole: List&lt;FilmRole&gt;
+-film: Film
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>848</x>
-      <y>640</y>
-      <w>168</w>
-      <h>72</h>
+      <x>900</x>
+      <y>666</y>
+      <w>189</w>
+      <h>81</h>
     </coordinates>
     <panel_attributes>_Poster_
 --
-addingTime: DateTime
-text: String
+-addingTime: DateTime
+-text: String
 
 </panel_attributes>
     <additional_attributes/>
@@ -70,92 +69,92 @@ text: String
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>384</x>
-      <y>248</y>
-      <w>168</w>
-      <h>56</h>
+      <x>378</x>
+      <y>225</y>
+      <w>189</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>_Category_
 --
-title: String
+-title: String
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>848</x>
-      <y>512</y>
-      <w>168</w>
-      <h>56</h>
+      <x>900</x>
+      <y>522</y>
+      <w>189</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>_Genre_
 --
-name: String</panel_attributes>
+-name: String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>848</x>
-      <y>80</y>
-      <w>144</w>
-      <h>104</h>
+      <x>900</x>
+      <y>36</y>
+      <w>162</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>_File_
 --
-fileName: String
-path: String
-updloadDate: DateTime
-type: String</panel_attributes>
+-fileName: String
+-path: String
+-updloadDate: DateTime
+-type: String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>584</x>
-      <y>56</y>
-      <w>168</w>
-      <h>104</h>
+      <x>603</x>
+      <y>9</y>
+      <w>189</w>
+      <h>117</h>
     </coordinates>
     <panel_attributes>_Person_
 --
-name: String
-surname: String
-birthDate: DateTime
-photo: File
-country: String
-roles: List&lt;PersonRole&gt;</panel_attributes>
+-name: String
+-surname: String
+-birthDate: DateTime
+-photo: File
+-country: String
+-roles: List&lt;PersonRole&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
       <x>360</x>
-      <y>112</y>
-      <w>168</w>
-      <h>80</h>
+      <y>72</y>
+      <w>225</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>_Newsletter_
 --
-name: String
-text: String
-userCategories: List&lt;Category&gt;</panel_attributes>
+-name: String
+-text: String
+-userCategories: List&lt;Category&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>592</x>
-      <y>640</y>
-      <w>168</w>
-      <h>80</h>
+      <x>612</x>
+      <y>666</y>
+      <w>189</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>_Post_
 --
-title: String
-text: String
-creationDate: DateTime
+-title: String
+-text: String
+-creationDate: DateTime
 
 </panel_attributes>
     <additional_attributes/>
@@ -163,27 +162,28 @@ creationDate: DateTime
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>856</x>
-      <y>776</y>
-      <w>168</w>
-      <h>136</h>
+      <x>873</x>
+      <y>819</y>
+      <w>225</w>
+      <h>153</h>
     </coordinates>
     <panel_attributes>_Comment_
 --
-text: String
-commentRate: Integer
-creationDate: DateTime
-subComments: List&lt;Comment&gt;
+-text: String
+-commentRate: Integer
+-creationDate: DateTime
+-parentComment
+-subComments: List&lt;Comment&gt;
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>744</x>
-      <y>104</y>
-      <w>120</w>
-      <h>24</h>
+      <x>783</x>
+      <y>63</y>
+      <w>135</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
@@ -191,10 +191,10 @@ subComments: List&lt;Comment&gt;
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>432</x>
-      <y>184</y>
-      <w>24</w>
-      <h>80</h>
+      <x>468</x>
+      <y>153</y>
+      <w>27</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
@@ -202,10 +202,10 @@ subComments: List&lt;Comment&gt;
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>440</x>
-      <y>296</y>
-      <w>24</w>
-      <h>200</h>
+      <x>441</x>
+      <y>279</y>
+      <w>27</w>
+      <h>225</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;230.0;10.0;10.0</additional_attributes>
@@ -213,24 +213,24 @@ subComments: List&lt;Comment&gt;
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>864</x>
-      <y>256</y>
-      <w>168</w>
-      <h>88</h>
+      <x>918</x>
+      <y>234</y>
+      <w>189</w>
+      <h>99</h>
     </coordinates>
-    <panel_attributes>_MovieRole_
+    <panel_attributes>_FilmRole_
 --
-name: String
+-name: String
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>656</x>
-      <y>152</y>
-      <w>24</w>
-      <h>88</h>
+      <x>684</x>
+      <y>117</y>
+      <w>27</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
@@ -238,10 +238,10 @@ name: String
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>744</x>
-      <y>272</y>
-      <w>136</w>
-      <h>24</h>
+      <x>783</x>
+      <y>252</y>
+      <w>153</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;150.0;10.0</additional_attributes>
@@ -249,10 +249,10 @@ name: String
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>656</x>
-      <y>304</y>
-      <w>24</w>
-      <h>184</h>
+      <x>684</x>
+      <y>288</y>
+      <w>27</w>
+      <h>207</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;210.0</additional_attributes>
@@ -260,10 +260,10 @@ name: String
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>744</x>
-      <y>528</y>
-      <w>120</w>
-      <h>24</h>
+      <x>783</x>
+      <y>540</y>
+      <w>135</w>
+      <h>27</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
@@ -271,10 +271,10 @@ name: String
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>400</x>
-      <y>560</y>
-      <w>208</w>
-      <h>136</h>
+      <x>396</x>
+      <y>576</y>
+      <w>234</w>
+      <h>153</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;150.0;240.0;150.0</additional_attributes>
@@ -282,21 +282,21 @@ name: String
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>664</x>
-      <y>712</y>
-      <w>208</w>
-      <h>136</h>
+      <x>693</x>
+      <y>747</y>
+      <w>198</w>
+      <h>153</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;150.0;240.0;150.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;200.0;150.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>928</x>
-      <y>704</y>
-      <w>24</w>
-      <h>88</h>
+      <x>990</x>
+      <y>738</y>
+      <w>27</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
@@ -304,10 +304,10 @@ name: String
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1016</x>
-      <y>800</y>
-      <w>120</w>
-      <h>112</h>
+      <x>1089</x>
+      <y>846</y>
+      <w>135</w>
+      <h>126</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;130.0;10.0;130.0;120.0;10.0;120.0</additional_attributes>
