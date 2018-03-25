@@ -1,0 +1,9 @@
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\bin\Debug\netcoreapp2.0\FilmSearch.Models.deps.json
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\bin\Debug\netcoreapp2.0\FilmSearch.Models.dll
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\bin\Debug\netcoreapp2.0\FilmSearch.Models.pdb
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\obj\Debug\netcoreapp2.0\FilmSearch.Models.csprojResolveAssemblyReference.cache
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\obj\Debug\netcoreapp2.0\FilmSearch.Models.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\obj\Debug\netcoreapp2.0\FilmSearch.Models.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\obj\Debug\netcoreapp2.0\FilmSearch.Models.AssemblyInfo.cs
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\obj\Debug\netcoreapp2.0\FilmSearch.Models.dll
+C:\Users\User\Desktop\core-project\FilmSearch\FilmSearch.Models\obj\Debug\netcoreapp2.0\FilmSearch.Models.pdb

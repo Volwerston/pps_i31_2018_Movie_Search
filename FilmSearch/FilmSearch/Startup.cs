@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FilmSearch.Models;
 using FilmSearch.Models.Auth;
+using FilmSearch.DAL;
+using FilmSearch.DAL.Impl;
 
 namespace FilmSearch
 {
@@ -17,6 +19,15 @@ namespace FilmSearch
         }
 
         public IConfiguration Configuration { get; }
+
+        private void ConfigureDal(IServiceCollection services)
+        {
+            services.AddDbContext<FilmSearchContext>(
+                options => options.UseNpgsql(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("FilmSearch"))
+            );
+            
+            services.AddScoped<IFileRepository, FileRepository>();
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -30,6 +41,8 @@ namespace FilmSearch
             .AddDefaultTokenProviders();
 
             services.AddMvc();
+            
+            ConfigureDal(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
