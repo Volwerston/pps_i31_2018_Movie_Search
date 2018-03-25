@@ -3,14 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FilmSearch.Models
 {
-    public class Poster
+    public class Post
     {
-        /// <summary>
-        /// Database id
-        /// </summary>
         public long Id { get; set; }
-        public DateTime AdditionDateTime { get; set; }
+        public string Title { get; set; }
         [Column(TypeName = "text")]
         public string Text { get; set; }
+        public DateTime CreationTime { get; set; }
     }
 }

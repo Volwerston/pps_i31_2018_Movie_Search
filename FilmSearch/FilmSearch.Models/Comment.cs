@@ -10,7 +10,7 @@ namespace FilmSearch.Models
         /// </summary>
         public long Id { get; set; }
         
-        public long AuthorId { get; set; }
+        public string AuthorId { get; set; }
         public AppUser Author { get; set; } 
         
         public long CommentRate { get; set; }
@@ -20,6 +20,6 @@ namespace FilmSearch.Models
         public long ParentCommentId { get; set; }
         public Comment ParentComment { get; set; }
         
-        public List<Comment> SubComments { get; set; }
+        public ICollection<Comment> SubComments { get; set; }
     }
 }
