@@ -12535,23 +12535,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Users\\Юрiй\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\Desktop\\core-project\\FilmSearch\\FilmSearch\\FilmSearch.csproj",
+      "projectUniqueName": "C:\\Users\\Юрiй\\Desktop\\net-core\\FilmSearch\\FilmSearch\\FilmSearch.csproj",
       "projectName": "FilmSearch",
-      "projectPath": "C:\\Users\\User\\Desktop\\core-project\\FilmSearch\\FilmSearch\\FilmSearch.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\Desktop\\core-project\\FilmSearch\\FilmSearch\\obj\\",
+      "projectPath": "C:\\Users\\Юрiй\\Desktop\\net-core\\FilmSearch\\FilmSearch\\FilmSearch.csproj",
+      "packagesPath": "C:\\Users\\Юрiй\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Юрiй\\Desktop\\net-core\\FilmSearch\\FilmSearch\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Юрiй\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

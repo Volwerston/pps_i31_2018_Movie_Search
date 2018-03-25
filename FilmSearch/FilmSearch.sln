@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmSearch", "FilmSearch\FilmSearch.csproj", "{77D5670B-6C9F-42A0-80B4-70FAD90E07FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmSearch", "FilmSearch\FilmSearch.csproj", "{77D5670B-6C9F-42A0-80B4-70FAD90E07FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmSearch.Services", "FilmSearch.Services\FilmSearch.Services.csproj", "{D950A784-707F-43C5-8ED1-4D139B7B36E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{77D5670B-6C9F-42A0-80B4-70FAD90E07FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77D5670B-6C9F-42A0-80B4-70FAD90E07FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77D5670B-6C9F-42A0-80B4-70FAD90E07FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D950A784-707F-43C5-8ED1-4D139B7B36E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D950A784-707F-43C5-8ED1-4D139B7B36E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D950A784-707F-43C5-8ED1-4D139B7B36E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D950A784-707F-43C5-8ED1-4D139B7B36E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
