@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System;
 
 namespace FilmSearch.Migrations
@@ -70,6 +71,55 @@ namespace FilmSearch.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("FilmSearch.Models.Comment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AuthorId");
+
+                    b.Property<long>("CommentRate");
+
+                    b.Property<string>("CreationDate");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
+                    b.Property<long>("ParentCommentId");
+
+                    b.Property<string>("Text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("ParentCommentId");
+
+                    b.ToTable("Comment");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Comment");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.CommentOpinion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Approval");
+
+                    b.Property<long>("CommentId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentOpinions");
+                });
+
             modelBuilder.Entity("FilmSearch.Models.File", b =>
                 {
                     b.Property<long>("Id")
@@ -86,6 +136,171 @@ namespace FilmSearch.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Film", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("RealeaseDate");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Films");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.FilmGenre", b =>
+                {
+                    b.Property<long>("FilmId");
+
+                    b.Property<long>("GenreId");
+
+                    b.HasKey("FilmId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("FilmGenre");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.FilmRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FilmRoles");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Genre", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Person", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("BirthDate");
+
+                    b.Property<string>("Country");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long>("PhotoId");
+
+                    b.Property<string>("Surname");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoId");
+
+                    b.ToTable("Persons");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.PersonPerformance", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("Performance");
+
+                    b.Property<long>("PersonRoleId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonRoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PersonPerformances");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.PersonRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("FilmId");
+
+                    b.Property<long>("FilmRoleId");
+
+                    b.Property<double>("Performance");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmId");
+
+                    b.HasIndex("FilmRoleId");
+
+                    b.ToTable("PersonRoles");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Post", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreationTime");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Poster", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("AdditionDateTime");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Posters");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.PostOpinion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Approval");
+
+                    b.Property<long>("PostId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostOpinions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -195,6 +410,101 @@ namespace FilmSearch.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("FilmSearch.Models.PostComment", b =>
+                {
+                    b.HasBaseType("FilmSearch.Models.Comment");
+
+                    b.Property<long>("PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostComment");
+
+                    b.HasDiscriminator().HasValue("PostComment");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Comment", b =>
+                {
+                    b.HasOne("FilmSearch.Models.AppUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
+                    b.HasOne("FilmSearch.Models.Comment", "ParentComment")
+                        .WithMany("SubComments")
+                        .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.CommentOpinion", b =>
+                {
+                    b.HasOne("FilmSearch.Models.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FilmSearch.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.FilmGenre", b =>
+                {
+                    b.HasOne("FilmSearch.Models.Film", "Film")
+                        .WithMany("Genres")
+                        .HasForeignKey("FilmId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FilmSearch.Models.Genre", "Genre")
+                        .WithMany()
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Person", b =>
+                {
+                    b.HasOne("FilmSearch.Models.File", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.PersonPerformance", b =>
+                {
+                    b.HasOne("FilmSearch.Models.PersonRole", "PersonRole")
+                        .WithMany()
+                        .HasForeignKey("PersonRoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FilmSearch.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.PersonRole", b =>
+                {
+                    b.HasOne("FilmSearch.Models.Film", "Film")
+                        .WithMany()
+                        .HasForeignKey("FilmId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FilmSearch.Models.FilmRole", "FilmRole")
+                        .WithMany()
+                        .HasForeignKey("FilmRoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.PostOpinion", b =>
+                {
+                    b.HasOne("FilmSearch.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FilmSearch.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -237,6 +547,14 @@ namespace FilmSearch.Migrations
                     b.HasOne("FilmSearch.Models.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.PostComment", b =>
+                {
+                    b.HasOne("FilmSearch.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
