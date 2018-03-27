@@ -41,6 +41,5 @@ namespace FilmSearch.DAL
             _dbSet.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
         }
-
     }
 }
