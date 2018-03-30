@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FilmSearch.Models;
-using FilmSearch.Models.Auth;
 using FilmSearch.DAL;
 using FilmSearch.DAL.Impl;
 
@@ -32,12 +31,9 @@ namespace FilmSearch
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppIdentityDbContext>(options =>
-                options.UseNpgsql(
-                Configuration["AppSettings:Database:ConnectionString"]));
 
             services.AddIdentity<AppUser, IdentityRole>()
-            .AddEntityFrameworkStores<AppIdentityDbContext>()
+            .AddEntityFrameworkStores<FilmSearchContext>()
             .AddDefaultTokenProviders();
 
             services.AddMvc();
