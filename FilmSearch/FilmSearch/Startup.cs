@@ -5,8 +5,10 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using FilmSearch.DAL;
 using FilmSearch.DAL.Impl;
+using FilmSearch.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +31,10 @@ namespace FilmSearch
             );
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<FilmSearchContext>()
+                .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.

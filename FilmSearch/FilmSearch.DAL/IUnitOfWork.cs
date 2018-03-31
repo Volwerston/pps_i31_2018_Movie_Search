@@ -5,6 +5,8 @@
         IFileRepository FileRepository { get; }
         
         IPersonRepository PersonRepository { get; }
+        
+        IFilmRepository FilmRepository { get; }
 
         void Save();
     }

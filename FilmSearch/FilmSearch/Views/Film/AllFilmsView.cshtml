@@ -1,0 +1,14 @@
+@model List<Film>
+@{
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        @foreach (var film in Model)
+        {
+            <h3>@film.Title</h3>
+            <p>Release Date: @film.RealeaseDate</p>
+        }
+    </div>
+</div>

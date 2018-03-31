@@ -10,6 +10,8 @@ namespace FilmSearch.DAL.Impl
 
         private IPersonRepository _personRepository;
 
+        private IFilmRepository _filmRepository;
+
         public UnitOfWork(FilmSearchContext context)
         {
             _context = context;
@@ -18,6 +20,8 @@ namespace FilmSearch.DAL.Impl
         public IFileRepository FileRepository => _fileRepository ?? (_fileRepository = new FileRepository(_context));
 
         public IPersonRepository PersonRepository => _personRepository ?? (_personRepository = new PersonRepository(_context));
+
+        public IFilmRepository FilmRepository => _filmRepository ?? (_filmRepository = new FilmRepository(_context));
        
         public void Save()
         {
