@@ -1,20 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using FilmSearch.DAL;
-using FilmSearch.DAL.Impl;
-using FilmSearch.Models;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FilmSearch.Models;
-using FilmSearch.Services;
+using FilmSearch.DAL;
+using FilmSearch.DAL.Impl;
 
 namespace FilmSearch
 {
@@ -32,18 +24,20 @@ namespace FilmSearch
             services.AddDbContext<FilmSearchContext>(
                 options => options.UseNpgsql(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("FilmSearch"))
             );
-            
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<FilmService>();
-            
-            services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<FilmSearchContext>()
-                .AddDefaultTokenProviders();
+
+            services
+                .AddScoped<IFileRepository, FileRepository>()
+                .AddScoped<IPersonRepository, PersonRepository>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddIdentity<AppUser, IdentityRole>()
+            .AddEntityFrameworkStores<FilmSearchContext>()
+            .AddDefaultTokenProviders();
+
             services.AddMvc();
             
             ConfigureDal(services);
