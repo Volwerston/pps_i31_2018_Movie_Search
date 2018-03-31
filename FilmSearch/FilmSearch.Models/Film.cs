@@ -7,7 +7,7 @@ namespace FilmSearch.Models
     {
         public long Id { get; set; }
         public string Title { get; set; }
-        public DateTime RealeaseDate { get; set; }
+        public DateTime ReleaseDate { get; set; }
         public string ShortDescription { get; set; }
         public ICollection<FilmGenre> Genres { get; set; }
     }

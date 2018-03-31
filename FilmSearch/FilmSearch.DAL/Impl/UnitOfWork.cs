@@ -12,6 +12,14 @@ namespace FilmSearch.DAL.Impl
 
         private IFilmRepository _filmRepository;
 
+        private IGenreRepository _genreRepository;
+
+        private IFilmRoleRepository _filmRoleRepository;
+
+        private IPersonRoleRepository _personRoleRepository;
+
+        private IFilmGenreRepository _filmGenreRepository;
+
         public UnitOfWork(FilmSearchContext context)
         {
             _context = context;
@@ -22,7 +30,18 @@ namespace FilmSearch.DAL.Impl
         public IPersonRepository PersonRepository => _personRepository ?? (_personRepository = new PersonRepository(_context));
 
         public IFilmRepository FilmRepository => _filmRepository ?? (_filmRepository = new FilmRepository(_context));
-       
+        
+        public IGenreRepository GenreRepository => _genreRepository ?? (_genreRepository = new GenreRepository(_context));
+
+        public IFilmRoleRepository FilmRoleRepository =>
+            _filmRoleRepository ?? (_filmRoleRepository = new FilmRoleRepository(_context));
+
+        public IPersonRoleRepository PersonRoleRepository =>
+            _personRoleRepository ?? (_personRoleRepository = new PersonRoleRepository(_context));
+        
+        public IFilmGenreRepository FilmGenreRepository =>
+            _filmGenreRepository ?? (_filmGenreRepository = new FilmGenreRepository(_context));
+
         public void Save()
         {
             _context.SaveChanges();

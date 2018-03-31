@@ -2,4 +2,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FilmSearch.DAL\FilmSearch.DAL.csproj" />
+    <ProjectReference Include="..\FilmSearch.Utils\FilmSearch.Utils.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.App" Version="2.0.6" />
+  </ItemGroup>
 </Project>

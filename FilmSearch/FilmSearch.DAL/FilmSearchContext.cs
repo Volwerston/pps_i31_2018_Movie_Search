@@ -30,6 +30,8 @@ namespace FilmSearch.DAL
         
         public DbSet<Film> Films { get; set; }
         
+        public DbSet<FilmGenre> FilmGenres { get; set; }
+        
         public DbSet<FilmRole> FilmRoles { get; set; }
         
         public DbSet<Genre> Genres { get; set; }

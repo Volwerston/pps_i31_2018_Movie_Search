@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FilmSearch.Models;
+using FilmSearch.Services;
 
 namespace FilmSearch
 {
@@ -33,6 +34,7 @@ namespace FilmSearch
             );
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<FilmService>();
             
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<FilmSearchContext>()

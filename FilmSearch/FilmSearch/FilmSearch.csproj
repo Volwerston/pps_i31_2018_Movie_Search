@@ -1,19 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.NETCore.App" Version="2.0.6" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
   </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\FilmSearch.DAL\FilmSearch.DAL.csproj" />
+    <ProjectReference Include="..\FilmSearch.DAL\FilmSearch.DAL.csproj" />
+    <ProjectReference Include="..\FilmSearch.DAL\FilmSearch.DAL.csproj" />
+    <ProjectReference Include="..\FilmSearch.Models\FilmSearch.Models.csproj" />
+    <ProjectReference Include="..\FilmSearch.Models\FilmSearch.Models.csproj" />
+    <ProjectReference Include="..\FilmSearch.Services\FilmSearch.Services.csproj" />
+    <ProjectReference Include="..\FilmSearch.Services\FilmSearch.Services.csproj" />
+    <ProjectReference Include="..\FilmSearch.Utils\FilmSearch.Utils.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+  </ItemGroup>
 </Project>

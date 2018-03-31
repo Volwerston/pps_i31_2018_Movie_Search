@@ -20,7 +20,7 @@ namespace FilmSearch.DAL
         /// <param name="id">id</param>
         /// <returns>element</returns>
         E GetByKey(object key);
-
+        
         /// <summary>
         /// Adding new entity
         /// </summary>

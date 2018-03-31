@@ -18,33 +18,11 @@ namespace FilmSearch.Controllers
         [HttpGet]
         public IActionResult CreateFilmView()
         {
-            return View(new Film());
-        }
-        
-        [HttpPost]
-        public IActionResult CreateFilmView(Film film)
-        {
-            if (film == null || film.Id != 0)
-            {
-                return BadRequest();
-            }
-            
-            _unitOfWork.FilmRepository.Add(film);
-            _unitOfWork.Save();
-
-            return RedirectToAction("AllFilmsView", "Film");
-        }
-
-        [HttpGet("/all")]
-        public IActionResult AllFilmsView()
-        {
-            var films = _unitOfWork.FilmRepository.GetAll().ToList();
-
-            return View(films);
+            return View();
         }
         
 //        [HttpPost]
-//        public IActionResult CreateFilm([FromBody] Film film)
+//        public IActionResult CreateFilmView(Film film)
 //        {
 //            if (film == null || film.Id != 0)
 //            {
@@ -54,20 +32,15 @@ namespace FilmSearch.Controllers
 //            _unitOfWork.FilmRepository.Add(film);
 //            _unitOfWork.Save();
 //
-//            return CreatedAtRoute("GetFilm", new {id = film.Id}, film);
+//            return RedirectToAction("AllFilmsView", "Film");
 //        }
-//        
-//        [HttpGet("{id}", Name = "GetFilm")]
-//        public IActionResult GetFilm(long id)
+
+//        [HttpGet("/all")]
+//        public IActionResult AllFilmsView()
 //        {
-//            var film = _unitOfWork.FilmRepository.GetByKey(id);
+//            var films = _unitOfWork.FilmRepository.GetAll().ToList();
 //
-//            if (film == null)
-//            {
-//                return NotFound();
-//            }
-//            
-//            return new ObjectResult(film);
+//            return View(films);
 //        }
     }
 }

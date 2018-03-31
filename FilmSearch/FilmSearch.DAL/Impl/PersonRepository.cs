@@ -1,4 +1,6 @@
-﻿using FilmSearch.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FilmSearch.Models;
 
 namespace FilmSearch.DAL.Impl
 {
@@ -6,6 +8,11 @@ namespace FilmSearch.DAL.Impl
     {
         public PersonRepository(FilmSearchContext context) : base(context)
         {
+        }
+
+        public IEnumerable<Person> PersonsByIds(IEnumerable<long> ids)
+        {
+            return _dbSet.Where(p => ids.Contains(p.Id));
         }
     }
 }
