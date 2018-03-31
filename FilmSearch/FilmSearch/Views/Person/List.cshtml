@@ -25,9 +25,6 @@
                     @Html.DisplayNameFor(model => model.BirthDate)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.PhotoId)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.Country)
                 </th>
             <th></th>
@@ -49,14 +46,11 @@
                 @Html.DisplayFor(modelItem => item.BirthDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PhotoId)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Country)
             </td>
             <td>
-                @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
                 @Html.ActionLink("Delete", "Delete", new {  id=item.Id  })
             </td>
         </tr>

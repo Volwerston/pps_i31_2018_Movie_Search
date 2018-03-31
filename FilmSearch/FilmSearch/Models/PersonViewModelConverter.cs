@@ -12,11 +12,34 @@ namespace FilmSearch.Models
         {
             return new Person()
             {
-                 BirthDate = source.BirthDate,
-                 Country = source.Country,
-                 Name = source.Name,
-                 Surname = source.Surname
+                BirthDate = source.BirthDate,
+                Country = source.Country,
+                Name = source.Name,
+                Surname = source.Surname,
+                Id = source.Id
             };
+        }
+
+        public void ConvertExisting(PersonViewModel source, Person current)
+        {
+            current.BirthDate = source.BirthDate;
+            current.Country = source.Country;
+            current.Name = source.Name;
+            current.Surname = source.Surname;
+            current.Id = source.Id;
+        }
+
+        public PersonViewModel ConvertToViewModel(Person person)
+        {
+            PersonViewModel toReturn = new PersonViewModel();
+
+            toReturn.Id = person.Id;
+            toReturn.BirthDate = person.BirthDate;
+            toReturn.Country = person.Country;
+            toReturn.Name = person.Name;
+            toReturn.Surname = person.Surname;
+
+            return toReturn;
         }
     }
 }

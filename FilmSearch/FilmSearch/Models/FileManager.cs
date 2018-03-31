@@ -62,5 +62,17 @@ namespace FilmSearch.Models
 
             Directory.Delete(location);
         }
+
+        internal static string GetBase64File(string fileName)
+        {
+            using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            {
+                byte[] img = new byte[fs.Length];
+
+                fs.Read(img, 0, (int)fs.Length);
+
+                return Convert.ToBase64String(img);
+            }
+        }
     }
 }

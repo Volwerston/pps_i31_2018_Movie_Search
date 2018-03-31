@@ -19,5 +19,13 @@ namespace FilmSearch.Models
 
             return toReturn;
         }
+
+        public void ConvertExisting(IFormFile source, File toReturn)
+        {
+            toReturn.FileName = source.FileName;
+            toReturn.Path = string.Empty;
+            toReturn.FileType = source.ContentType;
+            toReturn.UploadDate = DateTime.Now;
+        }
     }
 }
