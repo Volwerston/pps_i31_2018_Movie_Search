@@ -42,5 +42,25 @@ namespace FilmSearch.Models
                 return toReturn;
             }
         }
+
+        public static void RemoveDirectory(string location)
+        {
+            string[] files = Directory.GetFiles(location);
+            string[] dirs = Directory.GetDirectories(location);
+
+            foreach (string file in files)
+            {
+                System.IO.File.SetAttributes(file, FileAttributes.Normal);
+                System.IO.File.Delete(file);
+            }
+
+            foreach (string dir in dirs)
+            {
+                RemoveDirectory(dir);
+            }
+
+
+            Directory.Delete(location);
+        }
     }
 }

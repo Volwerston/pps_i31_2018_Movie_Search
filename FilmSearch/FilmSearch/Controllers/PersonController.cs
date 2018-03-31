@@ -13,20 +13,18 @@ namespace FilmSearch.Controllers
 {
     public class PersonController : Controller
     {
-        private IPersonRepository personRepository;
-        private IFileRepository fileRepository;
+        private IUnitOfWork _unitOfWork;
         private IHostingEnvironment enviroment;
 
-        public PersonController(IPersonRepository _personRepo, IFileRepository _fileRepo, IHostingEnvironment _env)
+        public PersonController(IUnitOfWork uow, IHostingEnvironment _env)
         {
-            this.personRepository = _personRepo;
-            this.fileRepository = _fileRepo;
+            this._unitOfWork = uow;
             enviroment = _env;
         }
 
         public ActionResult List()
         {
-            IEnumerable<Person> toList = personRepository.GetAll();
+            IEnumerable<Person> toList = _unitOfWork.PersonRepository.GetAll();
 
             return View(toList);
         }
@@ -43,18 +41,29 @@ namespace FilmSearch.Controllers
         public ActionResult Create(PersonViewModel p)
         {
             File fileToAdd = new FileViewModelConverter().Convert(p.Photo);
-            fileRepository.Add(fileToAdd);
+            _unitOfWork.FileRepository.Add(fileToAdd);
 
             Person personToAdd = new PersonViewModelConverter().Convert(p);
             personToAdd.PhotoId = fileToAdd.Id;
-            personRepository.Add(personToAdd);
+            _unitOfWork.PersonRepository.Add(personToAdd);
 
             string filePath = $"{enviroment.ContentRootPath}/storage/{fileToAdd.Id}";
 
             FileManager.Save(p.Photo, filePath);
 
             fileToAdd.Path = filePath;
-            fileRepository.Update(fileToAdd);
+            _unitOfWork.FileRepository.Update(fileToAdd);
+
+            return RedirectToAction("List", "Person");
+        }
+
+        public ActionResult Delete(long id)
+        {
+            _unitOfWork.PersonRepository.Delete(id);
+
+            string location = $"{enviroment.ContentRootPath}/storage/{id}";
+
+            FileManager.RemoveDirectory(location);
 
             return RedirectToAction("List", "Person");
         }
