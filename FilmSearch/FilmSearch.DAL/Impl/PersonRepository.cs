@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using FilmSearch.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using FilmSearch.Models;
+using System.Text;
 
 namespace FilmSearch.DAL.Impl
 {
-    public class PersonRepository: GenericRepository<Person>, IPersonRepository
+    public class PersonRepository : GenericRepository<Person>, IPersonRepository
     {
         public PersonRepository(FilmSearchContext context) : base(context)
         {

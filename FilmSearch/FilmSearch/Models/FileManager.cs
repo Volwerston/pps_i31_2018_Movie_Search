@@ -42,5 +42,37 @@ namespace FilmSearch.Models
                 return toReturn;
             }
         }
+
+        public static void RemoveDirectory(string location)
+        {
+            string[] files = Directory.GetFiles(location);
+            string[] dirs = Directory.GetDirectories(location);
+
+            foreach (string file in files)
+            {
+                System.IO.File.SetAttributes(file, FileAttributes.Normal);
+                System.IO.File.Delete(file);
+            }
+
+            foreach (string dir in dirs)
+            {
+                RemoveDirectory(dir);
+            }
+
+
+            Directory.Delete(location);
+        }
+
+        internal static string GetBase64File(string fileName)
+        {
+            using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            {
+                byte[] img = new byte[fs.Length];
+
+                fs.Read(img, 0, (int)fs.Length);
+
+                return Convert.ToBase64String(img);
+            }
+        }
     }
 }

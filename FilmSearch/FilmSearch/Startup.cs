@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -32,10 +32,10 @@ namespace FilmSearch
             services.AddDbContext<FilmSearchContext>(
                 options => options.UseNpgsql(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("FilmSearch"))
             );
-            
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<FilmService>();
-            
+
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<FilmSearchContext>()
                 .AddDefaultTokenProviders();
@@ -45,7 +45,7 @@ namespace FilmSearch
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            
+
             ConfigureDal(services);
         }
 
