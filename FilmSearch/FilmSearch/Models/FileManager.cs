@@ -25,16 +25,8 @@ namespace FilmSearch.Models
             formFile.OpenReadStream().Read(buf, 0, (int)fileLength);
 
             string fileName = $"{location}/{formFile.FileName}";
-            FileInfo fi = new FileInfo(fileName);
 
-            if (!fi.Exists)
-            {
-                fi.Create();
-            }
-
-            System.IO.File.SetAttributes(fileName, System.IO.File.GetAttributes(fileName) & ~FileAttributes.ReadOnly);
-
-            using (FileStream fs = new FileStream(location, FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
                 fs.Write(buf, 0, (int)fileLength);
             }
