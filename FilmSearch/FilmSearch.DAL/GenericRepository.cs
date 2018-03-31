@@ -18,12 +18,14 @@ namespace FilmSearch.DAL
         public void Add(TE entity)
         {
             _dbSet.Add(entity);
+            _context.SaveChanges();
         }
 
         public void Delete(object key)
         {
             var entity = _dbSet.Find(key);
             _dbSet.Remove(entity);
+            _context.SaveChanges();
         }
 
         public IEnumerable<TE> GetAll()
@@ -40,6 +42,7 @@ namespace FilmSearch.DAL
         {
             _dbSet.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
+            _context.SaveChanges();
         }
 
     }

@@ -24,8 +24,10 @@ namespace FilmSearch
             services.AddDbContext<FilmSearchContext>(
                 options => options.UseNpgsql(Configuration["ConnectionStrings:DefaultConnection"], b => b.MigrationsAssembly("FilmSearch"))
             );
-            
-            services.AddScoped<IFileRepository, FileRepository>();
+
+            services
+                .AddScoped<IFileRepository, FileRepository>()
+                .AddScoped<IPersonRepository, PersonRepository>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
