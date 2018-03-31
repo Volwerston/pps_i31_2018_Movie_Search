@@ -12,9 +12,10 @@ using System;
 namespace FilmSearch.Migrations
 {
     [DbContext(typeof(FilmSearchContext))]
-    partial class FilmSearchContextModelSnapshot : ModelSnapshot
+    [Migration("20180331095741_AppUser_Surname")]
+    partial class AppUser_Surname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
