@@ -27,4 +27,7 @@
   <ItemGroup>
     <Folder Include="storage\" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="storage\" />
+  </ItemGroup>
 </Project>
