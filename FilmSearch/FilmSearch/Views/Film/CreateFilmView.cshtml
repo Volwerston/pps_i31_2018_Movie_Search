@@ -5,53 +5,161 @@
 
 <h2>Add film</h2>
 <hr />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
 
-<script>
-    function onSubmit(event) {
-        
-    }
-</script>
 <div class="row">
     <div class="col-md-4">
         <form>
+            <div id="allValidation" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Title</label>
-                <input class="form-control" />
+                <input class="form-control" id="title"/>
                 <span id="titleValidation" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Release Date</label>
-                <input type="date" class="form-control" data-provider="datepicker"/>
+                <input type="date" class="form-control" data-provider="datepicker" id="releaseDate"/>
+                <span id="releaseDateValidation" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Short Description</label>
-                <textarea class="form-control"></textarea>
+                <textarea class="form-control" id="description"></textarea>
                 <span id="descriptionValidation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="button" class="btn btn-default" value="Submit" onclick=""/>
+                <label class="control-label">Director</label>
+                <select class="personsSelect form-control" id="directorSelect">
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Actors</label>
+                <select multiple class="personsSelect form-control" id="actorsSelect">
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Genres</label>
+                <select multiple class="form-control" id="genresSelect">
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="button" class="btn btn-default" value="Submit" onclick="onSubmit(this)"/>
             </div>
         </form>
     </div>
 </div>
 
-@*<div class="row">*@
-@*    <div class="col-md-4">*@
-@*        <form asp-action="CreateFilmView" asp-controller="Film">*@
-@*            <div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
-@*            <div class="form-group">*@
-@*                <label asp-for="Title" class="control-label"></label>*@
-@*                <input asp-for="Title" class="form-control" />*@
-@*                <span asp-validation-for="Title" class="text-danger"></span>*@
-@*            </div>*@
-@*            <div class="form-group">*@
-@*                <label asp-for="ReleaseDate" class="control-label"></label>*@
-@*                <input asp-for="ReleaseDate" class="form-control" />*@
-@*                <span asp-validation-for="ReleaseDate" class="text-danger"></span>*@
-@*            </div>*@
-@*            <div class="form-group">*@
-@*                <input type="submit" value="Create" class="btn btn-default" />*@
-@*            </div>*@
-@*        </form>*@
-@*    </div>*@
-@*</div>*@
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+    <script>
+        function defaultAjax(dataUrl, mapper) {
+            return {
+                url: dataUrl,
+                data: function(params) {
+                    return {
+                        q: params.term || "",
+                        page: params.page || 1
+                    }
+                },
+                processResults: function(result, params) {
+                    params.page = params.page || 1;
+
+                    return {
+                        results: result.data.map(mapper),
+                        pagination: {
+                            more: (result.pageSize * params.page) < (result.totalCount)
+                        }
+                    }
+                },
+                cache: true,
+                delay: 500,
+                dataType: 'json',
+                type: 'GET'
+            }
+        }
+
+        $('#genresSelect').select2({
+            ajax: defaultAjax("http://localhost:5000/api/film/genres", item => ({id: item.id, text: item.name}))
+        });
+        $('.personsSelect').select2({
+            ajax: defaultAjax("http://localhost:5000/api/person", item => ({id: item.id, text: item.fullName}))
+        });
+
+        function isEmptyString(str) {
+            return str == null || str === "";
+        }
+
+        function requireNonNull(str, callback) {
+            if (isEmptyString(str)) {
+                callback();
+                return true;
+            }
+
+            return false;
+        }
+
+        function convertToDefaultDateFormat(dateStr) {
+            if (isEmptyString(dateStr)) return null;
+
+            var date = new Date(dateStr);
+            return ('0' + (date.getMonth() + 1)).slice(-2) +
+                '/' +
+                ('0' + date.getDate()).slice(-2) +
+                '/' +
+                date.getFullYear();
+        }
+
+        function getIds(selectElement) {
+            return [].slice.call(selectElement.selectedOptions)
+                .map(opt => ({ id: opt.value }));
+        }
+
+        function onSubmit(btn) {
+            var title = document.getElementById("title").value;
+            var stop = requireNonNull(title,
+                () => {
+                    document.getElementById("titleValidation").innerHTML = "Title is not set";
+                });
+            if (stop) return;
+
+            var releaseDate = convertToDefaultDateFormat(document.getElementById("releaseDate").value);
+            var stop = requireNonNull(releaseDate,
+                () => {
+                    document.getElementById("releaseDateValidation").innerHTML = "Release date is not set";
+                });
+            if (stop) return;
+
+            var description = document.getElementById("description").value;
+            var stop = requireNonNull(description,
+                () => {
+                    document.getElementById("descriptionValidation").innerHTML = "Description is not set";
+                });
+
+            if (stop) return;
+
+            var director = getIds(document.getElementById("directorSelect"))[0];
+            var actors = getIds(document.getElementById("actorsSelect"));
+            var genres = getIds(document.getElementById("genresSelect"));
+            var requestData = {
+                title: title,
+                releaseDate: releaseDate,
+                shortDescription: description,
+                director: director,
+                actors: actors,
+                genres: genres
+            };
+            $.ajax({
+                    type: 'POST',
+                    url: "http://localhost:5000/api/film",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestData),
+                    success: data => {
+                        window.location.href = "http://localhost:5000";
+                    },
+                    error: resp => {
+                        document.getElementById("allValidation").innerHTML = "Failed to save film";
+                    }
+                }
+            );
+        }
+    </script>
+}

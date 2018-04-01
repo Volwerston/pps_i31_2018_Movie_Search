@@ -10,5 +10,8 @@ namespace FilmSearch.Models
         public DateTime ReleaseDate { get; set; }
         public string ShortDescription { get; set; }
         public ICollection<FilmGenre> Genres { get; set; }
+        
+        public long? PhotoId { get; set; }
+        public File Photo { get; set; }
     }
 }

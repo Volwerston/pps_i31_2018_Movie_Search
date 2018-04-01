@@ -27,29 +27,28 @@ namespace FilmSearch.Controllers.API
                 filmViewModel.Actors,
                 filmViewModel.Genres
                 );
-            
-            return CreatedAtRoute("GetFilm", new {id = film.Id}, film);
+
+            return new ObjectResult(_filmService.GetFilmView(film));
+        }
+
+        [HttpGet("genres")]
+        public IActionResult GetGenres([FromQuery]string q, [FromQuery] int page)
+        {
+            var(genres, totalCount) = _filmService.GetGenresByNamePaginated(q, page);
+
+            return new ObjectResult(new PaginatedResponse<Genre>
+            {
+                Count = genres.Count(),
+                Data = genres.ToList(),
+                PageSize = FilmService.PageSize,
+                TotalCount = totalCount
+            });
         }
 
         [HttpGet("{id}", Name = "GetFilm")]
-        public IActionResult GetFilm(long id)
+        public IActionResult GetFilm([FromRoute] long id)
         {
-            var film = _filmService.GetFilm(id);
-            var genres = film.Genres.Select(fg => fg.Genre);
-            
-            var director = _filmService.GetFilmDirector(id);
-            var actors = _filmService.GetFilmActors(id);
-            
-            return new ObjectResult(new FilmViewModel
-            {
-                Id = film.Id,
-                Title = film.Title,
-                ReleaseDate = DateUtils.ParseDate(film.ReleaseDate),
-                ShortDescription = film.ShortDescription,
-                Actors = actors,
-                Director = director,
-                Genres = genres
-            });
+            return new ObjectResult(_filmService.GetFilmView(id));
         }
     }
 }

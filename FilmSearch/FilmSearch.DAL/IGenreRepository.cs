@@ -6,5 +6,7 @@ namespace FilmSearch.DAL
     public interface IGenreRepository: IRepository<Genre>
     {
         IEnumerable<Genre> GenresByIds(IEnumerable<long> ids);
+
+        IEnumerable<Genre> GenresByName(string name);
     }
 }

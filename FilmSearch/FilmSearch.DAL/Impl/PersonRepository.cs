@@ -14,5 +14,10 @@ namespace FilmSearch.DAL.Impl
         {
             return _dbSet.Where(p => ids.Contains(p.Id));
         }
+
+        public IEnumerable<Person> PersonsByName(string name)
+        {
+            return _dbSet.Where(p => p.FullName.ToLower().Contains(name.ToLower()));
+        }
     }
 }

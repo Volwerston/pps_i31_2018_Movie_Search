@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using FilmSearch.DAL;
 using FilmSearch.DAL.Impl;
+using FilmSearch.Migrations;
 using FilmSearch.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FilmSearch.Models;
 using FilmSearch.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace FilmSearch
 {
@@ -35,16 +38,22 @@ namespace FilmSearch
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<FilmService>();
+            services.AddScoped<PersonService>();
             
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<FilmSearchContext>()
                 .AddDefaultTokenProviders();
+            
+            //Populates db
+            services.AddSingleton<PrePopulateData>();
+            services.BuildServiceProvider().GetService<PrePopulateData>()?.PrePopulate();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddCors();
             
             ConfigureDal(services);
         }
@@ -64,6 +73,7 @@ namespace FilmSearch
 
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseMvc(routes =>
             {

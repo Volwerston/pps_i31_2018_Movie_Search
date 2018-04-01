@@ -1,24 +1,58 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FilmSearch.DAL;
 using FilmSearch.Models;
+using FilmSearch.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilmSearch.Controllers
 {
     public class FilmController : Controller
     {
-        private IUnitOfWork _unitOfWork;
 
-        public FilmController(IUnitOfWork unitOfWork)
+        private FilmService _filmService;
+
+        public FilmController(FilmService filmService)
         {
-            _unitOfWork = unitOfWork;
+            _filmService = filmService;
         }
         
         [HttpGet]
         public IActionResult CreateFilmView()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult ShowFilmViews(string sortOrder, string sortValue, string name)
+        {
+            var sortQuery = new SortQuery
+            {
+                Order = sortOrder ?? FilmService.SortAsc,
+                Value = sortValue ?? FilmService.SortTitle
+            };
+
+            var filterQuery = new FilmFilterQuery
+            {
+                Title = name
+            };
+            
+            return View(
+                new SortedSearchResponse<FilmViewModel, FilmFilterQuery> {
+                    Data = _filmService
+                        .GetFilms(sortQuery, filterQuery)
+                        .Select(film => _filmService.GetFilmView(film))
+                        .ToList(),
+                    SortQuery = sortQuery,
+                    Filter = filterQuery
+                });
+        }
+
+        [HttpGet]
+        public IActionResult FilmView(long id)
+        {
+            return View(_filmService.GetFilmView(id));
         }
         
 //        [HttpPost]

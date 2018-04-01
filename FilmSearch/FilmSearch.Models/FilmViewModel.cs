@@ -16,6 +16,8 @@ namespace FilmSearch.Models
         [StringLength(1024, MinimumLength = 1)]
         [Required]
         public string ShortDescription { get; set; }
+
+        public File Photo { get; set; }
         
         public Person Director { get; set; }
         
