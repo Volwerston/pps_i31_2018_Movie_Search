@@ -16,9 +16,11 @@ namespace FilmSearch.Models
         public string Surname { get; set; }
         public DateTime BirthDate { get; set; }
         
-        public long PhotoId { get; set; }
+        public long? PhotoId { get; set; }
         public File Photo { get; set; }
         
         public string Country { get; set; }
+
+        public string FullName => $"{Name} {Surname}";
     }
 }

@@ -9,6 +9,10 @@ namespace FilmSearch.Models
         public string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string ShortDescription { get; set; }
-        public ICollection<FilmGenre> Genres { get; set; }
+        public double Performance { get; set; }
+        public ICollection<FilmGenre> Genres { get; set; } = new List<FilmGenre>();
+        
+        public long? PhotoId { get; set; }
+        public File Photo { get; set; }
     }
 }

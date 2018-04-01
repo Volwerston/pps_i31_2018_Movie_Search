@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using FilmSearch.DAL;
 using FilmSearch.Models;
@@ -13,43 +14,57 @@ namespace FilmSearch.Controllers.API
     {
         private FilmService _filmService;
 
+        private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         public FilmApiController(FilmService filmService)
         {
             _filmService = filmService;
         }
 
         [HttpPost]
-        public IActionResult AddFilm([FromBody] FilmViewModel filmViewModel)
+        public IActionResult AddFilm([FromBody] FilmModel filmModel)
         {
             var film = _filmService.AddFilm(
-                FilmViewModel.To(filmViewModel),
-                filmViewModel.Director,
-                filmViewModel.Actors,
-                filmViewModel.Genres
+                FilmModel.To(filmModel),
+                filmModel.Director,
+                filmModel.Actors,
+                filmModel.Genres
                 );
-            
-            return CreatedAtRoute("GetFilm", new {id = film.Id}, film);
+
+            return new ObjectResult(_filmService.GetFilmView(film));
+        }
+
+        [HttpGet("genres")]
+        public IActionResult GetGenres([FromQuery]string q, [FromQuery] int page)
+        {
+            var(genres, totalCount) = _filmService.GetGenresByNamePaginated(q, page);
+
+            return new ObjectResult(new PaginatedResponse<Genre>
+            {
+                Count = genres.Count(),
+                Data = genres.ToList(),
+                PageSize = FilmService.PageSize,
+                TotalCount = totalCount
+            });
         }
 
         [HttpGet("{id}", Name = "GetFilm")]
-        public IActionResult GetFilm(long id)
+        public IActionResult GetFilm([FromRoute] long id)
         {
-            var film = _filmService.GetFilm(id);
-            var genres = film.Genres.Select(fg => fg.Genre);
-            
-            var director = _filmService.GetFilmDirector(id);
-            var actors = _filmService.GetFilmActors(id);
-            
-            return new ObjectResult(new FilmViewModel
-            {
-                Id = film.Id,
-                Title = film.Title,
-                ReleaseDate = DateUtils.ParseDate(film.ReleaseDate),
-                ShortDescription = film.ShortDescription,
-                Actors = actors,
-                Director = director,
-                Genres = genres
-            });
+            return new ObjectResult(_filmService.GetFilmView(id));
+        }
+        
+        [HttpDelete("{id}", Name = "DeleteFilm")]
+        public IActionResult DeleteFilm([FromRoute] long id)
+        {
+            _filmService.DeleteFilm(id);
+            return Ok();
+        }
+
+        [HttpPut("rate/{filmId}")]
+        public IActionResult RateFilm([FromRoute] long filmId, [FromQuery] long rate)
+        {
+            return new ObjectResult(_filmService.RateFilm(filmId, GetUserId(), rate));
         }
     }
 }

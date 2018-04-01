@@ -38,5 +38,7 @@ namespace FilmSearch.DAL
         /// </summary>
         /// <param name="entity">entity to update</param>
         void Update(E entity);
+
+        bool Empty();
     }
 }

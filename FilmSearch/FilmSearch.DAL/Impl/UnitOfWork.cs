@@ -20,6 +20,8 @@ namespace FilmSearch.DAL.Impl
 
         private IFilmGenreRepository _filmGenreRepository;
 
+        private IFilmPerformanceRepository _filmPerformanceRepository;
+
         public UnitOfWork(FilmSearchContext context)
         {
             _context = context;
@@ -42,6 +44,9 @@ namespace FilmSearch.DAL.Impl
         public IFilmGenreRepository FilmGenreRepository =>
             _filmGenreRepository ?? (_filmGenreRepository = new FilmGenreRepository(_context));
 
+        public IFilmPerformanceRepository FilmPerformanceRepository =>
+            _filmPerformanceRepository ?? (_filmPerformanceRepository = new FilmPerformanceRepository(_context));
+        
         public void Save()
         {
             _context.SaveChanges();
