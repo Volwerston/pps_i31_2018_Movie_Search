@@ -16,12 +16,16 @@ namespace FilmSearch.DAL
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<FilmGenre>()
-                .HasKey(fg => new { fg.FilmId, fg.GenreId });
-
+                .HasKey(fg => new {fg.FilmId, fg.GenreId});
             modelBuilder.Entity<FilmGenre>()
                 .HasOne(fg => fg.Film)
                 .WithMany(f => f.Genres)
                 .HasForeignKey(fg => fg.FilmId);
+            modelBuilder.Entity<FilmGenre>()
+                .HasOne(fg => fg.Genre)
+                .WithMany(g => g.Films)
+                .HasForeignKey(fg => fg.GenreId);
+            
         }
 
         public DbSet<File> Files { get; set; }
@@ -30,9 +34,11 @@ namespace FilmSearch.DAL
         
         public DbSet<Film> Films { get; set; }
         
+        public DbSet<FilmRole> FilmRoles { get; set; }
+        
         public DbSet<FilmGenre> FilmGenres { get; set; }
         
-        public DbSet<FilmRole> FilmRoles { get; set; }
+        public DbSet<FilmPerformance> FilmPerformances { get; set; }
         
         public DbSet<Genre> Genres { get; set; }
         

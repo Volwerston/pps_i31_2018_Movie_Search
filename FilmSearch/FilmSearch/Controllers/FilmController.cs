@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Services;
@@ -10,6 +11,7 @@ namespace FilmSearch.Controllers
 {
     public class FilmController : Controller
     {
+        private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         private FilmService _filmService;
 
@@ -39,7 +41,7 @@ namespace FilmSearch.Controllers
             };
             
             return View(
-                new SortedSearchResponse<FilmViewModel, FilmFilterQuery> {
+                new SortedSearchResponse<FilmModel, FilmFilterQuery> {
                     Data = _filmService
                         .GetFilms(sortQuery, filterQuery)
                         .Select(film => _filmService.GetFilmView(film))
@@ -52,7 +54,12 @@ namespace FilmSearch.Controllers
         [HttpGet]
         public IActionResult FilmView(long id)
         {
-            return View(_filmService.GetFilmView(id));
+            var filmModel = _filmService.GetFilmView(id);
+            return View(new FilmViewModel
+            {
+                Film = filmModel,
+                FilmPerformance = _filmService.GetFilmPerformance(id, GetUserId())
+            });
         }
         
 //        [HttpPost]

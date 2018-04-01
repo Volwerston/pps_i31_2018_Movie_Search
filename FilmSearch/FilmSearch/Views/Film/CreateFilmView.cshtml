@@ -50,63 +50,15 @@
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+    <script src="~/js/utils.js"></script>
+    <script src="~/js/dynamicSelect.js"></script>
     <script>
-        function defaultAjax(dataUrl, mapper) {
-            return {
-                url: dataUrl,
-                data: function(params) {
-                    return {
-                        q: params.term || "",
-                        page: params.page || 1
-                    }
-                },
-                processResults: function(result, params) {
-                    params.page = params.page || 1;
-
-                    return {
-                        results: result.data.map(mapper),
-                        pagination: {
-                            more: (result.pageSize * params.page) < (result.totalCount)
-                        }
-                    }
-                },
-                cache: true,
-                delay: 500,
-                dataType: 'json',
-                type: 'GET'
-            }
-        }
-
         $('#genresSelect').select2({
-            ajax: defaultAjax("http://localhost:5000/api/film/genres", item => ({id: item.id, text: item.name}))
+            ajax: defaultSelectAjax("http://localhost:5000/api/film/genres", item => ({id: item.id, text: item.name}))
         });
         $('.personsSelect').select2({
-            ajax: defaultAjax("http://localhost:5000/api/person", item => ({id: item.id, text: item.fullName}))
+            ajax: defaultSelectAjax("http://localhost:5000/api/person", item => ({id: item.id, text: item.fullName}))
         });
-
-        function isEmptyString(str) {
-            return str == null || str === "";
-        }
-
-        function requireNonNull(str, callback) {
-            if (isEmptyString(str)) {
-                callback();
-                return true;
-            }
-
-            return false;
-        }
-
-        function convertToDefaultDateFormat(dateStr) {
-            if (isEmptyString(dateStr)) return null;
-
-            var date = new Date(dateStr);
-            return ('0' + (date.getMonth() + 1)).slice(-2) +
-                '/' +
-                ('0' + date.getDate()).slice(-2) +
-                '/' +
-                date.getFullYear();
-        }
 
         function getIds(selectElement) {
             return [].slice.call(selectElement.selectedOptions)
@@ -139,6 +91,7 @@
             var director = getIds(document.getElementById("directorSelect"))[0];
             var actors = getIds(document.getElementById("actorsSelect"));
             var genres = getIds(document.getElementById("genresSelect"));
+            
             var requestData = {
                 title: title,
                 releaseDate: releaseDate,
@@ -147,6 +100,7 @@
                 actors: actors,
                 genres: genres
             };
+            
             $.ajax({
                     type: 'POST',
                     url: "http://localhost:5000/api/film",

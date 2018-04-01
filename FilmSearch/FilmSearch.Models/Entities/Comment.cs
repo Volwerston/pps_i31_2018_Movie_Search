@@ -20,6 +20,6 @@ namespace FilmSearch.Models
         public long ParentCommentId { get; set; }
         public Comment ParentComment { get; set; }
         
-        public ICollection<Comment> SubComments { get; set; }
+        public ICollection<Comment> SubComments { get; set; } = new List<Comment>();
     }
 }

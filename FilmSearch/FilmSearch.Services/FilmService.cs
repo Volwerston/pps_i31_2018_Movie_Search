@@ -4,6 +4,8 @@ using System.Linq;
 using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Utils;
+using FilmSearch.Utils.Exceptions;
+using Microsoft.AspNetCore.Identity;
 
 namespace FilmSearch.Services
 {
@@ -20,9 +22,17 @@ namespace FilmSearch.Services
         
         private IUnitOfWork _unitOfWork;
 
-        public FilmService(IUnitOfWork unitOfWork)
+        private UserManager<AppUser> _userManager;
+
+        public FilmPerformance GetFilmPerformance(long filmId, string userId)
+        {
+            return _unitOfWork.FilmPerformanceRepository.GetFilmPerformance(filmId, userId);
+        }
+        
+        public FilmService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public Film AddFilm(Film film, Person directorModel, IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
@@ -63,9 +73,9 @@ namespace FilmSearch.Services
             return _unitOfWork.FilmRepository.GetByKey(id);
         }
 
-        public IEnumerable<Person> GetFilmActors(long id)
+        public List<Person> GetFilmActors(long id)
         {
-            return _unitOfWork.PersonRoleRepository.ActorsByFilmId(id);
+            return _unitOfWork.PersonRoleRepository.ActorsByFilmId(id).ToList();
         }
 
         public Person GetFilmDirector(long id)
@@ -73,16 +83,53 @@ namespace FilmSearch.Services
             return _unitOfWork.PersonRoleRepository.DirectorByFilmId(id);
         }
 
-        public IEnumerable<Genre> GetGenresByName(string name)
+        public double RateFilm(long filmId, string userId, long score)
         {
-            name = name ?? "";
-            return _unitOfWork.GenreRepository.GenresByName(name);
+            if (score < 1 || score > 10)
+            {
+                throw new ValidationException("Score should be in [1, 10]");
+            }
+
+            var filmPerformance = GetFilmPerformance(filmId, userId);
+            var film = GetFilm(filmId);
+            var performances = _unitOfWork.FilmPerformanceRepository.GetFilmPerformances(filmId).ToList();
+            
+            if (filmPerformance != null)
+            {
+                filmPerformance.Performance = score;
+            }
+            else
+            {
+                filmPerformance = new FilmPerformance
+                {
+                    FilmId = filmId,
+                    UserId = userId,
+                    Performance = score
+                };
+                performances.Add(filmPerformance);
+            
+                _unitOfWork.FilmPerformanceRepository.Add(filmPerformance);
+            }
+            var totalPerformance = performances.Sum(p => p.Performance) / performances.Count();
+
+            film.Performance = totalPerformance;
+            _unitOfWork.FilmRepository.Update(film);
+            
+            _unitOfWork.Save();
+
+            return totalPerformance;
         }
 
-        public (IEnumerable<Genre>, int) GetGenresByNamePaginated(string name, int page)
+        public List<Genre> GetGenresByName(string name)
+        {
+            name = name ?? "";
+            return _unitOfWork.GenreRepository.GenresByName(name).ToList();
+        }
+
+        public (List<Genre>, int) GetGenresByNamePaginated(string name, int page)
         {
             var genres = GetGenresByName(name);
-            return (genres.Skip(PageSize * (page - 1)).Take(PageSize), genres.Count());
+            return (genres.Skip(PageSize * (page - 1)).Take(PageSize).ToList(), genres.Count());
         }
 
         public IEnumerable<Film> GetFilms(SortQuery sortQuery, FilmFilterQuery filmFilterQuery)
@@ -93,56 +140,31 @@ namespace FilmSearch.Services
 
             return films.Where(filterFunction).OrderBy(f => f, sortFunction);
         }
-
-        private Func<Film, bool> GetFilmFilterFunction(FilmFilterQuery filmFilterQuery)
-        {
-            Func<Film, bool> filmFilter = film => true;
-            if (filmFilterQuery.Title != null)
-            {
-                var filter = filmFilter;
-                filmFilter = film => filter(film) && film.Title.ToLower().Contains(filmFilterQuery.Title.ToLower());
-            }
-
-            return filmFilter;
-        }
-
-        public FilmViewModel GetFilmView(long id)
+        
+        public FilmModel GetFilmView(long id)
         {
             var film = GetFilm(id);
-            var genres = film.Genres?.Select(fg => fg.Genre);
-            
+
+            var genres = film.Genres.Select(fg => fg.Genre).ToList();
             var director = GetFilmDirector(id);
             var actors = GetFilmActors(id);
+
             
-            return new FilmViewModel
-            {
-                Id = film.Id,
-                Title = film.Title,
-                ReleaseDate = DateUtils.ParseDate(film.ReleaseDate),
-                ShortDescription = film.ShortDescription,
-                Actors = actors,
-                Director = director,
-                Genres = genres
-            };
+            return FilmModel.Of(film, actors, director, genres);
         }
 
-        public FilmViewModel GetFilmView(Film film)
+        public FilmModel GetFilmView(Film film)
         {
-            var genres = film.Genres?.Select(fg => fg.Genre);
-            
+            var genres = film.Genres.Select(fg => fg.Genre).ToList();
             var director = GetFilmDirector(film.Id);
             var actors = GetFilmActors(film.Id);
-            
-            return new FilmViewModel
-            {
-                Id = film.Id,
-                Title = film.Title,
-                ReleaseDate = DateUtils.ParseDate(film.ReleaseDate),
-                ShortDescription = film.ShortDescription,
-                Actors = actors,
-                Director = director,
-                Genres = genres
-            };
+
+            return FilmModel.Of(film, actors, director, genres);
+        }
+
+        public void DeleteFilm(long id)
+        {
+            _unitOfWork.FilmRepository.Delete(id);
         }
 
         private IComparer<Film> GetFilmSortFunction(SortQuery sortQuery)
@@ -205,12 +227,25 @@ namespace FilmSearch.Services
         {
             foreach (var genre in genres)
             {
-                _unitOfWork.FilmGenreRepository.Add(new FilmGenre
+                film.Genres.Add(new FilmGenre
                 {
                     Film = film,
                     Genre = genre
                 });
             }
         }
+
+        private Func<Film, bool> GetFilmFilterFunction(FilmFilterQuery filmFilterQuery)
+        {
+            Func<Film, bool> filmFilter = film => true;
+            if (filmFilterQuery.Title != null)
+            {
+                var filter = filmFilter;
+                filmFilter = film => filter(film) && film.Title.ToLower().Contains(filmFilterQuery.Title.ToLower());
+            }
+
+            return filmFilter;
+        }
+
     }
 }

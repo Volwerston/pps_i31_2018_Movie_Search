@@ -11,5 +11,7 @@ namespace FilmSearch.Models
         /// </summary>
         public long Id { get; set; }
         public string Name { get; set; }
+        
+        public List<FilmGenre> Films { get; set; } = new List<FilmGenre>();
     }
 }

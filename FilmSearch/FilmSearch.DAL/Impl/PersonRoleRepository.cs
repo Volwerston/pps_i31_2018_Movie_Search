@@ -15,13 +15,16 @@ namespace FilmSearch.DAL
         {
             return _dbSet
                 .Where(pr => pr.FilmId == filmId && pr.FilmRole.Name == FilmRole.ACTOR_ROLE)
-                .Select(pr => pr.Person);
+                .Select(pr => pr.Person)
+                .ToList();;
         }
 
         public Person DirectorByFilmId(long filmId)
         {
             return _dbSet
-                .FirstOrDefault(pr => pr.FilmId == filmId && pr.FilmRole.Name == FilmRole.DIRECTOR_ROLE)?.Person;
+                .Where(pr => pr.FilmId == filmId && pr.FilmRole.Name == FilmRole.DIRECTOR_ROLE)
+                .Select(pr => pr.Person)
+                .FirstOrDefault();
         }
     }
 }

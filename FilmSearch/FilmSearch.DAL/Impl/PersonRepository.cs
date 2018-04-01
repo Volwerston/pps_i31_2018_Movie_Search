@@ -12,12 +12,12 @@ namespace FilmSearch.DAL.Impl
 
         public IEnumerable<Person> PersonsByIds(IEnumerable<long> ids)
         {
-            return _dbSet.Where(p => ids.Contains(p.Id));
+            return _dbSet.Where(p => ids.Contains(p.Id)).ToList();;
         }
 
         public IEnumerable<Person> PersonsByName(string name)
         {
-            return _dbSet.Where(p => p.FullName.ToLower().Contains(name.ToLower()));
+            return _dbSet.Where(p => p.FullName.ToLower().Contains(name.ToLower())).ToList();;
         }
     }
 }
