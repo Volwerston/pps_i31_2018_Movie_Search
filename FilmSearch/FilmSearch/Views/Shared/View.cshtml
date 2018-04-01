@@ -1,0 +1,103 @@
+﻿@model IEnumerable<FilmSearch.Models.LogEntry>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+@section styles {
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+}
+
+<h2>Monitor logs</h2>
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <label for="date" class="control-label col-sm-3">Date:</label>
+        <div class="col-sm-9">
+            <input class="form-control" name="date" type="date" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-6 col-sm-push-3">
+            <button type="button" id="search-date" class="btn btn-success btn-block">Search</button>
+        </div>  
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <table class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        Data
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AddingTime)
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="log-container">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td> 
+                            @item.Data.ToString()
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AddingTime)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var table = $("table").DataTable({
+                scrollX: true,
+                scrollCollapse: true,
+                autoWidth: true,
+                paging: true,
+                columnDefs: [
+                    { "width": "50px", "targets": [0, 1, 2] }
+                ]
+            });
+
+            $("#search-date").click(function () {
+
+                $.ajax({
+                    method: 'GET',
+                    url: '/Log/GetEntriesByDate?time=' + $('input[name="date"]').val(),
+                    dataType: 'json',
+                    success: function (res) {
+                        table.clear().draw();
+
+                        for (let i = 0; i < res.length; ++i) {
+                            table.row.add([
+                                JSON.stringify(res[i].data),
+                                res[i].status.toString(),
+                                res[i].addingTime.toString()
+                            ]).draw();
+                        }
+                    },
+                    error: function (res) {
+                        alert("Error: " + res.statusText);
+                    }
+                });
+
+            });
+        });
+    </script>
+}
