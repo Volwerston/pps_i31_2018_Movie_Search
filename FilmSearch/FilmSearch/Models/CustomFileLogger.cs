@@ -36,7 +36,7 @@ namespace FilmSearch.Models
 
             List<LogEntry> entries = new List<LogEntry>();
 
-            FillEntries(fullPath, out entries);
+            FillEntries(fullPath, out entries, FileMode.Open);
 
             return entries;
         }
@@ -48,7 +48,7 @@ namespace FilmSearch.Models
 
             List<LogEntry> entries = new List<LogEntry>();
 
-            FillEntries(fullPath, out entries);
+            FillEntries(fullPath, out entries, FileMode.OpenOrCreate);
 
             entries.Add(entry);
 
@@ -56,9 +56,13 @@ namespace FilmSearch.Models
         }
 
 
-        private void FillEntries(string fullPath, out List<LogEntry> entries)
+        private void FillEntries(string fullPath, out List<LogEntry> entries, FileMode fileMode)
         {
-            using (FileStream fs = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Read))
+            entries = new List<LogEntry>();
+
+            if (!System.IO.File.Exists(fullPath)) return;
+
+            using (FileStream fs = new FileStream(fullPath, fileMode, FileAccess.Read))
             {
                 using (StreamReader rdr = new StreamReader(fs))
                 {
@@ -67,10 +71,6 @@ namespace FilmSearch.Models
                     if (!String.IsNullOrWhiteSpace(allData))
                     {
                         entries = JsonConvert.DeserializeObject<List<LogEntry>>(allData);
-                    }
-                    else
-                    {
-                        entries = new List<LogEntry>();
                     }
                 }
             }
