@@ -60,16 +60,18 @@ namespace FilmSearch.Controllers
             }
         }
 
-        public ActionResult Login()
+        public ActionResult Login(string returnUrl)
         {
             LoginViewModel model = new LoginViewModel();
+
+            ViewBag.ReturnUrl = returnUrl;
 
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -87,12 +89,11 @@ namespace FilmSearch.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return Redirect(returnUrl ?? "/");
                 }
             }
 
-            ModelState.AddModelError(nameof(LoginViewModel.Email),
-            "Invalid email or password");
+            ModelState.AddModelError(nameof(LoginViewModel.Email), "Invalid email or password");
 
             return View(model);
         }

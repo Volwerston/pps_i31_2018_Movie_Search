@@ -49,6 +49,8 @@ namespace FilmSearch
             services.AddCors();
             
             ConfigureDal(services);
+
+            services.ConfigureApplicationCookie(options => options.LoginPath = "/Auth/LogIn");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +60,7 @@ namespace FilmSearch
             {
                 app.UseBrowserLink();
             }
+
 
             app.UseExceptionHandler("/Home/Error");
 

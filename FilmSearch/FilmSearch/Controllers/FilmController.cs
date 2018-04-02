@@ -5,6 +5,7 @@ using System.Security.Claims;
 using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilmSearch.Controllers
@@ -21,6 +22,7 @@ namespace FilmSearch.Controllers
         }
         
         [HttpGet]
+        [Authorize(Roles ="Administrator")]
         public IActionResult CreateFilmView()
         {
             return View();
