@@ -62,7 +62,8 @@ namespace FilmSearch
             }
 
 
-            app.UseExceptionHandler("/Home/Error");
+            app.UseBrowserLink();
+   //         app.UseExceptionHandler("/Home/Error");
 
             app.UseStaticFiles();
             app.UseAuthentication();
