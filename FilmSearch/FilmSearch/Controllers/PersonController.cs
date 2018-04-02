@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Models.View;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace FilmSearch.Controllers
             enviroment = _env;
         }
 
+        [Authorize(Roles = "Administrator")]
         public ActionResult List()
         {
             IEnumerable<Person> toList = _unitOfWork.PersonRepository.GetAll();
@@ -29,6 +31,7 @@ namespace FilmSearch.Controllers
             return View(toList);
         }
 
+        [Authorize(Roles = "Administrator")]
         public ActionResult Create()
         {
             PersonViewModel newOne = new PersonViewModel();
@@ -38,6 +41,7 @@ namespace FilmSearch.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public ActionResult Create(PersonViewModel p)
         {
             if (!ModelState.IsValid)
@@ -70,10 +74,11 @@ namespace FilmSearch.Controllers
             return RedirectToAction("List", "Person");
         }
 
+        [Authorize(Roles = "Administrator")]
         public ActionResult Delete(long id)
         {
             Person toDelete = _unitOfWork.PersonRepository.GetByKey(id);
-            long imgId = toDelete.PhotoId;
+            long? imgId = toDelete.PhotoId;
 
             _unitOfWork.PersonRepository.Delete(id);
             _unitOfWork.FileRepository.Delete(imgId);
@@ -87,6 +92,7 @@ namespace FilmSearch.Controllers
             return RedirectToAction("List", "Person");
         }
 
+        [Authorize(Roles = "Administrator")]
         public ActionResult Edit(long id)
         {
             Person toEdit = _unitOfWork.PersonRepository.GetByKey(id);
@@ -109,6 +115,7 @@ namespace FilmSearch.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public ActionResult Edit(PersonViewModel model)
         {
             Person  personToUpdate = _unitOfWork.PersonRepository.GetByKey(model.Id);

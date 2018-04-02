@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FilmSearch.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace FilmSearch.Controllers
             environment = _env;
         }
 
+        [Authorize(Roles="Administrator")]
         public IActionResult View()
         {
             string dirPath = $"{environment.ContentRootPath}/logs";
@@ -26,6 +28,7 @@ namespace FilmSearch.Controllers
             return View(logEntries);
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult GetEntriesByDate(DateTime time)
         {
             string dirPath = $"{environment.ContentRootPath}/logs";
