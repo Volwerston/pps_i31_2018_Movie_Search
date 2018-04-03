@@ -143,5 +143,12 @@ namespace FilmSearch.Controllers
 
             return RedirectToAction("List", "Person");
         }
+
+        public ActionResult Search()
+        {
+            PersonSearchViewModel viewModel = new PersonSearchViewModel();
+
+            return View();
+        }
     }
 }
