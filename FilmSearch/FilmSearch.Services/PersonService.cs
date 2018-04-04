@@ -23,5 +23,14 @@ namespace FilmSearch.Services
             var persons = _unitOfWork.PersonRepository.PersonsByName(name);
             return (persons.Skip(PageSize * (page - 1)).Take(PageSize).ToList(), persons.Count());
         }
+
+        public (Person, string) GetPersonData(long id)
+        {
+            Person person = _unitOfWork.PersonRepository.GetByKey(id);
+
+            File img = _unitOfWork.FileRepository.GetByKey(person.PhotoId);
+
+            return (person, $"data:{img.FileType};base64,{FileManager.GetBase64File(img.Path)}");
+        }
     }
 }

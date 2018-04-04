@@ -89,7 +89,7 @@
         }
 
         function getDivForPerson(person) {
-            return `<div class="row well">
+            return `<div class="row well" style="cursor: pointer;" onclick="location.href='/Person/Details/${person.item1.id}'">
             <div class="col-sm-4">
                 <img src="${person.item2}" class="img-responsive img-thumbnail" />
             </div>

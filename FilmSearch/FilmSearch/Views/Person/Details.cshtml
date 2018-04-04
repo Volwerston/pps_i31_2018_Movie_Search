@@ -1,0 +1,20 @@
+﻿@model FilmSearch.Models.Person
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="row" style="margin-top: 15px;">
+    <div class="col-sm-8 col-sm-push-2">
+        <div class="row well">
+            <div class="col-sm-4">
+                <img src="@ViewBag.Base64Img" class="img-thumbnail img-responsive" />
+            </div>
+            <div class="col-sm-8">
+                <h2 class="text-center">@Model.FullName</h2>
+                <p class="text-center">Country: @Model.Country</p>
+                <p class="text-center">Date of birth: @Model.BirthDate.ToString("dd/MM/yyyy")</p>
+            </div>
+        </div>
+    </div>
+</div>

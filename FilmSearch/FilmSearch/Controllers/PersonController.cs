@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Models.View;
+using FilmSearch.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -16,11 +17,13 @@ namespace FilmSearch.Controllers
     {
         private IUnitOfWork _unitOfWork;
         private IHostingEnvironment enviroment;
+        private PersonService personService;
 
-        public PersonController(IUnitOfWork uow, IHostingEnvironment _env)
+        public PersonController(IUnitOfWork uow, IHostingEnvironment _env, PersonService _personService)
         {
-            this._unitOfWork = uow;
+            _unitOfWork = uow;
             enviroment = _env;
+            personService = _personService;
         }
 
         [Authorize(Roles = "Administrator")]
@@ -149,6 +152,15 @@ namespace FilmSearch.Controllers
             PersonSearchViewModel viewModel = new PersonSearchViewModel();
 
             return View();
+        }
+
+        public ActionResult Details(int id)
+        {
+            (Person, string) toPass = personService.GetPersonData(id);
+
+            ViewBag.Base64Img = toPass.Item2;
+
+            return View(toPass.Item1);
         }
     }
 }
