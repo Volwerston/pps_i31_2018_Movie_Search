@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using FilmSearch.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Logging;
+using FilmSearch.Migrations;
 using Microsoft.AspNetCore.Hosting;
 
 namespace FilmSearch.Controllers

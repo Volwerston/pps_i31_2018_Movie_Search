@@ -11,10 +11,10 @@ namespace FilmSearch.Migrations
         
         private IUnitOfWork _unitOfWork;
 
-        private RoleManager<AppUser> _roleManager;
+        private RoleManager<IdentityRole> _roleManager;
         
         public PrePopulateData(IUnitOfWork unitOfWork,
-            RoleManager<AppUser> roleManager)
+            RoleManager<IdentityRole> roleManager)
         {
             _unitOfWork = unitOfWork;
             _roleManager = roleManager;
@@ -25,7 +25,9 @@ namespace FilmSearch.Migrations
             PrePopulateGenres();
             PrePopulatePersons();
             PerPopulateFilmRoles();
-            
+
+            _roleManager.CreateAsync(new IdentityRole("Administrator"));
+
             _unitOfWork.Save();
         }
 

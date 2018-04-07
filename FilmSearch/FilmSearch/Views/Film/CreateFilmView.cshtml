@@ -58,10 +58,10 @@
     <script src="~/js/dynamicSelect.js"></script>
     <script>
         $('#genresSelect').select2({
-            ajax: defaultSelectAjax("http://localhost:5000/api/film/genres", item => ({ id: item.id, text: item.name }))
+            ajax: defaultSelectAjax("/api/film/genres", item => ({ id: item.id, text: item.name }))
         });
         $('.personsSelect').select2({
-            ajax: defaultSelectAjax("http://localhost:5000/api/person", item => ({ id: item.id, text: item.fullName }))
+            ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
         });
 
         function getIds(selectElement) {
@@ -111,11 +111,11 @@
 
             $.ajax({
                     type: 'POST',
-                    url: "http://localhost:5000/api/film",
+                    url: "/api/film",
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
                     success: data => {
-                        window.location.href = "http://localhost:5000/film/showfilmviews";
+                        window.location.href = "/film/showfilmviews";
                     },
                     error: resp => {
                         document.getElementById("allValidation").innerHTML = "Failed to save film";
@@ -132,7 +132,7 @@
                 formData.append("file", blob);
 
                 $.ajax({
-                    url: "http://localhost:5000/api/file",
+                    url: "/api/file",
                     type: "POST",
                     data: formData,
                     processData: false,

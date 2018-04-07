@@ -230,7 +230,7 @@
 				<li>
 					<img alt="@(film.Title)}" src="@(film.Photo == null ?
 						                                 "https://www.mearto.com/assets/no-image-83a2b680abc7af87cfff7777d0756fadb9f9aecd5ebda5d34f8139668e0fc842.png":
-						                                 "http://localhost:5000/api/file/" + @film.Photo.Id)"/><div class="info">
+						                                 "/api/file/" + @film.Photo.Id)"/><div class="info">
 						<h2 class="title"><a href="@(Url.Action("FilmView", "Film", new {id = film.Id}))">@(film.Title)</a></h2>
 						<p class="desc">@(film.ShortDescription)</p>
 					</div>

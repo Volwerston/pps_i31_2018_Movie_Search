@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using FilmSearch.DAL;
+﻿using FilmSearch.DAL;
 using FilmSearch.DAL.Impl;
 using FilmSearch.Models;
 using Microsoft.AspNetCore.Builder;
@@ -11,9 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using FilmSearch.Models;
 using FilmSearch.Services;
 
 namespace FilmSearch

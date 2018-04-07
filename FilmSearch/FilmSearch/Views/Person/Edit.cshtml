@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Edit";
+
+    IEnumerable<PersonRole> roles = ViewBag.Roles as IEnumerable<PersonRole>;
+    int counter = 0;
 }
 
 <h2>Edit person</h2>
@@ -46,6 +49,66 @@
             </div>
         </form>
     </div>
+    @if (roles.Any())
+    {
+        <div class="col-md-8">
+            <h1 class="text-center">Person roles</h1>
+            <hr />
+            <div class="row">
+                <form asp-action="EditRoles">
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <p class="text-center"><b>Film Role</b></p>
+                        </div>
+                        <div class="col-sm-3">
+                            <p class="text-center"><b> Film Title</b></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-center"><b>Role Description</b></p>
+                        </div>
+                    </div>
+                    @foreach (var role in roles)
+                    {
+                        <input type="hidden" name="[@counter].Id" value="@role.Id" />
+                        <input type="hidden" name="[@counter].FilmId" value="@role.FilmId" />
+                        <input type="hidden" name="[@counter].FilmRoleId" value="@role.FilmRoleId" />
+                        <input type="hidden" name="[@counter].PersonId" value="@role.PersonId" />
+                        <div class="form-group">
+                            <div class="col-sm-3" style="margin-top: 25px">
+                                <p class="text-center">@role.FilmRole.Name</p>
+                            </div>
+                            <div class="col-sm-3" style="margin-top: 25px">
+                                <p class="text-center">@role.Film.Title</p>
+                            </div>
+                            <div class="col-sm-6" style="margin-top: 25px">
+                                <textarea class="form-control" name="[@counter].Description">@role.Description</textarea>
+                            </div>
+                        </div>
+                        <hr />
+                        counter++;
+                    }
+                    <br />
+
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-push-4">
+                            <button type="submit" class="btn btn-info btn-block" style="margin-top: 25px">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-8">
+            <h1 class="text-center">Person roles</h1>
+            <hr />
+            <div class="col-xs-12">
+                <p class="text-center">No roles found for this person</p>
+            </div>
+        </div>
+    }
+
 </div>
 
 @section Scripts {
