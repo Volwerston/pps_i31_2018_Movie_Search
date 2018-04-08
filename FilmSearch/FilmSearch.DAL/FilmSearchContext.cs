@@ -25,11 +25,6 @@ namespace FilmSearch.DAL
                 .HasOne(fg => fg.Genre)
                 .WithMany(g => g.Films)
                 .HasForeignKey(fg => fg.GenreId);
-
-            modelBuilder.Entity<PersonRole>()
-                .Ignore(pr => pr.Film)
-                .Ignore(pr => pr.Person)
-                .Ignore(pr => pr.FilmRole);
         }
 
         public DbSet<File> Files { get; set; }

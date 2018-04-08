@@ -171,6 +171,17 @@ namespace FilmSearch.Controllers
 
             ViewBag.Base64Img = toPass.Item2;
 
+            IEnumerable<PersonRole> roles = _unitOfWork.PersonRoleRepository.GetAll().Where(x => x.PersonId == id);
+
+            foreach (var role in roles)
+            {
+                role.Person = _unitOfWork.PersonRepository.GetByKey(role.PersonId);
+                role.FilmRole = _unitOfWork.FilmRoleRepository.GetByKey(role.FilmRoleId);
+                role.Film = _unitOfWork.FilmRepository.GetByKey(role.FilmId);
+            }
+
+            ViewBag.Roles = roles;
+
             return View(toPass.Item1);
         }
 

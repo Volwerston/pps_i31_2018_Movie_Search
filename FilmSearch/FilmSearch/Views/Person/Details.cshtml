@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    IEnumerable<PersonRole> roles = ViewBag.Roles as IEnumerable<PersonRole>;
 }
 
 <div class="row" style="margin-top: 15px;">
@@ -14,6 +15,40 @@
                 <h2 class="text-center">@Model.FullName</h2>
                 <p class="text-center">Country: @Model.Country</p>
                 <p class="text-center">Date of birth: @Model.BirthDate.ToString("dd/MM/yyyy")</p>
+                <hr />
+                <h2 class="text-center">Person roles</h2>
+                @if (!roles.Any())
+                {
+                    <p class="text-center">No roles were found</p>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="text-center"><b>Film Role</b></p>
+                        </div>
+                        <div class="col-sm-3">
+                            <p class="text-center"><b>Film</b></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-center"><b>Role Description</b></p>
+                        </div>
+                    </div>
+                    @foreach (var role in roles)
+                    {
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="text-center">@role.FilmRole.Name</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <p class="text-center">@role.Film.Title</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-center">@role.Description</p>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>
