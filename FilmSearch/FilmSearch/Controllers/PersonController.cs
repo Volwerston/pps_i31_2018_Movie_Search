@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FilmSearch.DAL;
 using FilmSearch.Models;
@@ -18,6 +19,8 @@ namespace FilmSearch.Controllers
         private IUnitOfWork _unitOfWork;
         private IHostingEnvironment enviroment;
         private PersonService personService;
+
+        private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         public PersonController(IUnitOfWork uow, IHostingEnvironment _env, PersonService _personService)
         {
@@ -181,6 +184,12 @@ namespace FilmSearch.Controllers
             }
 
             ViewBag.Roles = roles;
+
+            IEnumerable<PersonPerformance> perf = _unitOfWork.PersonPerformanceRepository.GetAll()
+                .Where(x => x.UserId == GetUserId());
+
+            ViewBag.Performances = perf;
+            ViewBag.UserId = GetUserId();
 
             return View(toPass.Item1);
         }

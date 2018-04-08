@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Details";
     IEnumerable<PersonRole> roles = ViewBag.Roles as IEnumerable<PersonRole>;
+
+    string userId = ViewBag.UserId;
+    IEnumerable<PersonPerformance> perf = ViewBag.Performances as IEnumerable<PersonPerformance>;
 }
 
 <div class="row" style="margin-top: 15px;">
@@ -36,20 +39,65 @@
                     </div>
                     @foreach (var role in roles)
                     {
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="text-center">@role.FilmRole.Name</p>
+                        <div style="border: 1px solid black;margin-top: 20px; padding: 5px">
+                            <div class="row" style="margin-top: 20px">
+                                <div class="col-sm-3">
+                                    <p class="text-center">@role.FilmRole.Name</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <p class="text-center">@role.Film.Title</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="text-center">@role.Description</p>
+                                </div>
                             </div>
-                            <div class="col-sm-3">
-                                <p class="text-center">@role.Film.Title</p>
-                            </div>
-                            <div class="col-sm-6">
-                                <p class="text-center">@role.Description</p>
-                            </div>
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                var p = perf.Where(x => x.PersonRoleId == role.Id).FirstOrDefault();
+                                <label class="control-label">Your estimate:</label>
+                                <div data-role="@(role.Id)" class="starrr" data-rating="@(p?.Performance ?? 0)"></div>
+                            }
+
+
+                            <label class="control-label">General estimate: <span id="score-@(role.Id)">@(role.Performance)</span></label>
                         </div>
                     }
+
                 }
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/starrr.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".starrr").starrr();
+
+            $('.starrr').on('starrr:change',
+                function (e, value) {
+
+                    let id = $(this).data("role");
+
+                    $.ajax({
+                        type: 'PUT',
+                        url: "/api/person/rate/" + id + "?rate=" + value,
+                        success: data => {
+                            if (data.rate == -1) {
+                                alert("You already voted!");
+                            }
+                            else {
+                                $("#score-" + data.roleId).html(data.rate);
+                            }
+                        },
+                        error: resp => {
+                            alert("Failed to rate person role");
+                        }
+                    }
+                    );
+                });
+        });
+    </script>
+}

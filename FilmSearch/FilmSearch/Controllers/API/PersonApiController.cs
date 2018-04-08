@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Models.Helper;
 using FilmSearch.Models.View;
 using FilmSearch.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -17,6 +19,8 @@ namespace FilmSearch.Controllers.API
         private PersonService _personService;
         private IUnitOfWork _unitOfWork;
         private IConfiguration Configuration;
+
+        private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         public PersonApiController(PersonService personService, IUnitOfWork unitOfWork, IConfiguration configuration)
         {
@@ -59,7 +63,13 @@ namespace FilmSearch.Controllers.API
             return Json(toReturn);
         }
 
-
+        [HttpPut]
+        [Authorize]
+        [Route("rate/{id}")]
+        public IActionResult Rate(long id, [FromQuery] int rate)
+        {
+            return new ObjectResult(new { rate =_personService.RatePersonRole(id, GetUserId(), rate), roleId = id });
+        }
 
     }
 }
