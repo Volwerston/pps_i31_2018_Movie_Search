@@ -5,6 +5,7 @@ using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Services;
 using FilmSearch.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
 namespace FilmSearch.Controllers.API
@@ -22,6 +23,7 @@ namespace FilmSearch.Controllers.API
         }
 
         [HttpPost]
+        [Authorize(Roles ="Administrator")]
         public IActionResult AddFilm([FromBody] FilmModel filmModel)
         {
             var film = _filmService.AddFilm(
@@ -30,6 +32,20 @@ namespace FilmSearch.Controllers.API
                 filmModel.Actors,
                 filmModel.Genres
                 );
+
+            return new ObjectResult(_filmService.GetFilmView(film));
+        }
+        
+        [HttpPut]
+        [Authorize(Roles ="Administrator")]
+        public IActionResult UpdateFilm([FromBody] FilmModel filmModel)
+        {
+            var film = _filmService.UpdateFilm(
+                FilmModel.To(filmModel),
+                filmModel.Director,
+                filmModel.Actors,
+                filmModel.Genres
+            );
 
             return new ObjectResult(_filmService.GetFilmView(film));
         }
@@ -55,6 +71,7 @@ namespace FilmSearch.Controllers.API
         }
         
         [HttpDelete("{id}", Name = "DeleteFilm")]
+        [Authorize(Roles ="Administrator")]
         public IActionResult DeleteFilm([FromRoute] long id)
         {
             _filmService.DeleteFilm(id);
@@ -62,6 +79,7 @@ namespace FilmSearch.Controllers.API
         }
 
         [HttpPut("rate/{filmId}")]
+        [Authorize(Roles ="User")]
         public IActionResult RateFilm([FromRoute] long filmId, [FromQuery] long rate)
         {
             return new ObjectResult(_filmService.RateFilm(filmId, GetUserId(), rate));

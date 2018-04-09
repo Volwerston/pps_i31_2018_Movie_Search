@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FilmSearch.Services
 {
-    public class FilmService
+    public static class FilmConstants
     {
         public const string SortDesc = "desc";
         public const string SortAsc = "asc";
@@ -17,29 +17,70 @@ namespace FilmSearch.Services
         public const string SortTitle = "title";
         public const string SortDate = "date";
         public const string SortRate = "rate";
+    }
+    
+    public class FilmService
+    {
         
         public const int PageSize = 10;
         
-        private IUnitOfWork _unitOfWork;
-
-        private UserManager<AppUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
+        
+        public FilmService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
         public FilmPerformance GetFilmPerformance(long filmId, string userId)
         {
             return _unitOfWork.FilmPerformanceRepository.GetFilmPerformance(filmId, userId);
         }
         
-        public FilmService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
+        public List<FilmPerformance> GetFilmPerformances(long filmId)
         {
-            _unitOfWork = unitOfWork;
-            _userManager = userManager;
+            return _unitOfWork.FilmPerformanceRepository.GetFilmPerformances(filmId).ToList();;
+        }
+
+        public Film UpdateFilm(Film film, Person directorModel, IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
+        {
+            if (film?.Photo.Id != 0)
+            {
+                var photo = _unitOfWork.FileRepository.GetByKey(film.Photo.Id);
+                film.Photo = photo;
+            }
+
+            _unitOfWork.PersonRoleRepository.DeletePersonRolesByFilm(film.Id);
+            _unitOfWork.FilmGenreRepository.DeleteFilmGenresByFilmId(film.Id);
+            
+            _unitOfWork.FilmRepository.Update(film);
+            _unitOfWork.Save();
+
+            if (genreModels != null)
+            {
+                var genres = _unitOfWork.GenreRepository.GenresByIds(genreModels.Select(g => g.Id)).ToList();
+                AddGenres(genres, film);
+            }
+
+            if (actorModels != null)
+            {
+                var actors = _unitOfWork.PersonRepository.PersonsByIds(actorModels.Select(a => a.Id)).ToList();
+                AddFilmActors(actors, film);
+            }
+
+            if (directorModel != null)
+            {
+                var director = _unitOfWork.PersonRepository.GetByKey(directorModel.Id);
+                AddFilmDirector(director, film);
+            }
+
+            _unitOfWork.Save();
+
+            return film;
         }
 
         public Film AddFilm(Film film, Person directorModel, IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
         {
-            ValidationUtils.RequireNull(film.Id, "Film id should be null");
-
-            if (film?.Photo?.Id != 0)
+            if (film?.Photo.Id != 0)
             {
                 var photo = _unitOfWork.FileRepository.GetByKey(film.Photo.Id);
                 film.Photo = photo;
@@ -49,13 +90,13 @@ namespace FilmSearch.Services
 
             if (genreModels != null)
             {
-                var genres = _unitOfWork.GenreRepository.GenresByIds(genreModels.Select(g => g.Id));
+                var genres = _unitOfWork.GenreRepository.GenresByIds(genreModels.Select(g => g.Id)).ToList();
                 AddGenres(genres, film);
             }
 
             if (actorModels != null)
             {
-                var actors = _unitOfWork.PersonRepository.PersonsByIds(actorModels.Select(a => a.Id));
+                var actors = _unitOfWork.PersonRepository.PersonsByIds(actorModels.Select(a => a.Id)).ToList();
                 AddFilmActors(actors, film);
             }
 
@@ -94,7 +135,7 @@ namespace FilmSearch.Services
 
             var filmPerformance = GetFilmPerformance(filmId, userId);
             var film = GetFilm(filmId);
-            var performances = _unitOfWork.FilmPerformanceRepository.GetFilmPerformances(filmId).ToList();
+            var performances = GetFilmPerformances(filmId);
             
             if (filmPerformance != null)
             {
@@ -174,7 +215,7 @@ namespace FilmSearch.Services
         {
             return Comparer<Film>.Create((f1, f2) =>
             {
-                if (sortQuery.Order == SortDesc)
+                if (sortQuery.Order == FilmConstants.SortDesc)
                 {
                     var temp = f2;
                     f2 = f1;
@@ -183,7 +224,7 @@ namespace FilmSearch.Services
                 
                 switch (sortQuery.Value)
                 {
-                        case SortDate:
+                        case FilmConstants.SortDate:
                             return f1.ReleaseDate.Date.CompareTo(f2.ReleaseDate.Date);
                         default:
                             return string.Compare(f1.Title, f2.Title, StringComparison.Ordinal);
@@ -191,7 +232,7 @@ namespace FilmSearch.Services
             });
         }
         
-        private void AddFilmActors(IEnumerable<Person> actors, Film film)
+        private void AddFilmActors(List<Person> actors, Film film)
         {
             if (actors == null || !actors.Any()) return;
 
@@ -226,7 +267,7 @@ namespace FilmSearch.Services
             _unitOfWork.PersonRoleRepository.Add(personRole);
         }
 
-        private void AddGenres(IEnumerable<Genre> genres, Film film)
+        private void AddGenres(List<Genre> genres, Film film)
         {
             foreach (var genre in genres)
             {

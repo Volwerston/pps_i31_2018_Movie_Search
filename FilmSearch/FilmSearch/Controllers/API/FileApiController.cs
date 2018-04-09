@@ -11,8 +11,8 @@ namespace FilmSearch.Controllers.API
     [Route("api/file")]
     public class FileApiController: Controller
     {
-        private IHostingEnvironment _enviroment;
-        private IUnitOfWork _unitOfWork;
+        private readonly IHostingEnvironment _enviroment;
+        private readonly IUnitOfWork _unitOfWork;
 
         private string GetPath()
         {
@@ -21,7 +21,7 @@ namespace FilmSearch.Controllers.API
         
         private string GetPath(string fileName)
         {
-            return $"{_enviroment.ContentRootPath}/storage/film_photos/{fileName}";
+            return $"{GetPath()}/{fileName}";
         }
         
         public FileApiController(IHostingEnvironment enviroment, IUnitOfWork unitOfWork)
@@ -33,7 +33,7 @@ namespace FilmSearch.Controllers.API
         [HttpPost]
         public IActionResult SaveFile(IFormFile file)
         {
-            File fileData = new File
+            var fileData = new File
             {
                 FileName = System.Guid.NewGuid() + "_" + file.FileName,
                 FileType = file.ContentType,

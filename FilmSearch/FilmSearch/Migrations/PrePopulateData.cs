@@ -25,9 +25,9 @@ namespace FilmSearch.Migrations
             PrePopulateGenres();
             PrePopulatePersons();
             PerPopulateFilmRoles();
+            PrePopulateRoles();
 
-            _roleManager.CreateAsync(new IdentityRole("Administrator"));
-
+            
             _unitOfWork.Save();
         }
 
@@ -47,6 +47,14 @@ namespace FilmSearch.Migrations
 
         private void PrePopulateRoles()
         {
+            if (!_roleManager.RoleExistsAsync("User").Result)
+            {
+                _roleManager.CreateAsync(new IdentityRole("User"));
+            }
+            if (!_roleManager.RoleExistsAsync("Administrator").Result)
+            {
+                _roleManager.CreateAsync(new IdentityRole("Administrator"));
+            }
         }
 
         private void PerPopulateFilmRoles()

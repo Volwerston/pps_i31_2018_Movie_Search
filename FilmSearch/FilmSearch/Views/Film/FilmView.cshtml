@@ -17,7 +17,7 @@
     <div class="col-sm-3">
         <img src="@(Model.Film.Photo == null ?
                     "https://www.mearto.com/assets/no-image-83a2b680abc7af87cfff7777d0756fadb9f9aecd5ebda5d34f8139668e0fc842.png":
-                        "/api/file/" + @Model.Film.Photo.Id)"
+                        "http://localhost:5000/api/file/" + @Model.Film.Photo.Id)"
              alt="@Model.Film.Title" 
              style="width: 200px; height: 400px"/>
         @if (User.Identity.IsAuthenticated)
@@ -103,7 +103,7 @@
         }
         $('#genresSelect').select2({
             data: initials1,
-            ajax: defaultSelectAjax("/api/film/genres", item => ({ id: item.id, text: item.name }))
+            ajax: defaultSelectAjax("http://localhost:5000/api/film/genres", item => ({ id: item.id, text: item.name }))
         });
         @foreach (var genre in Model.Film.Genres ?? new List<Genre>())
         {
@@ -125,7 +125,7 @@
         }
         $('#actorsSelect').select2({
             data: initials2,
-            ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
+            ajax: defaultSelectAjax("http://localhost:5000/api/person", item => ({ id: item.id, text: item.fullName }))
         });
         $('#actorsSelect').select2('val', initials2.map(o => o.id));
         //
@@ -141,7 +141,7 @@
         }
         $('#directorSelect').select2({
             data: initials3,
-            ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
+            ajax: defaultSelectAjax("http://localhost:5000/api/person", item => ({ id: item.id, text: item.fullName }))
         });
         @if (Model.Film.Director != null)
         {
@@ -207,33 +207,31 @@
             var genres = getIds(document.getElementById("genresSelect"));
             
             var requestData = {
+                id: @Model.Film.Id,
                 title: title,
                 releaseDate: releaseDate,
                 shortDescription: description,
                 director: director,
                 actors: actors,
                 genres: genres
-            };
-
-            $.ajax({
-                    type: 'DELETE',
-                    url: "/api/film/" + id,
-                    success: data => {
-                        window.location.href = "/Film/ShowFilmViews";
-                    },
-                    error: resp => {
-                        document.getElementById("allValidation").innerHTML = "Failed to update film";
-                    }
+                @if (Model.Film.Photo != null)
+                {
+                    <text>
+                        ,
+                        photo: {
+                            id: @Model.Film.Photo.Id
+                        }
+                    </text>
                 }
-            );
+            };
             
             $.ajax({
-                    type: 'POST',
-                    url: "/api/film",
+                    type: 'PUT',
+                    url: "http://localhost:5000/api/film",
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
                     success: data => {
-                        window.location.href = "/film/filmview/" + data.id;
+                        window.location.href = "http://localhost:5000/film/filmview/" + data.id;
                     },
                     error: resp => {
                         document.getElementById("allValidation").innerHTML = "Failed to update film";
@@ -242,12 +240,13 @@
             );
         }
 
+
         function deleteFilm(el) {
             $.ajax({
                     type: 'DELETE',
-                    url: "/api/film/" + id,
+                    url: "http://localhost:5000/api/film/" + id,
                     success: data => {
-                        window.location.href = "/Film/ShowFilmViews";
+                        window.location.href = "http://localhost:5000/Film/ShowFilmViews";
                     },
                     error: resp => {
                         document.getElementById("allValidation").innerHTML = "Failed to rate film";
@@ -255,7 +254,7 @@
                 }
             );
         }
-
+        
         function modify(el) {
             enableElements();
 
@@ -277,7 +276,6 @@
 
         //Rating
 
-        // Starrr plugin (https://github.com/dobtco/starrr)
         var __slice = [].slice;
 
         (function($, window) {
@@ -399,7 +397,7 @@
                 function(e, value) {
                     $.ajax({
                             type: 'PUT',
-                            url: "/api/film/rate/" + id + "?rate=" + value,
+                            url: "http://localhost:5000/api/film/rate/" + id + "?rate=" + value,
                             success: data => {
                                 document.getElementById("score").innerHTML = data;
                             },

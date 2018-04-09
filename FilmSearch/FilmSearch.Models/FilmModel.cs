@@ -33,7 +33,7 @@ namespace FilmSearch.Models
         {
             return new Film
             {
-                Id = 0,
+                Id = filmModel.Id,
                 Title = filmModel.Title,
                 ReleaseDate = DateUtils.ParseDate(filmModel.ReleaseDate),
                 ShortDescription = filmModel.ShortDescription,

@@ -42,6 +42,14 @@ namespace FilmSearch.DAL
             _context.Entry(entity).State = EntityState.Modified;
         }
 
+        public void Delete(IEnumerable<object> ids)
+        {
+            foreach (long id in ids)
+            {
+                Delete(id);
+            }
+        }
+
         public bool Empty()
         {
             return !_dbSet.Any();

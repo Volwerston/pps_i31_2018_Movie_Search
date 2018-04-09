@@ -39,6 +39,9 @@ namespace FilmSearch.DAL
         /// <param name="entity">entity to update</param>
         void Update(E entity);
 
+
+        void Delete(IEnumerable<object> ids);
+
         bool Empty();
     }
 }
