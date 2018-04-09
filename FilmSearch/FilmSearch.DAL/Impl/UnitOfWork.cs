@@ -24,6 +24,8 @@ namespace FilmSearch.DAL.Impl
 
         private IPersonPerformanceRepository _personPerformanceRepository;
 
+        private IPersonCommentRepository _personCommentRepository;
+
         private IPostRepository _postRepository;
 
         public UnitOfWork(FilmSearchContext context)
@@ -53,6 +55,9 @@ namespace FilmSearch.DAL.Impl
 
         public IPersonPerformanceRepository PersonPerformanceRepository =>
             _personPerformanceRepository ?? (_personPerformanceRepository = new PersonPerformanceRepository(_context));
+
+        public IPersonCommentRepository PersonCommentRepository =>
+            _personCommentRepository ?? (_personCommentRepository = new PersonCommentRepository(_context));
         
         public IPostRepository PostRepository =>
             _postRepository ?? (_postRepository = new PostRepository(_context));

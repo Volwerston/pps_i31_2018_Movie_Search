@@ -1,4 +1,5 @@
-﻿@model FilmSearch.Models.Person
+﻿﻿@model FilmSearch.Models.Person
+@using System.Security.Claims;
 
 @{
     ViewData["Title"] = "Details";
@@ -6,6 +7,8 @@
 
     string userId = ViewBag.UserId;
     IEnumerable<PersonPerformance> perf = ViewBag.Performances as IEnumerable<PersonPerformance>;
+
+    AppUser user = ViewBag.User as AppUser;
 }
 
 <div class="row" style="margin-top: 15px;">
@@ -70,9 +73,55 @@
     </div>
 </div>
 
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="row">
+        <div class="col-sm-8 col-sm-push-2 well">
+            <h2 class="text-center">Add comment</h2>
+            @if (user?.EmailConfirmed ?? false)
+            {
+                <textarea id="comment-text"></textarea>
+                <div class="row">
+                    <div class="col-sm-4 col-sm-push-4" style="margin-top: 15px">
+                        <button type="button" id="add-comment" class="btn btn-success btn-block">Add</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p class="text-center">You are not allowed to write comments</p>
+            }
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-8 col-sm-push-2 well">
+        <h2 class="text-center">Comments</h2>
+        <div class="row">
+            <div class="col-sm-10 col-sm-push-1" id="comments-container">
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="~/js/starrr.js"></script>
+    <script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
     <script type="text/javascript">
+
+        function GetDivForComment(comment) {
+            return `<div class="row" style="border: 1px solid grey; border-radius: 3px">
+                        <div class="col-sm-12" style="background-color: white; padding: 20px;">
+                            <p>By: ${comment.author.userName} ${comment.author.surname}</p>
+                            <p>Sent: ${comment.creationDate}</p>
+                            <hr/>
+                            <p>${comment.text}</p>
+                        </div>
+                    </div>`;
+
+        }
+
         $(document).ready(function () {
             $(".starrr").starrr();
 
@@ -98,6 +147,47 @@
                     }
                     );
                 });
+
+            tinymce.init({ selector: 'textarea#comment-text' });
+
+            $("button#add-comment").click(function () {
+                $.ajax({
+                    url: '/api/personComment/add',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        AuthorId: `@User.FindFirstValue(ClaimTypes.NameIdentifier)`,
+                        Text: window.tinymce.get('comment-text').getContent(),
+                        CreationDate: new Date().toLocaleDateString("en-US"),
+                        PersonId: @Model.Id,
+                        Id: 0
+                    }),
+                    success: function (res) {
+                        location.reload();
+                    },
+                    error: function (res) {
+                        alert(res.statusText);
+                    }
+                });
+            });
+
+            $.ajax({
+                url: '/api/personComment/get/@(Model.Id)',
+                method: 'GET',
+                success: function (res) {
+                    if (res.length === 0) {
+                        $("#comments-container").html('<p class="text-center">No comments found</p>');
+                    }
+                    else {
+                        for (let i = 0; i < res.length; ++i) {
+                            $("#comments-container").append(GetDivForComment(res[i]));
+                        }
+                    }
+                },
+                error: function (res) {
+                    alert(res.statusText);
+                }
+            });
         });
     </script>
 }

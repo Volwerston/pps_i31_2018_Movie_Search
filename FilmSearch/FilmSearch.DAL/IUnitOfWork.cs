@@ -19,6 +19,8 @@
         IFilmPerformanceRepository FilmPerformanceRepository { get; }
 
         IPersonPerformanceRepository PersonPerformanceRepository { get; }
+
+        IPersonCommentRepository PersonCommentRepository { get; }
         
         IPostRepository PostRepository { get; }
         

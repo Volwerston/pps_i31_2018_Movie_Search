@@ -1,4 +1,5 @@
 ﻿using FilmSearch.Models;
+using FilmSearch.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,5 +55,7 @@ namespace FilmSearch.DAL
         public DbSet<Poster> Posters { get; set; }
         
         public DbSet<PostOpinion> PostOpinions { get; set; }
+
+        public DbSet<PersonComment> PersonComments { get; set; }
     }
 }
