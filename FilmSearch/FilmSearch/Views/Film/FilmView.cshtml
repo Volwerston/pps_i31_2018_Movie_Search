@@ -17,7 +17,7 @@
     <div class="col-sm-3">
         <img src="@(Model.Film.Photo == null ?
                     "https://www.mearto.com/assets/no-image-83a2b680abc7af87cfff7777d0756fadb9f9aecd5ebda5d34f8139668e0fc842.png":
-                        "http://localhost:5000/api/file/" + @Model.Film.Photo.Id)"
+                        "/api/file/" + @Model.Film.Photo.Id)"
              alt="@Model.Film.Title" 
              style="width: 200px; height: 400px"/>
         @if (User.Identity.IsAuthenticated)
@@ -103,7 +103,7 @@
         }
         $('#genresSelect').select2({
             data: initials1,
-            ajax: defaultSelectAjax("http://localhost:5000/api/film/genres", item => ({ id: item.id, text: item.name }))
+            ajax: defaultSelectAjax("/api/film/genres", item => ({ id: item.id, text: item.name }))
         });
         @foreach (var genre in Model.Film.Genres ?? new List<Genre>())
         {
@@ -125,7 +125,7 @@
         }
         $('#actorsSelect').select2({
             data: initials2,
-            ajax: defaultSelectAjax("http://localhost:5000/api/person", item => ({ id: item.id, text: item.fullName }))
+            ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
         });
         $('#actorsSelect').select2('val', initials2.map(o => o.id));
         //
@@ -141,7 +141,7 @@
         }
         $('#directorSelect').select2({
             data: initials3,
-            ajax: defaultSelectAjax("http://localhost:5000/api/person", item => ({ id: item.id, text: item.fullName }))
+            ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
         });
         @if (Model.Film.Director != null)
         {
@@ -227,11 +227,11 @@
             
             $.ajax({
                     type: 'PUT',
-                    url: "http://localhost:5000/api/film",
+                    url: "/api/film",
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
                     success: data => {
-                        window.location.href = "http://localhost:5000/film/filmview/" + data.id;
+                        window.location.href = "/film/filmview/" + data.id;
                     },
                     error: resp => {
                         document.getElementById("allValidation").innerHTML = "Failed to update film";
@@ -240,13 +240,12 @@
             );
         }
 
-
         function deleteFilm(el) {
             $.ajax({
                     type: 'DELETE',
-                    url: "http://localhost:5000/api/film/" + id,
+                    url: "/api/film/" + id,
                     success: data => {
-                        window.location.href = "http://localhost:5000/Film/ShowFilmViews";
+                        window.location.href = "/Film/ShowFilmViews";
                     },
                     error: resp => {
                         document.getElementById("allValidation").innerHTML = "Failed to rate film";
@@ -397,7 +396,7 @@
                 function(e, value) {
                     $.ajax({
                             type: 'PUT',
-                            url: "http://localhost:5000/api/film/rate/" + id + "?rate=" + value,
+                            url: "/api/film/rate/" + id + "?rate=" + value,
                             success: data => {
                                 document.getElementById("score").innerHTML = data;
                             },

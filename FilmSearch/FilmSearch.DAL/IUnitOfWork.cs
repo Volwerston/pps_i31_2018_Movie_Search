@@ -17,6 +17,8 @@
         IFilmGenreRepository FilmGenreRepository { get; }
         
         IFilmPerformanceRepository FilmPerformanceRepository { get; }
+
+        IPersonPerformanceRepository PersonPerformanceRepository { get; }
         
         void Save();
     }

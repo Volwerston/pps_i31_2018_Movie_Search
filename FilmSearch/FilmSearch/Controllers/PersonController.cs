@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Models.View;
+using FilmSearch.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -16,11 +18,15 @@ namespace FilmSearch.Controllers
     {
         private IUnitOfWork _unitOfWork;
         private IHostingEnvironment enviroment;
+        private PersonService personService;
 
-        public PersonController(IUnitOfWork uow, IHostingEnvironment _env)
+        private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        public PersonController(IUnitOfWork uow, IHostingEnvironment _env, PersonService _personService)
         {
-            this._unitOfWork = uow;
+            _unitOfWork = uow;
             enviroment = _env;
+            personService = _personService;
         }
 
         [Authorize(Roles = "Administrator")]
@@ -110,6 +116,17 @@ namespace FilmSearch.Controllers
             string imgSrc = $"data:{photoFile.FileType ?? "image/jpg"};base64, {base64Image}";
             ViewBag.LogoSrc = imgSrc;
 
+            IEnumerable<PersonRole> roles = _unitOfWork.PersonRoleRepository.GetAll().Where(x => x.PersonId == id);
+
+            foreach(var role in roles)
+            {
+                role.Person = _unitOfWork.PersonRepository.GetByKey(role.PersonId);
+                role.FilmRole = _unitOfWork.FilmRoleRepository.GetByKey(role.FilmRoleId);
+                role.Film = _unitOfWork.FilmRepository.GetByKey(role.FilmId);
+            }
+
+            ViewBag.Roles = roles;
+
             return View(toPass);
         }
 
@@ -139,6 +156,53 @@ namespace FilmSearch.Controllers
             }
 
             _unitOfWork.PersonRepository.Update(personToUpdate);
+            _unitOfWork.Save();
+
+            return RedirectToAction("List", "Person");
+        }
+
+        public ActionResult Search()
+        {
+            PersonSearchViewModel viewModel = new PersonSearchViewModel();
+
+            return View();
+        }
+
+        public ActionResult Details(int id)
+        {
+            (Person, string) toPass = personService.GetPersonData(id);
+
+            ViewBag.Base64Img = toPass.Item2;
+
+            IEnumerable<PersonRole> roles = _unitOfWork.PersonRoleRepository.GetAll().Where(x => x.PersonId == id);
+
+            foreach (var role in roles)
+            {
+                role.Person = _unitOfWork.PersonRepository.GetByKey(role.PersonId);
+                role.FilmRole = _unitOfWork.FilmRoleRepository.GetByKey(role.FilmRoleId);
+                role.Film = _unitOfWork.FilmRepository.GetByKey(role.FilmId);
+            }
+
+            ViewBag.Roles = roles;
+
+            IEnumerable<PersonPerformance> perf = _unitOfWork.PersonPerformanceRepository.GetAll()
+                .Where(x => x.UserId == GetUserId());
+
+            ViewBag.Performances = perf;
+            ViewBag.UserId = GetUserId();
+
+            return View(toPass.Item1);
+        }
+
+        [HttpPost]
+        public IActionResult EditRoles(IEnumerable<PersonRole> personRoles)
+        {
+
+            foreach(var role in personRoles)
+            {
+                _unitOfWork.PersonRoleRepository.Update(role);
+            }
+
             _unitOfWork.Save();
 
             return RedirectToAction("List", "Person");
