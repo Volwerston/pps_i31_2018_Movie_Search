@@ -16,7 +16,7 @@ namespace FilmSearch.Controllers.API
 
         private string GetPath()
         {
-            return $"{_enviroment.ContentRootPath}/storage/film_photos";
+            return $"{_enviroment.ContentRootPath}/storage/files";
         }
         
         private string GetPath(string fileName)
