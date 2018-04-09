@@ -1,0 +1,127 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<h2>Add Blog</h2>
+<hr />
+<!-- Froala styles. -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+
+
+<div class="row">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            
+            <form>
+                <div id="allValidation" class="text-danger"></div>
+                <div class="form-group">
+                    <label class="control-label">Title</label>
+                    <input class="form-control" id="title"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Photo</label>
+                    <input type="file" class="form-control" id="photoFile"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Short Description</label>
+                    <textarea class="form-control" id="shortDescription"></textarea>
+                    <span id="descriptionValidation" class="text-danger"></span>
+                </div>
+                <div class="form-group" id="froala-editor">
+                </div>
+                <div class="form-group">
+                    <input type="button" class="btn btn-default" value="Add Post" onclick="onSubmit(this)"/>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/xml/xml.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/js/froala_editor.pkgd.min.js"></script>
+
+    <script src="~/js/utils.js"></script>
+    <script>
+        $('#froala-editor').froalaEditor({
+            toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 
+                '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align',
+                'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertTable',
+                '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting',
+                '|', 'print', 'help', 'html', '|', 'undo', 'redo'],
+            imageUploadParam: 'file',
+            imageUploadURL: '/api/file/froala-image',
+            imageUploadMethod: 'POST',
+            imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+            imageEditButtons: ['imageReplace', 'imageAlign', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit',
+                'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize']
+        });
+       
+
+        function onSubmit(btn) {
+            let blob = ($('#photoFile'))[0].files[0];
+
+            if (blob != null) {
+                var formData = new FormData();
+                formData.append("file", blob);
+
+                $.ajax({
+                    url: "/api/file",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        savePost(response.id);
+                    },
+                    error: function(jqXHR, textStatus, errorMessage) {
+                        document.getElementById("allValidation").innerHTML = "Failed to upload file";
+                    }
+                });
+            } else {
+                savePost();
+            }
+        }
+        
+        function savePost(imageId) {
+            let title = document.getElementById('title').value;
+            let text = $('#froala-editor').froalaEditor('html.get');
+            
+            let stop = requireNonNull(title, () => document.getElementById("allValidation").innerHTML = "Title is not set");
+            if (stop) return;
+            console.log("A");
+
+            stop = requireNonNull(text, () => document.getElementById("allValidation").innerHTML = "Text is not set");
+            if (stop) return;
+            
+            let description = document.getElementById("shortDescription").value;
+            stop = requireNonNull(description, () => document.getElementById("descriptionValidation").innerHTML = "Short Description is not set");
+            
+
+            let jsonData = {
+                title: title,
+                text: text,
+                shortDescription: description,
+                imageId: imageId
+            };
+            
+            $.ajax({
+                url: "/api/post",
+                type: "POST",
+                data: JSON.stringify(jsonData),
+                processData: false,
+                contentType: "application/json",
+                success: function(response) {
+                    window.location.href = "/";
+                }
+            });
+        }
+    </script>
+}

@@ -33,6 +33,30 @@ namespace FilmSearch.Controllers.API
         [HttpPost]
         public IActionResult SaveFile(IFormFile file)
         {
+            return new ObjectResult(HandleFileSave(file));
+        }
+
+        [HttpPost("froala-image")]
+        public IActionResult SaveFroalaImage(IFormFile file)
+        {
+            var fileData = HandleFileSave(file);
+            
+            return new ObjectResult(new
+            {
+                Link = $"/api/file/{fileData.Id}"
+            });
+        }
+        
+        [HttpGet("{id}")]
+        public IActionResult GetFile(long id)
+        {
+            var fileData = _unitOfWork.FileRepository.GetByKey(id);
+
+            return File(FileManager.Read(fileData.Path), fileData.FileType);
+        }
+
+        private File HandleFileSave(IFormFile file)
+        {
             var fileData = new File
             {
                 FileName = System.Guid.NewGuid() + "_" + file.FileName,
@@ -45,16 +69,9 @@ namespace FilmSearch.Controllers.API
             
             _unitOfWork.FileRepository.Add(fileData);
             _unitOfWork.Save();
-            
-            return new ObjectResult(fileData);
-        }
 
-        [HttpGet("{id}")]
-        public IActionResult GetFile(long id)
-        {
-            var fileData = _unitOfWork.FileRepository.GetByKey(id);
-
-            return File(FileManager.Read(fileData.Path), fileData.FileType);
+            return fileData;
         }
+       
     }
 }
