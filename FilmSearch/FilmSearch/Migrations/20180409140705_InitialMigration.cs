@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace FilmSearch.Migrations
 {
-    public partial class Restore : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -393,6 +393,7 @@ namespace FilmSearch.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Description = table.Column<string>(nullable: true),
                     FilmId = table.Column<long>(nullable: false),
                     FilmRoleId = table.Column<long>(nullable: false),
                     Performance = table.Column<double>(nullable: false),
