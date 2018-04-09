@@ -14,9 +14,9 @@ namespace FilmSearch.Controllers
     {
         private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        private readonly FilmService _filmService;
+        private readonly IFilmService _filmService;
 
-        public FilmController(FilmService filmService)
+        public FilmController(IFilmService filmService)
         {
             _filmService = filmService;
         }

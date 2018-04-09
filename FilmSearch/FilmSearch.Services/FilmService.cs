@@ -19,7 +19,7 @@ namespace FilmSearch.Services
         public const string SortRate = "rate";
     }
     
-    public class FilmService
+    public class FilmService : IFilmService
     {
         
         public const int PageSize = 10;
