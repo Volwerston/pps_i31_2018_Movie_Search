@@ -32,6 +32,36 @@ namespace FilmSearch.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles ="Administrator")]
+        public IActionResult Ban()
+        {
+            return View(userManager.Users.ToList());
+        }
+
+        [Authorize(Roles ="Administrator")]
+        public async Task<IActionResult> EnableUser(string userId)
+        {
+            AppUser usrToUpdate = userManager.Users.Where(x => x.Id == userId).First();
+
+            usrToUpdate.EmailConfirmed = true;
+
+            await userManager.UpdateAsync(usrToUpdate);
+
+            return RedirectToAction("Ban", "Account");
+        }
+
+        [Authorize(Roles ="Administrator")]
+        public async Task<IActionResult> DisableUser(string userId)
+        {
+            AppUser usrToUpdate = userManager.Users.Where(x => x.Id == userId).First();
+
+            usrToUpdate.EmailConfirmed = false;
+
+            await userManager.UpdateAsync(usrToUpdate);
+
+            return RedirectToAction("Ban", "Account");
+        }
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]

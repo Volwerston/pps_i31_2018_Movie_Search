@@ -7,6 +7,8 @@
 
     string userId = ViewBag.UserId;
     IEnumerable<PersonPerformance> perf = ViewBag.Performances as IEnumerable<PersonPerformance>;
+
+    AppUser user = ViewBag.User as AppUser;
 }
 
 <div class="row" style="margin-top: 15px;">
@@ -76,12 +78,19 @@
     <div class="row">
         <div class="col-sm-8 col-sm-push-2 well">
             <h2 class="text-center">Add comment</h2>
-            <textarea id="comment-text"></textarea>
-            <div class="row">
-                <div class="col-sm-4 col-sm-push-4" style="margin-top: 15px">
-                    <button type="button" id="add-comment" class="btn btn-success btn-block">Add</button>
+            @if (user?.EmailConfirmed ?? false)
+            {
+                <textarea id="comment-text"></textarea>
+                <div class="row">
+                    <div class="col-sm-4 col-sm-push-4" style="margin-top: 15px">
+                        <button type="button" id="add-comment" class="btn btn-success btn-block">Add</button>
+                    </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <p class="text-center">You are not allowed to write comments</p>
+            }
         </div>
     </div>
 }

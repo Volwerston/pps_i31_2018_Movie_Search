@@ -10,6 +10,7 @@ using FilmSearch.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilmSearch.Controllers
@@ -19,14 +20,16 @@ namespace FilmSearch.Controllers
         private IUnitOfWork _unitOfWork;
         private IHostingEnvironment enviroment;
         private PersonService personService;
+        private UserManager<AppUser> _userManager;
 
         private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public PersonController(IUnitOfWork uow, IHostingEnvironment _env, PersonService _personService)
+        public PersonController(IUnitOfWork uow, IHostingEnvironment _env, PersonService _personService, UserManager<AppUser> userMgr)
         {
             _unitOfWork = uow;
             enviroment = _env;
             personService = _personService;
+            _userManager = userMgr;
         }
 
         [Authorize(Roles = "Administrator")]
@@ -190,6 +193,13 @@ namespace FilmSearch.Controllers
 
             ViewBag.Performances = perf;
             ViewBag.UserId = GetUserId();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                AppUser usr = _userManager.Users.Where(x => x.Id == GetUserId()).First();
+
+                ViewBag.User = usr;
+            }
 
             return View(toPass.Item1);
         }
