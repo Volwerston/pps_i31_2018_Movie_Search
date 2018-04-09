@@ -38,10 +38,12 @@ namespace FilmSearch.Services
         public Film AddFilm(Film film, Person directorModel, IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
         {
             ValidationUtils.RequireNull(film.Id, "Film id should be null");
-            
-            _unitOfWork.FilmRepository.Add(film);
-            
 
+            if (film?.Photo?.Id != 0)
+            {
+                var photo = _unitOfWork.FileRepository.GetByKey(film.Photo.Id);
+                film.Photo = photo;
+            }
             
             _unitOfWork.FilmRepository.Add(film);
 
@@ -165,6 +167,7 @@ namespace FilmSearch.Services
         public void DeleteFilm(long id)
         {
             _unitOfWork.FilmRepository.Delete(id);
+            _unitOfWork.Save();
         }
 
         private IComparer<Film> GetFilmSortFunction(SortQuery sortQuery)

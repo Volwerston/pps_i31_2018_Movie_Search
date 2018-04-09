@@ -31,6 +31,29 @@ namespace FilmSearch.Models
                 fs.Write(buf, 0, (int)fileLength);
             }
         }
+        
+        public static void Save(IFormFile formFile, string location, string fileName)
+        {
+            DirectoryInfo dir = new DirectoryInfo(location);
+
+            if (!dir.Exists)
+            {
+                dir.Create();
+            }
+
+            long fileLength = formFile.Length;
+
+            byte[] buf = new byte[fileLength];
+
+            formFile.OpenReadStream().Read(buf, 0, (int)fileLength);
+
+            string path = $"{location}/{fileName}";
+
+            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            {
+                fs.Write(buf, 0, (int)fileLength);
+            }
+        }
 
         public static byte[] Read(string location)
         {
@@ -63,7 +86,7 @@ namespace FilmSearch.Models
             Directory.Delete(location);
         }
 
-        internal static string GetBase64File(string fileName)
+        public static string GetBase64File(string fileName)
         {
             using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {

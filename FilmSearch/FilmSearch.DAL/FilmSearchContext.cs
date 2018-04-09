@@ -25,7 +25,6 @@ namespace FilmSearch.DAL
                 .HasOne(fg => fg.Genre)
                 .WithMany(g => g.Films)
                 .HasForeignKey(fg => fg.GenreId);
-            
         }
 
         public DbSet<File> Files { get; set; }

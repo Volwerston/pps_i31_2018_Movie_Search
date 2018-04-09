@@ -22,7 +22,7 @@ namespace FilmSearch.Controllers
         }
         
         [HttpGet]
-        [Authorize(Roles ="Administrator")]
+        //[Authorize(Roles ="Administrator")]
         public IActionResult CreateFilmView()
         {
             return View();

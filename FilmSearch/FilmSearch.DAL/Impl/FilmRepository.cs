@@ -13,12 +13,18 @@ namespace FilmSearch.DAL.Impl
 
         public IEnumerable<Film> GetAll()
         {
-            return _dbSet.Include(f => f.Genres).ThenInclude(fg => fg.Genre).ToList();
+            return _dbSet
+                .Include(f => f.Photo)
+                .Include(f => f.Genres).ThenInclude(fg => fg.Genre)
+                .ToList();
         }
 
         public Film GetByKey(object key)
         {
-            return _dbSet.Include(f => f.Genres).ThenInclude(fg => fg.Genre).FirstOrDefault(f => key.Equals(f.Id));
+            return _dbSet
+                .Include(f => f.Photo)
+                .Include(f => f.Genres).ThenInclude(fg => fg.Genre)
+                .FirstOrDefault(f => key.Equals(f.Id));
         }
     }
 }
