@@ -207,28 +207,26 @@
             var genres = getIds(document.getElementById("genresSelect"));
             
             var requestData = {
+                id: @Model.Film.Id,
                 title: title,
                 releaseDate: releaseDate,
                 shortDescription: description,
                 director: director,
                 actors: actors,
                 genres: genres
-            };
-
-            $.ajax({
-                    type: 'DELETE',
-                    url: "http://localhost:5000/api/film/" + id,
-                    success: data => {
-                        window.location.href = "http://localhost:5000/Film/ShowFilmViews";
-                    },
-                    error: resp => {
-                        document.getElementById("allValidation").innerHTML = "Failed to update film";
-                    }
+                @if (Model.Film.Photo != null)
+                {
+                    <text>
+                        ,
+                        photo: {
+                            id: @Model.Film.Photo.Id
+                        }
+                    </text>
                 }
-            );
+            };
             
             $.ajax({
-                    type: 'POST',
+                    type: 'PUT',
                     url: "http://localhost:5000/api/film",
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
@@ -241,6 +239,7 @@
                 }
             );
         }
+
 
         function deleteFilm(el) {
             $.ajax({
@@ -255,7 +254,7 @@
                 }
             );
         }
-
+        
         function modify(el) {
             enableElements();
 
@@ -277,7 +276,6 @@
 
         //Rating
 
-        // Starrr plugin (https://github.com/dobtco/starrr)
         var __slice = [].slice;
 
         (function($, window) {

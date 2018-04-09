@@ -26,5 +26,15 @@ namespace FilmSearch.DAL
                 .Select(pr => pr.Person)
                 .FirstOrDefault();
         }
+        
+        
+        public void DeletePersonRolesByFilm(long filmId)
+        {
+            var personRoles = _dbSet.Where(pr => pr.FilmId == filmId).ToList();
+            foreach (var personRole in personRoles)
+            {
+                _dbSet.Remove(personRole);
+            }
+        }
     }
 }

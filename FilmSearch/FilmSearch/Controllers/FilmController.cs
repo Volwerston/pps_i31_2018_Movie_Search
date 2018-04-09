@@ -14,7 +14,7 @@ namespace FilmSearch.Controllers
     {
         private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        private FilmService _filmService;
+        private readonly FilmService _filmService;
 
         public FilmController(FilmService filmService)
         {
@@ -22,7 +22,7 @@ namespace FilmSearch.Controllers
         }
         
         [HttpGet]
-        //[Authorize(Roles ="Administrator")]
+        [Authorize(Roles ="Administrator")]
         public IActionResult CreateFilmView()
         {
             return View();
@@ -33,8 +33,8 @@ namespace FilmSearch.Controllers
         {
             var sortQuery = new SortQuery
             {
-                Order = sortOrder ?? FilmService.SortAsc,
-                Value = sortValue ?? FilmService.SortTitle
+                Order = sortOrder ?? FilmConstants.SortAsc,
+                Value = sortValue ?? FilmConstants.SortTitle
             };
 
             var filterQuery = new FilmFilterQuery
@@ -63,27 +63,6 @@ namespace FilmSearch.Controllers
                 FilmPerformance = _filmService.GetFilmPerformance(id, GetUserId())
             });
         }
-        
-//        [HttpPost]
-//        public IActionResult CreateFilmView(Film film)
-//        {
-//            if (film == null || film.Id != 0)
-//            {
-//                return BadRequest();
-//            }
-//            
-//            _unitOfWork.FilmRepository.Add(film);
-//            _unitOfWork.Save();
-//
-//            return RedirectToAction("AllFilmsView", "Film");
-//        }
-
-//        [HttpGet("/all")]
-//        public IActionResult AllFilmsView()
-//        {
-//            var films = _unitOfWork.FilmRepository.GetAll().ToList();
-//
-//            return View(films);
-//        }
+    
     }
 }
