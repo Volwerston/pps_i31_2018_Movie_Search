@@ -11,10 +11,13 @@
         word-wrap:break-word
     }
 </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
+
 <div class="row">
     <div class="col-sm-3">
-        <img src="@(Model.Film.Photo?.Path ??
-                    "https://www.mearto.com/assets/no-image-83a2b680abc7af87cfff7777d0756fadb9f9aecd5ebda5d34f8139668e0fc842.png")"
+        <img src="@(Model.Film.Photo == null ?
+                    "https://www.mearto.com/assets/no-image-83a2b680abc7af87cfff7777d0756fadb9f9aecd5ebda5d34f8139668e0fc842.png":
+                        "/api/file/" + @Model.Film.Photo.Id)"
              alt="@Model.Film.Title" 
              style="width: 200px; height: 400px"/>
         @if (User.Identity.IsAuthenticated)
@@ -26,8 +29,12 @@
                 </div>
             </div>
             <div class="container row">
-                <button type="button" class="btn btn-danger btn-cons" onclick="deleteFilm(this)">Delete</button>
+                <button id="updateButton" type="button" class="btn btn-warning btn-cons" 
+                        onclick="modify(this)" width="60px">Modify</button>
+                <button id="deleteButton" type="button" class="btn btn-danger btn-cons" 
+                        onclick="deleteFilm(this)" width="60px">Delete</button>
             </div>
+            
         }
         
     </div>
@@ -46,25 +53,16 @@
             <div class="form-group">
                 <label class="control-label">Director</label>
                 <select disabled="disabled" class="personsSelect form-control" id="directorSelect">
-                    <option>@Model.Film.Director.FullName</option>
                 </select>
             </div>
             <div class="form-group">
                 <label class="control-label">Actors</label>
-                <select  disabled="disabled" multiple class="personsSelect form-control" id="actorsSelect">
-                    @foreach (var actor in Model.Film.Actors ?? new List<Person>())
-                    {
-                        <option>@actor.FullName</option>
-                    }
+                <select disabled="disabled" multiple class="personsSelect form-control" id="actorsSelect">
                 </select>
             </div>
             <div class="form-group">
                 <label class="control-label">Genres</label>
-                <select  disabled="disabled" multiple class="form-control" id="genresSelect">
-                    @foreach (var genre in Model.Film.Genres ?? new List<Genre>())
-                    {
-                        <option>@genre.Name</option>
-                    }
+                <select disabled="disabled" multiple class="form-control" id="genresSelect">
                 </select>
             </div>
             <div class="form-group">
@@ -81,10 +79,7 @@
             <textarea onkeyup="adjustHeight(this)"  disabled="disabled" class="form-control" id="description">@Model.Film.ShortDescription</textarea>
             <span id="descriptionValidation" class="text-danger"></span>
         </div>
-        
     </div>
-
-    
 </div>
 
 
@@ -92,21 +87,167 @@
 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
     <script src="~/js/utils.js"></script>
+    <script src="~/js/dynamicSelect.js"></script>
+
     <script>
         var id = (@Model.Film.Id);
-        
         document.getElementById("releaseDate").value = convertFromDefaultDateFormat("@Model.Film.ReleaseDate");
+
+        //
+        var initials1 = [];
+        @foreach (var genre in Model.Film.Genres ?? new List<Genre>())
+        {
+            <text>
+                initials1.push({ id: @genre.Id, text: '@genre.Name' });
+            </text>
+        }
+        $('#genresSelect').select2({
+            data: initials1,
+            ajax: defaultSelectAjax("/api/film/genres", item => ({ id: item.id, text: item.name }))
+        });
+        @foreach (var genre in Model.Film.Genres ?? new List<Genre>())
+        {
+            <text>
+                $('#genresSelect').val('@genre.Id');
+            </text>
+        }
+        $('#genresSelect').select2('val', initials1.map(o => o.id));
+        //
         
+        
+        //
+        var initials2 = [];
+        @foreach (var actor in Model.Film.Actors ?? new List<Person>())
+        {
+            <text>
+                initials2.push({ id: @actor.Id, text: '@actor.FullName' });
+            </text>
+        }
+        $('#actorsSelect').select2({
+            data: initials2,
+            ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
+        });
+        $('#actorsSelect').select2('val', initials2.map(o => o.id));
+        //
+
+        
+        //
+        var initials3 = [];
+        @if (Model.Film.Director != null)
+        {
+            <text>
+                initials3.push({ id: @Model.Film.Director.Id, text: '@Model.Film.Director.FullName' });
+            </text>
+        }
+        $('#directorSelect').select2({
+            data: initials3,
+            ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
+        });
+        @if (Model.Film.Director != null)
+        {
+            <text>
+                $('#directorSelect').val('@Model.Film.Director.Id');
+            </text>
+        }
+        //
+        
+
+
         function adjustHeight(el) {
-            el.style.height = (el.scrollHeight > el.clientHeight) ? (el.scrollHeight + 50)+"px" : "100px";
+            el.style.height = (el.scrollHeight > el.clientHeight) ? (el.scrollHeight + 50) + "px" : "100px";
+        }
+
+
+        function enableElements() {
+            document.getElementById("releaseDate").disabled = "";
+            document.getElementById("directorSelect").disabled = "";
+            document.getElementById("actorsSelect").disabled = "";
+            document.getElementById("genresSelect").disabled = "";
+            document.getElementById("description").disabled = "";
+        }
+
+        function disableElements() {
+            document.getElementById("releaseDate").disabled = "disabled";
+            document.getElementById("directorSelect").disabled = "disabled";
+            document.getElementById("actorsSelect").disabled = "disabled";
+            document.getElementById("genresSelect").disabled = "disabled";
+            document.getElementById("description").disabled = "disabled";
+        }
+
+        function getIds(selectElement) {
+            return [].slice.call(selectElement.selectedOptions)
+                .map(opt => ({ id: opt.value }));
         }
         
+        function updateFilm() {
+            var title = '@Model.Film.Title';
+            var stop = requireNonNull(title,
+                () => {
+                    document.getElementById("allValidation").innerHTML = "Title is not set";
+                });
+            if (stop) return;
+
+            var releaseDate = convertToDefaultDateFormat(document.getElementById("releaseDate").value);
+            var stop = requireNonNull(releaseDate,
+                () => {
+                    document.getElementById("allValidation").innerHTML = "Release date is not set";
+                });
+            if (stop) return;
+
+            var description = document.getElementById("description").value;
+            var stop = requireNonNull(description,
+                () => {
+                    document.getElementById("allValidation").innerHTML = "Description is not set";
+                });
+
+            if (stop) return;
+
+            var director = getIds(document.getElementById("directorSelect"))[0];
+            var actors = getIds(document.getElementById("actorsSelect"));
+            var genres = getIds(document.getElementById("genresSelect"));
+            
+            var requestData = {
+                title: title,
+                releaseDate: releaseDate,
+                shortDescription: description,
+                director: director,
+                actors: actors,
+                genres: genres
+            };
+
+            $.ajax({
+                    type: 'DELETE',
+                    url: "/api/film/" + id,
+                    success: data => {
+                        window.location.href = "/Film/ShowFilmViews";
+                    },
+                    error: resp => {
+                        document.getElementById("allValidation").innerHTML = "Failed to update film";
+                    }
+                }
+            );
+            
+            $.ajax({
+                    type: 'POST',
+                    url: "/api/film",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestData),
+                    success: data => {
+                        window.location.href = "/film/filmview/" + data.id;
+                    },
+                    error: resp => {
+                        document.getElementById("allValidation").innerHTML = "Failed to update film";
+                    }
+                }
+            );
+        }
+
         function deleteFilm(el) {
             $.ajax({
                     type: 'DELETE',
-                    url: "http://localhost:5000/api/film/" + id,
+                    url: "/api/film/" + id,
                     success: data => {
-                        window.location.href = "http://localhost:5000/Film/ShowFilmViews";
+                        window.location.href = "/Film/ShowFilmViews";
                     },
                     error: resp => {
                         document.getElementById("allValidation").innerHTML = "Failed to rate film";
@@ -114,26 +255,47 @@
                 }
             );
         }
-        
+
+        function modify(el) {
+            enableElements();
+
+            el.className = "btn btn-success btn-cons";
+            el.innerHTML = "Update";
+
+            el.setAttribute("onclick", "update(this)");
+        }
+
+        function update(el) {
+            disableElements();
+
+            el.className = "btn btn-warning btn-cons";
+            el.innerHTML = "Modify";
+
+            el.setAttribute("onclick", "modify(this)");
+            updateFilm();
+        }
+
         //Rating
-        
+
         // Starrr plugin (https://github.com/dobtco/starrr)
         var __slice = [].slice;
-    
+
         (function($, window) {
             var Starrr;
-    
+
             Starrr = (function() {
                 Starrr.prototype.defaults = {
                     rating: void 0,
                     numStars: 10,
                     change: function(e, value) {}
                 };
-    
+
                 function Starrr($el, options) {
-                    var i, _, _ref,
+                    var i,
+                        _,
+                        _ref,
                         _this = this;
-    
+
                     this.options = $.extend({}, this.defaults, options);
                     this.$el = $el;
                     _ref = this.defaults;
@@ -145,28 +307,35 @@
                     }
                     this.createStars();
                     this.syncRating();
-                    this.$el.on('mouseover.starrr', 'span', function(e) {
-                        return _this.syncRating(_this.$el.find('span').index(e.currentTarget) + 1);
-                    });
-                    this.$el.on('mouseout.starrr', function() {
-                        return _this.syncRating();
-                    });
-                    this.$el.on('click.starrr', 'span', function(e) {
-                        return _this.setRating(_this.$el.find('span').index(e.currentTarget) + 1);
-                    });
+                    this.$el.on('mouseover.starrr',
+                        'span',
+                        function(e) {
+                            return _this.syncRating(_this.$el.find('span').index(e.currentTarget) + 1);
+                        });
+                    this.$el.on('mouseout.starrr',
+                        function() {
+                            return _this.syncRating();
+                        });
+                    this.$el.on('click.starrr',
+                        'span',
+                        function(e) {
+                            return _this.setRating(_this.$el.find('span').index(e.currentTarget) + 1);
+                        });
                     this.$el.on('starrr:change', this.options.change);
                 }
-    
+
                 Starrr.prototype.createStars = function() {
                     var _i, _ref, _results;
-    
+
                     _results = [];
-                    for (_i = 1, _ref = this.options.numStars; 1 <= _ref ? _i <= _ref : _i >= _ref; 1 <= _ref ? _i++ : _i--) {
+                    for (_i = 1, _ref = this.options.numStars;
+                        1 <= _ref ? _i <= _ref : _i >= _ref;
+                        1 <= _ref ? _i++ : _i--) {
                         _results.push(this.$el.append("<span class='glyphicon .glyphicon-star-empty'></span>"));
                     }
                     return _results;
                 };
-    
+
                 Starrr.prototype.setRating = function(rating) {
                     if (this.options.rating === rating) {
                         rating = void 0;
@@ -175,13 +344,15 @@
                     this.syncRating();
                     return this.$el.trigger('starrr:change', rating);
                 };
-    
+
                 Starrr.prototype.syncRating = function(rating) {
                     var i, _i, _j, _ref;
-    
+
                     rating || (rating = this.options.rating);
                     if (rating) {
-                        for (i = _i = 0, _ref = rating - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+                        for (i = _i = 0, _ref = rating - 1;
+                            0 <= _ref ? _i <= _ref : _i >= _ref;
+                            i = 0 <= _ref ? ++_i : --_i) {
                             this.$el.find('span').eq(i).removeClass('glyphicon-star-empty').addClass('glyphicon-star');
                         }
                     }
@@ -194,18 +365,18 @@
                         return this.$el.find('span').removeClass('glyphicon-star').addClass('glyphicon-star-empty');
                     }
                 };
-    
+
                 return Starrr;
-    
+
             })();
             return $.fn.extend({
                 starrr: function() {
                     var args, option;
-    
+
                     option = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
                     return this.each(function() {
                         var data;
-    
+
                         data = $(this).data('star-rating');
                         if (!data) {
                             $(this).data('star-rating', (data = new Starrr($(this), option)));
@@ -217,26 +388,27 @@
                 }
             });
         })(window.jQuery, window);
-    
+
         $(function() {
             return $(".starrr").starrr();
         });
 
 
         $(document).ready(function() {
-            $('#stars-existing').on('starrr:change', function(e, value){
-                $.ajax({
-                        type: 'PUT',
-                        url: "http://localhost:5000/api/film/rate/" + id + "?rate=" + value,
-                        success: data => {
-                            document.getElementById("score").innerHTML = data;
-                        },
-                        error: resp => {
-                            document.getElementById("allValidation").innerHTML = "Failed to rate film";
+            $('#stars-existing').on('starrr:change',
+                function(e, value) {
+                    $.ajax({
+                            type: 'PUT',
+                            url: "/api/film/rate/" + id + "?rate=" + value,
+                            success: data => {
+                                document.getElementById("score").innerHTML = data;
+                            },
+                            error: resp => {
+                                document.getElementById("allValidation").innerHTML = "Failed to rate film";
+                            }
                         }
-                    }
-                );
-            });
+                    );
+                });
         });
     </script>
 }

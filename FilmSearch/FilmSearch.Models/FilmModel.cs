@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using FilmSearch.Utils;
 
 namespace FilmSearch.Models
@@ -35,7 +36,9 @@ namespace FilmSearch.Models
                 Id = 0,
                 Title = filmModel.Title,
                 ReleaseDate = DateUtils.ParseDate(filmModel.ReleaseDate),
-                ShortDescription = filmModel.ShortDescription
+                ShortDescription = filmModel.ShortDescription,
+                Performance = filmModel.Performance,
+                Photo = filmModel.Photo
             };
         }
         
@@ -47,7 +50,8 @@ namespace FilmSearch.Models
                 Title = film.Title,
                 ReleaseDate = DateUtils.ParseDate(film.ReleaseDate),
                 Performance = film.Performance,
-                ShortDescription = film.ShortDescription
+                ShortDescription = film.ShortDescription,
+                Photo = film.Photo
             };
         }
         public static FilmModel Of(Film film, List<Person> actors, Person director, List<Genre> genres)
@@ -55,7 +59,11 @@ namespace FilmSearch.Models
             var filmViewModel = Of(film);
             filmViewModel.Actors = actors;
             filmViewModel.Director = director;
-            filmViewModel.Genres = genres;
+            filmViewModel.Genres = genres.Select(g => new Genre
+            {
+                Id = g.Id,
+                Name = g.Name
+            }).ToList();
 
             return filmViewModel;
         }

@@ -1,0 +1,119 @@
+﻿@model FilmSearch.Models.View.PersonSearchViewModel
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h2 class="text-center">Search people</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-6 col-md-push-3">
+        <form asp-action="Search">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname" class="control-label"></label>
+                <input asp-for="Surname" class="form-control" />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Country" class="control-label"></label>
+                <input asp-for="Country" class="form-control" />
+                <span asp-validation-for="Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="button" id="search-person" class="btn btn-default btn-block">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-sm-8 col-sm-push-2" id="person-container">
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+        var lastId = 0;
+        var chunkSize = 3;
+
+        function searchFilms(removePrevious) {
+            if (removePrevious) {
+                $("#person-container").empty();
+                lastId = 0;
+            }
+            
+            var toPass = {
+                Name: $('input[name="Name"]').val(),
+                Surname: $('input[name="Surname"]').val(),
+                Country: $('input[name="Country"]').val(),
+                LastId: lastId,
+                ChunkSize: chunkSize
+            };
+
+            $.ajax({
+                method: 'POST',
+                url: '/api/person/search?lastId=' + lastId + '&chuckSize=' + chunkSize,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                async: false,
+                data: JSON.stringify(toPass),
+                success: function (res) {
+                    if (res.length == 0) {
+                        if (removePrevious) {
+                            $("#person-container").append('<p class="text-center">No people were found</p>');
+                        }
+                    }
+                    else {
+                        for (let i = 0; i < res.length; ++i) {
+                            $("#person-container").append(getDivForPerson(res[i]));
+                        }
+
+                        lastId = res[res.length - 1].item1.id;
+                    }
+                },
+                error: function (res) {
+                    alert("BAD");
+                }
+            });
+        }
+
+        function getDivForPerson(person) {
+            return `<div class="row well" style="cursor: pointer;" onclick="location.href='/Person/Details/${person.item1.id}'">
+            <div class="col-sm-4">
+                <img src="${person.item2}" class="img-responsive img-thumbnail" />
+            </div>
+            <div class="col-sm-8">
+                <h1 class="text-center">${person.item1.name} ${person.item1.surname}</h1>
+                <p class="text-center">${person.item1.country}</p>
+            </div>
+        </div>`;
+        }
+
+        $(document).ready(function () { 
+
+            searchFilms(true);
+
+            $("#search-person").click(function () { 
+                searchFilms(true);
+            });
+
+            $(document).scroll(function () {
+                if ($(document).height() - ($(window).height() + $(window).scrollTop()) < 50) {
+                    searchFilms(false);
+                }
+            });
+
+        });
+    </script>
+}

@@ -2,16 +2,22 @@
 using System.Linq;
 using FilmSearch.DAL;
 using FilmSearch.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace FilmSearch.Migrations
 {
     public class PrePopulateData
     {
-        private IUnitOfWork _unitOfWork;
         
-        public PrePopulateData(IUnitOfWork unitOfWork)
+        private IUnitOfWork _unitOfWork;
+
+        private RoleManager<IdentityRole> _roleManager;
+        
+        public PrePopulateData(IUnitOfWork unitOfWork,
+            RoleManager<IdentityRole> roleManager)
         {
             _unitOfWork = unitOfWork;
+            _roleManager = roleManager;
         }
 
         public void PrePopulate()
@@ -19,7 +25,9 @@ namespace FilmSearch.Migrations
             PrePopulateGenres();
             PrePopulatePersons();
             PerPopulateFilmRoles();
-            
+
+            _roleManager.CreateAsync(new IdentityRole("Administrator"));
+
             _unitOfWork.Save();
         }
 
@@ -35,6 +43,10 @@ namespace FilmSearch.Migrations
             _unitOfWork.GenreRepository.Add(new Genre {Name = "War"});
             _unitOfWork.GenreRepository.Add(new Genre {Name = "History"});
             _unitOfWork.GenreRepository.Add(new Genre {Name = "Documentary"});
+        }
+
+        private void PrePopulateRoles()
+        {
         }
 
         private void PerPopulateFilmRoles()

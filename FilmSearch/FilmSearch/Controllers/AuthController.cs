@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Models.View;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,7 @@ namespace FilmSearch.Controllers
         UserManager<AppUser> userManager;
         SignInManager<AppUser> signInManager;
 
-        public AuthController(UserManager<AppUser> userMgr, SignInManager<AppUser> signInMgr)
+        public AuthController(UserManager<AppUser> userMgr, SignInManager<AppUser> signInMgr, IUnitOfWork uow, RoleManager<IdentityRole> rMgr)
         {
             userManager = userMgr;
             signInManager = signInMgr;
