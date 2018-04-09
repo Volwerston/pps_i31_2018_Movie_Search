@@ -292,7 +292,14 @@ namespace FilmSearch.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AuthorId");
+
                     b.Property<DateTime>("CreationTime");
+
+                    b.Property<long>("ImageId");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("text");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
@@ -300,6 +307,8 @@ namespace FilmSearch.Migrations
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Posts");
                 });
@@ -550,6 +559,13 @@ namespace FilmSearch.Migrations
                         .WithMany()
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Post", b =>
+                {
+                    b.HasOne("FilmSearch.Models.AppUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
                 });
 
             modelBuilder.Entity("FilmSearch.Models.PostOpinion", b =>

@@ -40,10 +40,13 @@
                         <li><a asp-area="" asp-controller="Film" asp-action="CreateFilmView">Create Film</a></li>
                     }
                     <li><a asp-area="" asp-controller="Person" asp-action="Search">Search Person</a></li>
+                    <li><a asp-area="" asp-controller="UserBlog" asp-action="BlogViews">View User Posts</a></li>
+                    
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (User.Identity.IsAuthenticated)
-                    {
+                    {     
+                        <li><a asp-area="" asp-controller="UserBlog" asp-action="CreateBlog">New  Post</a></li>
                         <li><a asp-controller="Account" asp-action="Index">Hello @(User.Identity.Name)</a></li>
                         <li><a asp-controller="Auth" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
                     }

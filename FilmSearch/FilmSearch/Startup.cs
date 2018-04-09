@@ -30,6 +30,7 @@ namespace FilmSearch
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<FilmService>();
             services.AddScoped<PersonService>();
+            services.AddScoped<UserBlogService>();
             
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<FilmSearchContext>()

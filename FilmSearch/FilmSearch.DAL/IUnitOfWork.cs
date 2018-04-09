@@ -20,6 +20,8 @@
 
         IPersonPerformanceRepository PersonPerformanceRepository { get; }
         
+        IPostRepository PostRepository { get; }
+        
         void Save();
     }
 }

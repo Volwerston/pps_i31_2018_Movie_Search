@@ -1,0 +1,36 @@
+﻿@model PostView
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = Model.Title;
+}
+
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+</style>
+
+
+<div class="row">
+  <div class="col-lg-8">
+    <h1 class="mt-4">@Model.Title</h1>
+    <p class="lead">
+      by
+      <a href="#">@Model.AuthorName</a>
+    </p>
+
+    <hr>
+
+    <!-- Date/Time -->
+    <p>Posted on @Model.PostDate</p>
+
+    <hr>
+    <img class="img-fluid rounded center" src="@(Model.ImageId == 0 ? "https://www.mearto.com/assets/no-image-83a2b680abc7af87cfff7777d0756fadb9f9aecd5ebda5d34f8139668e0fc842.png" :
+                                                                                     "/api/file/" + @Model.ImageId)" alt="">
+      <hr>
+      @Html.Raw(Model.Text)
+  </div>
+</div>
