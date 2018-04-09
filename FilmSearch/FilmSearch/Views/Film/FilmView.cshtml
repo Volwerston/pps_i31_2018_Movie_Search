@@ -1,4 +1,4 @@
-﻿﻿@model FilmViewModel
+﻿@model FilmViewModel
 
 @{
     Layout = "_Layout";
@@ -20,7 +20,7 @@
                         "/api/file/" + @Model.Film.Photo.Id)"
              alt="@Model.Film.Title" 
              style="width: 200px; height: 400px"/>
-        @if (User.Identity.IsAuthenticated)
+        @if (User.IsInRole("User"))
         {
             <div class="container">
                 <p class="row"> Your score: </p>
@@ -28,6 +28,9 @@
                     <div id="stars-existing" class="starrr" data-rating="@(Model.FilmPerformance?.Performance)"></div>
                 </div>
             </div>
+        }
+        @if(User.IsInRole("Administrator")) 
+        {
             <div class="container row">
                 <button id="updateButton" type="button" class="btn btn-warning btn-cons" 
                         onclick="modify(this)" width="60px">Modify</button>
@@ -105,13 +108,7 @@
             data: initials1,
             ajax: defaultSelectAjax("/api/film/genres", item => ({ id: item.id, text: item.name }))
         });
-        @foreach (var genre in Model.Film.Genres ?? new List<Genre>())
-        {
-            <text>
-                $('#genresSelect').val('@genre.Id');
-            </text>
-        }
-        $('#genresSelect').select2('val', initials1.map(o => o.id));
+        $('#genresSelect').val(initials1.map(o => o.id)).trigger('change');
         //
         
         
@@ -127,7 +124,7 @@
             data: initials2,
             ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
         });
-        $('#actorsSelect').select2('val', initials2.map(o => o.id));
+        $('#actorsSelect').val(initials2.map(o => o.id)).trigger('change');
         //
 
         

@@ -171,32 +171,6 @@ namespace FilmSearch.Controllers
             return View();
         }
 
-        public ActionResult Details(int id)
-        {
-            (Person, string) toPass = personService.GetPersonData(id);
-
-            ViewBag.Base64Img = toPass.Item2;
-
-            IEnumerable<PersonRole> roles = _unitOfWork.PersonRoleRepository.GetAll().Where(x => x.PersonId == id);
-
-            foreach (var role in roles)
-            {
-                role.Person = _unitOfWork.PersonRepository.GetByKey(role.PersonId);
-                role.FilmRole = _unitOfWork.FilmRoleRepository.GetByKey(role.FilmRoleId);
-                role.Film = _unitOfWork.FilmRepository.GetByKey(role.FilmId);
-            }
-
-            ViewBag.Roles = roles;
-
-            IEnumerable<PersonPerformance> perf = _unitOfWork.PersonPerformanceRepository.GetAll()
-                .Where(x => x.UserId == GetUserId());
-
-            ViewBag.Performances = perf;
-            ViewBag.UserId = GetUserId();
-
-            return View(toPass.Item1);
-        }
-
         [HttpPost]
         public IActionResult EditRoles(IEnumerable<PersonRole> personRoles)
         {
@@ -210,14 +184,7 @@ namespace FilmSearch.Controllers
 
             return RedirectToAction("List", "Person");
         }
-
-        public ActionResult Search()
-        {
-            PersonSearchViewModel viewModel = new PersonSearchViewModel();
-
-            return View();
-        }
-
+        
         public ActionResult Details(int id)
         {
             (Person, string) toPass = personService.GetPersonData(id);
@@ -249,20 +216,6 @@ namespace FilmSearch.Controllers
             }
 
             return View(toPass.Item1);
-        }
-
-        [HttpPost]
-        public IActionResult EditRoles(IEnumerable<PersonRole> personRoles)
-        {
-
-            foreach(var role in personRoles)
-            {
-                _unitOfWork.PersonRoleRepository.Update(role);
-            }
-
-            _unitOfWork.Save();
-
-            return RedirectToAction("List", "Person");
         }
     }
 }
