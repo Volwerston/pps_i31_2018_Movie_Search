@@ -12,8 +12,8 @@ using System;
 namespace FilmSearch.Migrations
 {
     [DbContext(typeof(FilmSearchContext))]
-    [Migration("20180409161218_PersonComment")]
-    partial class PersonComment
+    [Migration("20180414083524_Lates")]
+    partial class Lates
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -313,7 +313,14 @@ namespace FilmSearch.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AuthorId");
+
                     b.Property<DateTime>("CreationTime");
+
+                    b.Property<long>("ImageId");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("text");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
@@ -321,6 +328,8 @@ namespace FilmSearch.Migrations
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Posts");
                 });
@@ -578,6 +587,13 @@ namespace FilmSearch.Migrations
                         .WithMany()
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Post", b =>
+                {
+                    b.HasOne("FilmSearch.Models.AppUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
                 });
 
             modelBuilder.Entity("FilmSearch.Models.PostOpinion", b =>
