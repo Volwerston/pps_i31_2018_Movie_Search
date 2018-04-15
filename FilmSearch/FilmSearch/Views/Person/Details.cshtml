@@ -1,4 +1,5 @@
-﻿﻿@model FilmSearch.Models.Person
+﻿
+@model FilmSearch.Models.Person
 @using System.Security.Claims;
 
 @{
@@ -114,7 +115,6 @@
             return `<div class="row" style="border: 1px solid grey; border-radius: 3px">
                         <div class="col-sm-12" style="background-color: white; padding: 20px;">
                             <p>By: ${comment.author.userName} ${comment.author.surname}</p>
-                            <p>Sent: ${comment.creationDate}</p>
                             <hr/>
                             <p>${comment.text}</p>
                         </div>

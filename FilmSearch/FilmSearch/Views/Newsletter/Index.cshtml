@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="text-center">Newsletter</h2>
+<hr />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
+<!-- Froala styles. -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+
+<div class="row">
+    <div class="col-md-8 col-md-push-2">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label">User emails</label>
+                <select multiple class="personsSelect form-control" id="usersSelect"></select>
+            </div>
+            <div class="form-group" id="froala-editor">
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-push-3">
+                    <button type="button" class="btn btn-info btn-block" id="send-newsletter">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/xml/xml.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/js/froala_editor.pkgd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+    <script src="~/js/utils.js"></script>
+    <script src="~/js/dynamicSelect.js"></script>
+    <script type="text/javascript">
+
+        function getIds(selectElement) {
+            return [].slice.call(selectElement.selectedOptions)
+                .map(opt => ({ id: opt.value }));
+        }
+
+        $(document).ready(function () {
+
+            $('#froala-editor').froalaEditor({
+                toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+                    '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align',
+                    'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertTable',
+                    '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting',
+                    '|', 'print', 'help', 'html', '|', 'undo', 'redo'],
+                imageUploadParam: 'file',
+                imageUploadURL: '/api/file/froala-image',
+                imageUploadMethod: 'POST',
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                imageEditButtons: ['imageReplace', 'imageAlign', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit',
+                    'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize']
+            });
+
+            $('.personsSelect').select2({
+                ajax: defaultSelectAjax("/api/newsletter/users", item => ({ id: item.id, text: item.email }))
+            });
+
+            $("button#send-newsletter").click(function () { 
+                $.ajax({
+                    method: 'POST',
+                    url: '/api/newsletter/send',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        userIds: getIds(document.getElementById("usersSelect")),
+                        text: $('#froala-editor').froalaEditor('html.get')
+                    }),
+                    success: function (res) {
+                        alert("Success!");
+                        setTimeout(() => location.href = '/', 1000);
+                    },
+                    error: function (res) {
+                        alert(res.statusText);
+                    }
+                });
+            });
+        });
+    </script>
+}
