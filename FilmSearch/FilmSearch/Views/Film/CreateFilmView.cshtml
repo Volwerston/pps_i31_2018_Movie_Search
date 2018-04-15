@@ -4,12 +4,12 @@
     ViewData["Title"] = "Add Film";
 }
 
-<h2>Add film</h2>
+<h2 class="text-center">Add film</h2>
 <hr />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6 col-md-push-3">
         <form>
             <div id="allValidation" class="text-danger"></div>
             <div class="form-group">
@@ -47,7 +47,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="button" class="btn btn-default" value="Submit" onclick="onSubmit(this)"/>
+                <input type="button" class="btn btn-default btn-block btn-info" value="Submit" onclick="onSubmit(this)"/>
             </div>
         </form>
     </div>

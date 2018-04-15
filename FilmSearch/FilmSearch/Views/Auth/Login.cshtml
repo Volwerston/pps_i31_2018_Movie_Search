@@ -4,11 +4,11 @@
     ViewData["Title"] = "Login";
 }
 
-<h2>Login</h2>
+<h2 class="text-center">Login</h2>
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6 col-md-push-3">
         <form asp-action="Login">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
@@ -23,7 +23,7 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Sign In" class="btn btn-default" />
+                <input type="submit" value="Sign In" class="btn btn-default btn-block btn-info" />
             </div>
         </form>
     </div>
