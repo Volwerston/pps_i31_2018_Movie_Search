@@ -18,17 +18,17 @@ namespace FilmSearch.Models.Helper
         {
             if (!String.IsNullOrWhiteSpace(param.Name))
             {
-                toFilter = toFilter.Where(x => x.Name == param.Name);
+                toFilter = toFilter.Where(x => x.Name.ToLower().Contains(param.Name.Trim().ToLower()));
             }
 
             if (!String.IsNullOrWhiteSpace(param.Surname))
             {
-                toFilter = toFilter.Where(x => x.Surname == param.Surname);
+                toFilter = toFilter.Where(x => x.Surname.ToLower().Contains(param.Surname.ToLower().Trim()));
             }
 
             if (!String.IsNullOrWhiteSpace(param.Country))
             {
-                toFilter = toFilter.Where(x => x.Country == param.Country);
+                toFilter = toFilter.Where(x => x.Country.ToLower().Contains(param.Country.ToLower().Trim()));
             }
 
             toFilter = toFilter.Where(x => x.Id > param.LastId);

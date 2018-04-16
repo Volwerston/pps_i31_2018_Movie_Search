@@ -4,10 +4,10 @@
     ViewData["Title"] = "Register";
 }
 
-<h2>Register</h2>
+<h2 class="text-center">Register</h2>
 <hr/>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6 col-md-push-3">
         <form asp-action="Register">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
@@ -36,7 +36,7 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default btn-block btn-info" />
             </div>
         </form>
     </div>
