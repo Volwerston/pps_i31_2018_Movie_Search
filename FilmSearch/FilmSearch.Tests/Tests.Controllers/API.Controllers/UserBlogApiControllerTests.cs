@@ -3,6 +3,7 @@ using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Services;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
@@ -18,7 +19,8 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
         public void Initialize()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            UserBlogService ubs = new UserBlogService(uow.Object);
+            UserManager<AppUser> um = new FakeUserManager();
+            UserBlogService ubs = new UserBlogService(uow.Object, um);
             UserBlogApiController UBC = new UserBlogApiController(ubs);
 
             UBC.Should().NotBeNull();

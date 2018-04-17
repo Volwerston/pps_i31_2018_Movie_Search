@@ -2,6 +2,7 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = Model.Title;
+    AppUser user = ViewBag.Author as AppUser;
 }
 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 <style>
@@ -41,7 +42,7 @@
 <hr/>
 <div class="card" id="topCommentContainer">
 </div>
-@if (User.Identity.IsAuthenticated)
+@if (User.Identity.IsAuthenticated && (user?.EmailConfirmed ?? false))
 {
 	<div class="card" id="botCommentContainer">
 		<div class="card card" id="comment_00_"><div class="row" >
@@ -56,6 +57,13 @@
 			</div>
 		</div>
 	</div>
+}
+else
+{	
+    <div class="card" id="botCommentContainer">
+        <p class="text-center">You are not allowed to leave comments.</p>
+	 </div>
+
 }
 
 @section Scripts {

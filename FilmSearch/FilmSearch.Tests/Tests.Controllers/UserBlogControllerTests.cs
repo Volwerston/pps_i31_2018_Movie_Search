@@ -3,6 +3,7 @@ using FilmSearch.DAL;
 using FilmSearch.Models;
 using FilmSearch.Services;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
@@ -19,7 +20,8 @@ namespace FilmSearch.Tests.Tests.Controllers
         public void Initialize()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            UserBlogService ubs = new UserBlogService(uow.Object);
+            UserManager<AppUser> um = new FakeUserManager();
+            UserBlogService ubs = new UserBlogService(uow.Object, um);
             UserBlogController UBC = new UserBlogController(ubs);
 
             UBC.Should().NotBeNull();
@@ -28,7 +30,8 @@ namespace FilmSearch.Tests.Tests.Controllers
         public void CreateBlogTest()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            UserBlogService ubs = new UserBlogService(uow.Object);
+            UserManager<AppUser> um = new FakeUserManager();
+            UserBlogService ubs = new UserBlogService(uow.Object, um);
             UserBlogController UBC = new UserBlogController(ubs);
 
             var result = UBC.CreateBlog() as ViewResult;
@@ -39,7 +42,8 @@ namespace FilmSearch.Tests.Tests.Controllers
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.PostRepository.GetAll()).Returns(fakeposts);
-            UserBlogService ubs = new UserBlogService(uow.Object);
+            UserManager<AppUser> um = new FakeUserManager();
+            UserBlogService ubs = new UserBlogService(uow.Object, um);
             UserBlogController UBC = new UserBlogController(ubs);
 
             var result = (UBC.BlogViews() as ViewResult).Model as IEnumerable<PostView>;
@@ -50,18 +54,19 @@ namespace FilmSearch.Tests.Tests.Controllers
         public void BlogView()
         {
             long id = 1;
+            UserManager<AppUser> um = new FakeUserManager();
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.PostRepository.GetByKey(id)).Returns(fakeposts.Where(x => x.Id == id).FirstOrDefault());
-            UserBlogService ubs = new UserBlogService(uow.Object);
+            UserBlogService ubs = new UserBlogService(uow.Object, um);
             UserBlogController UBC = new UserBlogController(ubs);
 
             var result = (UBC.BlogView(id) as ViewResult).Model as PostView;
             Assert.Equal(id, result.Id);
         }
         List<Post> fakeposts = new List<Post>()
-        {
-            new Post(){Author=new AppUser(),AuthorId="1",CreationTime=DateTime.Today,Id=1,ImageId=1,ShortDescription="",Text="",Title="Title"},
-            new Post(){Author=new AppUser(),AuthorId="1",CreationTime=DateTime.Today,Id=2,ImageId=1,ShortDescription="",Text="",Title="Another"}
-        };
+            {
+                new Post(){Author=new AppUser(),AuthorId="1",CreationTime=DateTime.Today,Id=1,ImageId=1,ShortDescription="",Text="",Title="Title"},
+                new Post(){Author=new AppUser(),AuthorId="1",CreationTime=DateTime.Today,Id=2,ImageId=1,ShortDescription="",Text="",Title="Another"}
+            };
     }
 }

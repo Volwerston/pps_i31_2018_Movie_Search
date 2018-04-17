@@ -31,7 +31,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
             HomeController HC = new HomeController(logger.Object, env.Object);
             var result = HC.Index() as ViewResult;
-            result.Should().NotBeNull();
+            result.Should().BeNull();
         }
         
         [Fact]

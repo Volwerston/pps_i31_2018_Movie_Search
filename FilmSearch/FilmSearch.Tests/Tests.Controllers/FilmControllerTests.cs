@@ -66,7 +66,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             FilmController FC = new FilmController(fs);
 
             ///////////////////////
-            var username = "smth@gmail.com";
+            var username = "ystetskyy333@gmail.com";
             var identity = new GenericIdentity(username);
             //create claim and add it to indentity
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);

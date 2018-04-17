@@ -152,7 +152,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             var physicalFile = new FileInfo("filePath");
             var ms = new MemoryStream();
            
-            using (StreamWriter SW = new StreamWriter("D:\\repos\\night\\pps_i31_2018_Movie_Search\\FilmSearch\\FilmSearch.Tests\\bin\\Debug\\netcoreapp2.0\\filePath"))
+            using (StreamWriter SW = new StreamWriter(@"D:\net-core_1\net-core\FilmSearch\FilmSearch.Tests\bin\Debug\netcoreapp2.0\filePath"))
             {
                 SW.Write("smth");
             }

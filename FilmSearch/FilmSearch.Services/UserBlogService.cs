@@ -37,6 +37,13 @@ namespace FilmSearch.Services
             return PostView.from(_unitOfWork.PostRepository.GetByKey(id));
         }
 
+        public AppUser GerPostWriter(long id)
+        {
+            var post = _unitOfWork.PostRepository.GetByKey(id);
+
+            return _userManager.Users.Where(x => x.Id == post.AuthorId).First();
+        }
+
         public UserBlogView GetUserBlogView(string userId)
         {
             var userPosts = _unitOfWork.PostRepository.PostsByUserId(userId);

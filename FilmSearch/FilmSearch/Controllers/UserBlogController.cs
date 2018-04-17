@@ -27,6 +27,7 @@ namespace FilmSearch.Controllers
         [HttpGet]
         public IActionResult BlogView(long id)
         {
+            ViewBag.Author = _userBlogService.GerPostWriter(id);
             return View(_userBlogService.GetPost(id));
         }
 

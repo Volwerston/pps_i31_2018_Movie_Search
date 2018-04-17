@@ -12,7 +12,7 @@ namespace FilmSearch.Controllers
 {
     public class FilmController : Controller
     {
-        private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        private string GetUserId() => this.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
         private readonly FilmService _filmService;
 

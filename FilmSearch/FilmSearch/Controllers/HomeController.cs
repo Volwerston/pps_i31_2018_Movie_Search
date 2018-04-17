@@ -28,7 +28,7 @@ namespace FilmSearch.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("ShowFilmViews", "Film");
         }
 
         public IActionResult Error()
