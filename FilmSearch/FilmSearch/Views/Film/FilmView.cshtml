@@ -20,7 +20,7 @@
                         "/api/file/" + @Model.Film.Photo.Id)"
              alt="@Model.Film.Title" 
              style="width: 200px; height: 400px"/>
-        @if (User.IsInRole("User"))
+        @if (User.Identity.IsAuthenticated)
         {
             <div class="container">
                 <p class="row"> Your score: </p>

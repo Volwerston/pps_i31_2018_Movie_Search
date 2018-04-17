@@ -79,7 +79,6 @@ namespace FilmSearch.Controllers.API
         }
 
         [HttpPut("rate/{filmId}")]
-        [Authorize(Roles ="User")]
         public IActionResult RateFilm([FromRoute] long filmId, [FromQuery] long rate)
         {
             return new ObjectResult(_filmService.RateFilm(filmId, GetUserId(), rate));
