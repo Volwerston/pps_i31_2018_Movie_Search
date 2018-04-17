@@ -29,5 +29,11 @@ namespace FilmSearch.Controllers
         {
             return View(_userBlogService.GetPost(id));
         }
+
+        [HttpGet]
+        public IActionResult UserBlogViews(string id)
+        {
+            return View(_userBlogService.GetUserBlogView(id));
+        }
     }
 }

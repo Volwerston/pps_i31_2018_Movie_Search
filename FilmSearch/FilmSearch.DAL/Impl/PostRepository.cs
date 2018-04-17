@@ -20,5 +20,10 @@ namespace FilmSearch.DAL.Impl
         {
             return _dbSet.Include(p => p.Author).First(p => p.Id == (long) key);
         }
+
+        public List<Post> PostsByUserId(string userId)
+        {
+            return _dbSet.Where(post => post.AuthorId == userId).ToList();
+        }
     }
 }

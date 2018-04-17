@@ -3,7 +3,7 @@
     Layout = "_Layout";
     ViewData["Title"] = Model.Title;
 }
-
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 <style>
     .center {
         display: block;
@@ -11,26 +11,179 @@
         margin-right: auto;
         width: 50%;
     }
+    .card-inner{
+	    margin-left: 4rem;
+    }
 </style>
 
+    
 
 <div class="row">
-  <div class="col-lg-8">
-    <h1 class="mt-4">@Model.Title</h1>
-    <p class="lead">
-      by
-      <a href="#">@Model.AuthorName</a>
-    </p>
+	<div class="col-lg-8">
+		<h1 class="mt-4">@Model.Title</h1>
+		<p class="lead">
+			by
+			<a href="/UserBlog/UserBlogViews/@Model.AuthorId">@Model.AuthorName</a>
+		</p>
 
-    <hr>
+		<hr>
 
-    <!-- Date/Time -->
-    <p>Posted on @Model.PostDate</p>
+		<p>Posted on @Model.PostDate</p>
 
-    <hr>
-    <img class="img-fluid rounded center" src="@(Model.ImageId == 0 ? "https://www.mearto.com/assets/no-image-83a2b680abc7af87cfff7777d0756fadb9f9aecd5ebda5d34f8139668e0fc842.png" :
-                                                                                     "/api/file/" + @Model.ImageId)" alt="">
-      <hr>
-      @Html.Raw(Model.Text)
-  </div>
+		<hr>
+		<img class="img-fluid rounded center" src="@(Model.ImageId == 0 ? "https://www.mearto.com/assets/no-image-83a2b680abc7af87cfff7777d0756fadb9f9aecd5ebda5d34f8139668e0fc842.png" :
+			                                             "/api/file/" + @Model.ImageId)" alt="">
+		<hr>
+		@Html.Raw(Model.Text)
+	</div>
 </div>
+
+<hr/>
+<div class="card" id="topCommentContainer">
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+	<div class="card" id="botCommentContainer">
+		<div class="card card" id="comment_00_"><div class="row" >
+				<div class="col-md-2">
+					<img src="https://image.ibb.co/jw55Ex/def_face.jpg" class="img-fluid rounded center"/>
+				</div>
+				<div class="col-md-10">
+					<p><a href="https://maniruzzaman-akash.blogspot.com/p/contact.html"><strong>@User.Identity.Name</strong></a></p>
+					<textarea id="comment_00_text" style="width: 100%; height: 100%" rows="7"></textarea>
+					<button class="float-right btn btn-outline-primary ml-2" onclick="replyToComment(0, false)">Add</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@section Scripts {
+	<script>
+		let currentUserName = null;
+		@if (User.Identity.IsAuthenticated)
+		{
+			<text>
+				currentUserName = '@User.Identity.Name';
+			</text>
+		}
+		
+		function parentCommentView(comment) {
+			return `<div class="row" id="${`comment_${comment.id}`}">
+					<div class="col-md-2">
+						<img src="https://image.ibb.co/jw55Ex/def_face.jpg" class="img-fluid rounded center" class="img-fluid rounded center"/>
+						<p class="text-secondary text-center">${comment.creationDate}</p>
+					</div>
+					<div class="col-md-10">
+						<p><strong>${comment.author.userName + " " + comment.author.surname}</strong></p>
+						<p>${comment.text}<p>
+							<button class="float-right btn btn-outline-primary ml-2" onclick="addreplyComment(${comment.id
+				})" ${currentUserName == null ? 'disabled="disable"' : ''}>  <i class="fa fa-reply">
+							</i> Reply</button>
+							${currentUserName == comment.author.userName
+				? '<a class="float-right btn text-white btn-danger" onclick="deleteComment(' + comment.id + ')">Delete</a>'
+				: ''}
+						</p>
+					</div>
+				</div>`;
+		}
+	</script>
+
+	<script>
+		function loadComments() {
+			$.ajax({
+					type: 'GET',
+					url: "/api/post/comments/" + @Model.Id,
+					success: comments => {
+						let commentsView = buildCommentsTree(comments);
+						document.getElementById("topCommentContainer").innerHTML = commentsView;
+					},
+					error: resp => {
+						document.getElementById("allValidation").innerHTML = "Failed to rate film";
+					}
+				}
+			);
+		}
+
+		loadComments();
+
+		function addreplyComment(commentId) {
+			$('#comment_0').remove();
+			let replyComment = createreplyComment(commentId);
+			$(replyComment.innerHTML).insertAfter(`#comment_${commentId}`);
+		}
+
+		function replyToComment(commentId, isReply) {
+			let requestData = {
+				blogId: @Model.Id,
+				parentId: commentId,
+				text: isReply ? document.getElementById("comment_0_text").value : document.getElementById("comment_00_text").value
+			};
+
+			$.ajax({
+					type: 'POST',
+					url: "/api/post/comments",
+					contentType: "application/json",
+					data: JSON.stringify(requestData),
+					success: data => {
+						window.location.href = "/userblog/blogview/" + @Model.Id;
+					},
+					error: resp => {
+						//TODO add some error handling
+					}
+				}
+			);
+		}
+
+		function deleteComment(commentId) {
+			$.ajax({
+					type: 'DELETE',
+					url: "/api/post/comments/" + commentId,
+					success: data => {
+						window.location.href = "/userblog/blogview/" + @Model.Id;
+					},
+					error: resp => {
+						//TODO add some error handling
+					}
+				}
+			);
+		}
+
+		//building comment tree
+		function buildCommentsTree(comments) {
+			let content = `<div class="card-body">`;
+			for (let i = 0; i < comments.length; ++i) {
+				let comment = comments[i];
+				content = content + buildCommentTree(comment);
+			}
+
+			return content + `</div>`;
+		}
+
+		function buildCommentTree(comment) {
+			let content = parentCommentView(comment);
+			let childCommentsView = buildCommentsTree(comment.subComments);
+
+			return `${content}<div class="card card-inner">${childCommentsView}</div>`;
+		}
+
+		//building reply form
+		function createreplyComment(commentId) {
+			var div = document.createElement('div');
+			var userName = "@User.Identity.Name";
+			div.innerHTML = `<div class="card card-inner" id="comment_0"><div class="row" >
+					<div class="col-md-2">
+						<img src="https://image.ibb.co/jw55Ex/def_face.jpg" class="img-fluid rounded center"/>
+					</div>
+					<div class="col-md-10">
+						<p><a href="https://maniruzzaman-akash.blogspot.com/p/contact.html"><strong>${userName}</strong></a></p>
+						<textarea id="comment_0_text" style="width: 100%; height: 100%" rows="7"></textarea>
+						<button class="float-right btn btn-outline-primary ml-2" onclick="replyToComment(${commentId
+				}, true)">Add</button>
+					</div>
+				</div></div>`;
+
+			return div;
+		}
+	</script>
+}

@@ -24,6 +24,8 @@
         
         IPostRepository PostRepository { get; }
         
+        IPostCommentRepository PostCommentRepository { get; }
+        
         void Save();
     }
 }

@@ -87,7 +87,7 @@ namespace FilmSearch.Migrations
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
-                    b.Property<long>("ParentCommentId");
+                    b.Property<long?>("ParentCommentId");
 
                     b.Property<string>("Text");
 
@@ -496,8 +496,7 @@ namespace FilmSearch.Migrations
 
                     b.HasOne("FilmSearch.Models.Comment", "ParentComment")
                         .WithMany("SubComments")
-                        .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ParentCommentId");
                 });
 
             modelBuilder.Entity("FilmSearch.Models.CommentOpinion", b =>

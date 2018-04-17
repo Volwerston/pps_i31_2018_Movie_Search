@@ -28,6 +28,8 @@ namespace FilmSearch.DAL.Impl
 
         private IPostRepository _postRepository;
 
+        private IPostCommentRepository _postCommentRepository;
+
         public UnitOfWork(FilmSearchContext context)
         {
             _context = context;
@@ -61,6 +63,9 @@ namespace FilmSearch.DAL.Impl
         
         public IPostRepository PostRepository =>
             _postRepository ?? (_postRepository = new PostRepository(_context));
+        
+        public IPostCommentRepository PostCommentRepository =>
+            _postCommentRepository ?? (_postCommentRepository = new PostCommentRepository(_context));
         
         public void Save()
         {
