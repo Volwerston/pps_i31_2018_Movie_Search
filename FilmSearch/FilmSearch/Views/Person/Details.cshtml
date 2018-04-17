@@ -12,6 +12,11 @@
     AppUser user = ViewBag.User as AppUser;
 }
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+
 <div class="row" style="margin-top: 15px;">
     <div class="col-sm-8 col-sm-push-2">
         <div class="row well">
@@ -108,7 +113,7 @@
 
 @section Scripts {
     <script src="~/js/starrr.js"></script>
-    <script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/froala-editor/2.7.6/js/froala_editor.pkgd.min.js"></script>
     <script type="text/javascript">
 
         function GetDivForComment(comment) {
@@ -148,7 +153,19 @@
                     );
                 });
 
-            tinymce.init({ selector: 'textarea#comment-text' });
+            $('textarea#comment-text').froalaEditor({
+                toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+                    '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align',
+                    'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertTable',
+                    '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting',
+                    '|', 'print', 'help', 'html', '|', 'undo', 'redo'],
+                imageUploadParam: 'file',
+                imageUploadURL: '/api/file/froala-image',
+                imageUploadMethod: 'POST',
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                imageEditButtons: ['imageReplace', 'imageAlign', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit',
+                    'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize']
+            });
 
             $("button#add-comment").click(function () {
                 $.ajax({
@@ -157,7 +174,7 @@
                     contentType: 'application/json',
                     data: JSON.stringify({
                         AuthorId: `@User.FindFirstValue(ClaimTypes.NameIdentifier)`,
-                        Text: window.tinymce.get('comment-text').getContent(),
+                        Text: $('#comment-text').froalaEditor('html.get'),
                         CreationDate: new Date().toLocaleDateString("en-US"),
                         PersonId: @Model.Id,
                         Id: 0
