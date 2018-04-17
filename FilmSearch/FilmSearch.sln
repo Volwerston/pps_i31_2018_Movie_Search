@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmSearch", "FilmSearch\FilmSearch.csproj", "{77D5670B-6C9F-42A0-80B4-70FAD90E07FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmSearch", "FilmSearch\FilmSearch.csproj", "{77D5670B-6C9F-42A0-80B4-70FAD90E07FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmSearch.Models", "FilmSearch.Models\FilmSearch.Models.csproj", "{99D3370C-E3B1-4D4B-9D5D-3A5CD88BD118}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmSearch.Models", "FilmSearch.Models\FilmSearch.Models.csproj", "{99D3370C-E3B1-4D4B-9D5D-3A5CD88BD118}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmSearch.DAL", "FilmSearch.DAL\FilmSearch.DAL.csproj", "{40C6C6BD-3F1C-4020-861D-9B774404BC33}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmSearch.Services", "FilmSearch.Services\FilmSearch.Services.csproj", "{5A943958-A16D-44BB-A138-67A3EDDFA984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmSearch.Utils", "FilmSearch.Utils\FilmSearch.Utils.csproj", "{C67C6BE1-3249-4F1F-8F00-6704D1D67AF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmSearch.Utils", "FilmSearch.Utils\FilmSearch.Utils.csproj", "{C67C6BE1-3249-4F1F-8F00-6704D1D67AF2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmSearch.Tests", "FilmSearch.Tests\FilmSearch.Tests.csproj", "{B100D83E-38F9-42B3-8798-73E872510F6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{C67C6BE1-3249-4F1F-8F00-6704D1D67AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C67C6BE1-3249-4F1F-8F00-6704D1D67AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C67C6BE1-3249-4F1F-8F00-6704D1D67AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B100D83E-38F9-42B3-8798-73E872510F6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B100D83E-38F9-42B3-8798-73E872510F6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B100D83E-38F9-42B3-8798-73E872510F6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B100D83E-38F9-42B3-8798-73E872510F6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
