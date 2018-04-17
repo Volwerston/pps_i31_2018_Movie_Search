@@ -1,17 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FilmSearch.DAL;
 using FilmSearch.Models;
+using FilmSearch.Utils;
+using Microsoft.AspNetCore.Identity;
 
 namespace FilmSearch.Services
 {
     public class UserBlogService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<AppUser> _userManager;
 
-        public UserBlogService(IUnitOfWork unitOfWork)
+        public UserBlogService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public Post SaveUserPost(Post post)
@@ -24,26 +29,74 @@ namespace FilmSearch.Services
 
         public List<PostView> GetPosts()
         {
-            return _unitOfWork.PostRepository.GetAll().Select(ConvertPostToView).ToList();
+            return _unitOfWork.PostRepository.GetAll().Select(PostView.from).ToList();
         }
 
         public PostView GetPost(long id)
         {
-            return ConvertPostToView(_unitOfWork.PostRepository.GetByKey(id));
+            return PostView.from(_unitOfWork.PostRepository.GetByKey(id));
         }
 
-        private PostView ConvertPostToView(Post p)
+        public UserBlogView GetUserBlogView(string userId)
         {
-            return new PostView
+            var userPosts = _unitOfWork.PostRepository.PostsByUserId(userId);
+            var user = _userManager.FindByIdAsync(userId).Result;
+
+            return new UserBlogView()
             {
-                Id = p.Id,
-                Title = p.Title,
-                ImageId = p.ImageId,
-                ShortDescription = p.ShortDescription,
-                Text = p.Text,
-                AuthorName = $"{p.Author.UserName} {p.Author.Surname}",
-                PostDate = p.CreationTime
+                AppUser = user,
+                Posts = userPosts.Select(PostView.from).ToList()
             };
+        }
+
+        public void AddComment(UserBlogCommentModel commentModel, String userId)
+        {
+            var comment = new PostComment
+            {
+                AuthorId = userId,
+                CommentRate = 0,
+                CreationDate = DateUtils.ParseDate(DateTime.Now),
+                SubComments = new List<Comment>(),
+                Text = commentModel.Text,
+                PostId = commentModel.BlogId
+            };
+            if (commentModel.ParentId != 0)
+            {
+                comment.ParentCommentId = commentModel.ParentId;
+            }
+            
+            _unitOfWork.PostCommentRepository.Add(comment);
+            _unitOfWork.Save();
+        }
+
+        public List<PostComment> GetPostComments(long postId)
+        {
+            var comments = _unitOfWork.PostCommentRepository.GetPostComments(postId);
+            var commentsMap = comments.ToDictionary(c => c.Id);
+            
+            comments.ForEach(c =>
+            {
+                c.SubComments = new List<Comment>();
+                foreach (var postComment in comments)
+                {
+                    if (postComment.ParentCommentId == c.Id)
+                    {
+                        c.SubComments.Add(postComment);
+                    }
+                }
+            });
+
+            return comments.Where(c => c.ParentCommentId == null).ToList();
+        }
+
+        public void DeleteComment(long commentId)
+        {
+            var comment = _unitOfWork.PostCommentRepository.GetByKey(commentId);
+            if (comment.SubComments?.Count == 0)
+            {
+                _unitOfWork.PostCommentRepository.Delete(commentId);
+                _unitOfWork.Save();
+            }
         }
     }
 }
