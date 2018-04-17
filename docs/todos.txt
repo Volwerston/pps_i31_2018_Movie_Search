@@ -1,0 +1,4 @@
+1. Statistics
+2. Grant default permissions
+3. More tests
+4. Update documentation
