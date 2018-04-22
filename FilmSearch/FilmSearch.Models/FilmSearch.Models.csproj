@@ -12,4 +12,9 @@
   <ItemGroup>
     <ProjectReference Include="..\FilmSearch.Utils\FilmSearch.Utils.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <HintPath>System</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
