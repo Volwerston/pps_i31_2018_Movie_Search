@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewData["Title"] = "PersonStats";
+}
+
+@section styles{
+    <style>
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+    </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+}
+
+<div class="row" style="margin-top: 15px">
+    <div class="col-sm-6 col-sm-push-3">
+        <div class="form-group">
+            <label class="control-label">Select user email</label>
+            <select class="personsSelect form-control" id="usersSelect"></select>
+        </div>
+        <div class="form-group">
+            <button type="button" id="search-stats" class="btn btn-info btn-block">Search</button>
+        </div>
+    </div>
+</div>
+
+<div class="row well" style="margin-top: 15px;">
+    <div class="row">
+        <div class="col-sm-6 col-sm-push-3">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <select name="time-span" class="form-control">
+                        <option value="day">Today</option>
+                        <option value="week">Week</option>
+                        <option value="month">Month</option>
+                        <option value="year">Year</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-push-2">
+            <div id="svg"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Author
+                                </th>
+                                <th>
+                                    Text
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Person
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="person-comment-container"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+    <script src="~/js/utils.js"></script>
+    <script src="~/js/dynamicSelect.js"></script>
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+
+        var table = $("table").DataTable({
+            scrollX: true,
+            scrollCollapse: true,
+            autoWidth: true,
+            paging: true,
+            columnDefs: [
+                { "width": "50px", "targets": [0, 1, 2] }
+            ]
+        });
+
+        function drawLineChart(data) {
+
+            var margin = { top: 20, right: 20, bottom: 70, left: 40 },
+                width = 600 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+
+            var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+            var y = d3.scale.linear().range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom")
+                .tickFormat(d3.time.format("%y-%m-%d"));
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .ticks(10);
+
+            var svg = d3.select("#svg").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+            data.forEach(function (d) {
+                d.date = new Date(d.date);
+            });
+
+            x.domain(data.map(function (d) { return d.date; }));
+            y.domain([0, d3.max(data, function (d) { return d.items; })]);
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", "-.55em")
+                .attr("transform", "rotate(-90)");
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+
+            svg.selectAll("bar")
+                .data(data)
+                .enter().append("rect")
+                .style("fill", "steelblue")
+                .attr("x", function (d) { return x(d.date); })
+                .attr("width", x.rangeBand())
+                .attr("y", function (d) { return y(d.items); })
+                .attr("height", function (d) { return height - y(d.items); });
+
+        }
+
+        function displayDataList(items) {
+            table.clear().draw();
+
+            for (let i = 0; i < items.length; ++i) {
+                table.row.add([
+                    items[i].author,
+                    items[i].text,
+                    items[i].date,
+                    items[i].person
+                ]).draw();
+            }
+        }
+
+        function search(timeSpan, personEmail) {
+            $("#svg").empty();
+
+            $.ajax({
+                method: 'GET',
+                url: '/api/personStats/personCommentStats?personEmail=' + personEmail + '&timeSpan=' + timeSpan,
+                success: function (res) {
+                    drawLineChart(res.chartInfo);
+                    displayDataList(res.chartDtos);
+                },
+                error: function (res) {
+                    alert(res.statusText);
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            $('.personsSelect').select2({
+                ajax: defaultSelectAjax("/api/newsletter/users", item => ({ id: item.id, text: item.email }))
+            });
+
+            $('button#search-stats').click(function () {
+                search($('select[name="time-span"] option:selected').val(), $('.personsSelect option:selected').text());
+            });
+
+
+            $('select[name="time-span"]').change(function () {
+                search($('select[name="time-span"] option:selected').val(), $('.personsSelect option:selected').text());
+            });
+        });
+    </script>
+}
