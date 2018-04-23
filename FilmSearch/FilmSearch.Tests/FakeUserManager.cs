@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FilmSearch.Tests
 {
-    
+
     public class FakeUserManager : UserManager<AppUser>
     {
         public FakeUserManager()
@@ -37,8 +37,8 @@ namespace FilmSearch.Tests
                 UserName = "name"
             });
         }
-        
-      
+
+
         public override IQueryable<AppUser> Users => new List<AppUser>()
         {
                 new AppUser()
@@ -50,5 +50,21 @@ namespace FilmSearch.Tests
                 }
         }.AsQueryable();
 
+        public override Task<IdentityResult> CreateAsync(AppUser user, string password)
+        {
+            //return new Task<IdentityResult>(() => { return new IdentityResult(); });
+            return Task.FromResult<IdentityResult>(new FakeIdentityResult(user.UserName == "Name"));
+        }
+        public override Task<AppUser> FindByEmailAsync(string email)
+        {
+            return Task.FromResult<AppUser>(new AppUser() { Email="example@gmail.com",Id="1",UserName="Name"});
+        }
     }
+    class FakeIdentityResult : IdentityResult
+        {
+            public FakeIdentityResult(bool toRet) : base()
+        {
+            Succeeded = toRet;
+        }
+        }
 }

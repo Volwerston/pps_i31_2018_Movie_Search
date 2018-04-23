@@ -80,6 +80,8 @@ namespace FilmSearch.Tests.Tests.Controllers
 
             var result = (PC.Create(pvm) as ViewResult);
             uow.Verify(x => x.Save());
+            var result2 = PC.Create() as ViewResult;
+            result2.Should().NotBeNull();
         }
         [Fact]
         public void DeleteTest()
@@ -101,6 +103,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Verify(x => x.PersonRepository.Delete(id));
             uow.Verify(x => x.Save());
         }
+        /*
         [Fact]
         public void EditTest()
         {
@@ -152,10 +155,10 @@ namespace FilmSearch.Tests.Tests.Controllers
             var physicalFile = new FileInfo("filePath");
             var ms = new MemoryStream();
            
-            using (StreamWriter SW = new StreamWriter(@"D:\net-core_1\net-core\FilmSearch\FilmSearch.Tests\bin\Debug\netcoreapp2.0\filePath"))
-            {
-                SW.Write("smth");
-            }
+           // using (StreamWriter SW = new StreamWriter(@"D:\net-core_1\net-core\FilmSearch\FilmSearch.Tests\bin\Debug\netcoreapp2.0\filePath"))
+           // {
+           //     SW.Write("smth");
+            //}
             var writer = new StreamWriter(ms);
             writer.Write(physicalFile.OpenRead());
             //D:\repos\night\pps_i31_2018_Movie_Search\FilmSearch\FilmSearch.Tests\bin\Debug\netcoreapp2.0\filePath
@@ -180,7 +183,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             var result2 = PC.Edit(pvm) as ViewResult;
             uow.Verify(x => x.Save());
         }
-        
+        */
         [Fact]
         public void SearchTest()
         {
@@ -209,7 +212,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Verify(x => x.Save());
 
         }
-        /*
+        
         [Fact]
         public void DetailsTest()
         {
@@ -219,12 +222,13 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Setup(x => x.PersonRepository.GetByKey((long)id)).Returns(fakePerson.Where(x => x.Id == id).FirstOrDefault());
             uow.Setup(x => x.FileRepository.GetByKey((long)id)).Returns(new Models.File() {Path="D:\\storage",FileType="jpg" });
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
-            PersonService ps = new PersonService(uow.Object);
+            PersonService ps = new FakePersonService(uow.Object);
             PersonController PC = new PersonController(uow.Object, env.Object, ps, um);
 
             var result = PC.Details(id) as ViewResult;
             result.Should().NotBeNull();
-        }*/
+        }
+
         List<Person> fakePerson = new List<Person>()
         {
             new Person()

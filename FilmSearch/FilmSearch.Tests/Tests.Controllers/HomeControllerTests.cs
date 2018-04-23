@@ -4,11 +4,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Xunit;
 
@@ -41,17 +43,28 @@ namespace FilmSearch.Tests.Tests.Controllers
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
             HomeController HC = new HomeController(logger.Object, env.Object);
             //HC.HttpContext.Features.Set<IExceptionHandlerPathFeature>(null);
-            try
-            {
-                var result = HC.Error() as ViewResult;
-                result.Should().NotBeNull();
-            }
-            catch
-            {
-                Assert.True(true);
-            }
-            
+            //HC.ControllerContext = new ControllerContext() { HttpContext = new HttpContext() };// (context.Object, new RouteData(), controller);
+            //
+            HC.ControllerContext = new ControllerContext();
+            HC.ControllerContext.HttpContext = new DefaultHttpContext();
+
+                //var result = HC.Error() as ViewResult;
+                //result.Should().NotBeNull();
+            HC.ControllerContext.HttpContext.Request.Headers["device-id"] = "20317";
+            HC.HttpContext.Features.Set(new FakeExceptionHandlerPathFeature() as IExceptionHandlerPathFeature);
+            var b = HC.HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            var result = HC.Error() as ViewResult;
+            result.Should().NotBeNull();
+
         }
         
     }
+    class FakeExceptionHandlerPathFeature : IExceptionHandlerPathFeature
+    {
+        public string Path => "path";
+        public string ConnectionId = "test";
+        public Exception Error => new Exception("cup", new Exception("inner"));
+        public FakeExceptionHandlerPathFeature() : base() { }
+    }
+   
 }

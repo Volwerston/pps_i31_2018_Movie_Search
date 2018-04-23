@@ -68,23 +68,17 @@ namespace FilmSearch.Tests.Tests.Controllers
         {
             UserManager<AppUser> um = new FakeUserManager();
             Mock<IUserValidator<AppUser>> uv = new Mock<IUserValidator<AppUser>>();
-            uv.Setup(x => x.ValidateAsync(um, new AppUser()
-            {
-                Id = "1",
-                AccessFailedCount = 1,
-                Email = "examle@smth.com",
-                UserName = "name",
-                EmailConfirmed=false,
-                LockoutEnabled=false,
-                PhoneNumberConfirmed=false,
-                TwoFactorEnabled=false,
-                Surname="surname"
-            })).Returns(Task.FromResult(IdentityResult.Success));
+            var failed = Task.FromResult(IdentityResult.Failed());
+            //Console.Write(failed.Errors);
+            uv.Setup(x => x.ValidateAsync(um, It.IsAny<AppUser>())).Returns(failed);
+            //uv.Setup(x => x.ValidateAsync(um, fakeUser)).Returns(Task.FromResult(IdentityResult.Success));
+            uv.Setup(x => x.ValidateAsync(um, It.Is<AppUser>(a => a == fakeUser))).Returns(Task.FromResult(IdentityResult.Success));
             AccountController AC = new AccountController(um, uv.Object);
 
-            var result = AC.Index().Result;
+            var result = AC.Index();
             result.Should().NotBeNull();
            var result2 = AC.Index(new AppUserViewModel() {Name="name",Surname="surname" });
+            result2 = AC.Index(new AppUserViewModel() { Name = "asd", Surname = "sde" });
             result2.Should().NotBeNull();
         }
         [Fact]
@@ -97,6 +91,17 @@ namespace FilmSearch.Tests.Tests.Controllers
             var result = (AC.Ban() as ViewResult).Model as List<AppUser>;
             result.Should().NotBeNull();
         }
-
+        AppUser fakeUser = new AppUser()
+        {
+            Id = "1",
+            AccessFailedCount = 1,
+            Email = "examle@smth.com",
+            UserName = "name",
+            EmailConfirmed = false,
+            LockoutEnabled = false,
+            PhoneNumberConfirmed = false,
+            TwoFactorEnabled = false,
+            Surname = "surname"
+        };
     }
 }
