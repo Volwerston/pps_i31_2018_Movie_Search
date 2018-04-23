@@ -1,4 +1,5 @@
-﻿using FilmSearch.Models;
+﻿using System;
+using FilmSearch.Models;
 using FilmSearch.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,11 @@ namespace FilmSearch.DAL
     {
         public FilmSearchContext(DbContextOptions<FilmSearchContext> options):
             base(options)
+        {
+        }
+
+        public FilmSearchContext(string connectionString):
+            base(new DbContextOptionsBuilder<FilmSearchContext>().UseNpgsql(connectionString).Options)
         {
         }
 

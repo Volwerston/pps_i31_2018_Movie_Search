@@ -14,6 +14,7 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FilmSearch.Analytics\FilmSearch.Analytics.fsproj" />
     <ProjectReference Include="..\FilmSearch.DAL\FilmSearch.DAL.csproj" />
     <ProjectReference Include="..\FilmSearch.DAL\FilmSearch.DAL.csproj" />
     <ProjectReference Include="..\FilmSearch.DAL\FilmSearch.DAL.csproj" />
