@@ -90,5 +90,12 @@ namespace FilmSearch.Controllers
 
             return RedirectToAction("Index", "Account");
         }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult PersonStats()
+        {
+            return View();
+        }
+    
     }
 }

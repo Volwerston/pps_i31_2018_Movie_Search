@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using FilmSearch.DAL;
 using FilmSearch.Models;
+using FilmSearch.Models.DTO;
+using FilmSearch.Models.Entities;
 
 namespace FilmSearch.Services
 {
@@ -31,6 +33,27 @@ namespace FilmSearch.Services
             File img = _unitOfWork.FileRepository.GetByKey(person.PhotoId);
 
             return (person, $"data:{img.FileType};base64,{FileManager.GetBase64File(img.Path)}");
+        }
+
+        public IEnumerable<PersonCommentChartDTO> GetCommentChartList(IEnumerable<PersonComment> comments, string userEmail)
+        {
+            List<PersonCommentChartDTO> toReturn = new List<PersonCommentChartDTO>();
+
+            foreach (var comment in comments)
+            {
+                Person estimated = _unitOfWork.PersonRepository.GetByKey(comment.PersonId);
+                PersonCommentChartDTO toAdd = new PersonCommentChartDTO()
+                { 
+                    Text = comment.Text,
+                    Date = comment.CreationDate,
+                    Author =  userEmail,
+                    Person = estimated.FullName
+                };
+
+                toReturn.Add(toAdd);
+            }
+
+            return toReturn;
         }
 
         public double RatePersonRole(long personRole, string userId, long performance)

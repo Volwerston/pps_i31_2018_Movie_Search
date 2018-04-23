@@ -41,7 +41,8 @@ namespace FilmSearch.Controllers
             {
                Email = toRegister.Email,
                UserName = toRegister.Name,
-               Surname = toRegister.Surname
+               Surname = toRegister.Surname,
+               EmailConfirmed = true
             };
 
             IdentityResult result = await userManager.CreateAsync(newUser, toRegister.Password);
