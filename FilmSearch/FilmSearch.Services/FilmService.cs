@@ -48,6 +48,10 @@ namespace FilmSearch.Services
                 var photo = _unitOfWork.FileRepository.GetByKey(film.Photo.Id);
                 film.Photo = photo;
             }
+            else
+            {
+                film.Photo = null;
+            }
 
             _unitOfWork.PersonRoleRepository.DeletePersonRolesByFilm(film.Id);
             _unitOfWork.FilmGenreRepository.DeleteFilmGenresByFilmId(film.Id);
@@ -80,10 +84,14 @@ namespace FilmSearch.Services
 
         public Film AddFilm(Film film, Person directorModel, IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
         {
-            if (film?.Photo.Id != 0)
+            if (film.Photo?.Id != 0)
             {
                 var photo = _unitOfWork.FileRepository.GetByKey(film.Photo.Id);
                 film.Photo = photo;
+            }
+            else
+            {
+                film.Photo = null;
             }
             
             _unitOfWork.FilmRepository.Add(film);

@@ -73,22 +73,19 @@
 
         function saveMovie(photoId) {
             var title = document.getElementById("title").value;
-            var stop = requireNonNull(title,
-                () => {
+            var stop = requireNonNull(title, () => {
                     document.getElementById("titleValidation").innerHTML = "Title is not set";
                 });
             if (stop) return;
 
             var releaseDate = convertToDefaultDateFormat(document.getElementById("releaseDate").value);
-            var stop = requireNonNull(releaseDate,
-                () => {
+            var stop = requireNonNull(releaseDate, () => {
                     document.getElementById("releaseDateValidation").innerHTML = "Release date is not set";
                 });
             if (stop) return;
 
             var description = document.getElementById("description").value;
-            var stop = requireNonNull(description,
-                () => {
+            var stop = requireNonNull(description, () => {
                     document.getElementById("descriptionValidation").innerHTML = "Description is not set";
                 });
 
@@ -143,7 +140,7 @@
                     },
                     error: function(jqXHR, textStatus, errorMessage) {
                         document.getElementById("allValidation").innerHTML = "Failed to upload file";
-                        console.log(errorMessage); // Optional
+                        console.log(errorMessage);
                     }
                 });
             } else {

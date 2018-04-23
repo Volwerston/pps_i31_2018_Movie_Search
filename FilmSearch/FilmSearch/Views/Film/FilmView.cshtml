@@ -96,48 +96,42 @@
         var id = (@Model.Film.Id);
         document.getElementById("releaseDate").value = convertFromDefaultDateFormat("@Model.Film.ReleaseDate");
 
-        //
-        var initials1 = [];
+        var initials = [];
         @foreach (var genre in Model.Film.Genres ?? new List<Genre>())
         {
             <text>
-                initials1.push({ id: @genre.Id, text: '@genre.Name' });
+                initials.push({ id: @genre.Id, text: '@genre.Name' });
             </text>
         }
         $('#genresSelect').select2({
-            data: initials1,
+            data: initials,
             ajax: defaultSelectAjax("/api/film/genres", item => ({ id: item.id, text: item.name }))
         });
-        $('#genresSelect').val(initials1.map(o => o.id)).trigger('change');
-        //
+        $('#genresSelect').val(initials.map(o => o.id)).trigger('change');
         
-        
-        //
-        var initials2 = [];
+        initials = [];
         @foreach (var actor in Model.Film.Actors ?? new List<Person>())
         {
             <text>
-                initials2.push({ id: @actor.Id, text: '@actor.FullName' });
+                initials.push({ id: @actor.Id, text: '@actor.FullName' });
             </text>
         }
         $('#actorsSelect').select2({
-            data: initials2,
+            data: initials,
             ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
         });
-        $('#actorsSelect').val(initials2.map(o => o.id)).trigger('change');
-        //
-
+        $('#actorsSelect').val(initials.map(o => o.id)).trigger('change');
         
-        //
-        var initials3 = [];
+        
+        initials = [];
         @if (Model.Film.Director != null)
         {
             <text>
-                initials3.push({ id: @Model.Film.Director.Id, text: '@Model.Film.Director.FullName' });
+                initials.push({ id: @Model.Film.Director.Id, text: '@Model.Film.Director.FullName' });
             </text>
         }
         $('#directorSelect').select2({
-            data: initials3,
+            data: initials,
             ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
         });
         @if (Model.Film.Director != null)
@@ -146,7 +140,6 @@
                 $('#directorSelect').val('@Model.Film.Director.Id');
             </text>
         }
-        //
         
 
 
