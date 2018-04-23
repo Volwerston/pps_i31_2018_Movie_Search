@@ -31,7 +31,7 @@
             <select class="personsSelect form-control" id="usersSelect"></select>
         </div>
         <div class="form-group">
-            <button type="button" id="search-stats" class="btn btn-info btn-block">Search</button>
+            <button type="button" id="search-person-stats" class="btn btn-info btn-block">Search</button>
         </div>
     </div>
 </div>
@@ -41,7 +41,7 @@
         <div class="col-sm-6 col-sm-push-3">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <select name="time-span" class="form-control">
+                    <select name="time-span-person" class="form-control">
                         <option value="day">Today</option>
                         <option value="week">Week</option>
                         <option value="month">Month</option>
@@ -54,10 +54,58 @@
     </div>
     <div class="row">
         <div class="col-md-8 col-md-push-2">
-            <div id="svg"></div>
+            <h2 class="text-center">Person comments statistics</h2>
+            <div id="person-comment-svg"></div>
             <div class="row">
                 <div class="col-xs-12">
-                    <table class="display" style="width:100%">
+                    <table id="person-comments" class="display" style="width: 100%">
+                        <thead>
+                        <tr>
+                            <th>
+                                Author
+                            </th>
+                            <th>
+                                Text
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th>
+                                Person
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="person-comment-container"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row well" style="margin-top: 15px;">
+    <div class="row">
+        <div class="col-sm-6 col-sm-push-3">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <select name="time-span-post" class="form-control">
+                        <option value="day">Today</option>
+                        <option value="week">Week</option>
+                        <option value="month">Month</option>
+                        <option value="year">Year</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-push-2">
+            <h2 class="text-center">Post comments statistics</h2>
+            <div id="post-comment-svg"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table id="post-comments" class="display" style="width: 100%">
                         <thead>
                             <tr>
                                 <th>
@@ -70,11 +118,14 @@
                                     Date
                                 </th>
                                 <th>
-                                    Person
+                                    Post Title
+                                </th>
+                                <th>
+                                    Written By
                                 </th>
                             </tr>
                         </thead>
-                        <tbody id="person-comment-container"></tbody>
+                        <tbody id="post-comment-container"></tbody>
                     </table>
                 </div>
             </div>
@@ -90,7 +141,7 @@
     <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
 
-        var table = $("table").DataTable({
+        var tablePersonComments = $("table#person-comments").DataTable({
             scrollX: true,
             scrollCollapse: true,
             autoWidth: true,
@@ -100,7 +151,17 @@
             ]
         });
 
-        function drawLineChart(data) {
+        var tablePostComments = $("table#post-comments").DataTable({
+            scrollX: true,
+            scrollCollapse: true,
+            autoWidth: true,
+            paging: true,
+            columnDefs: [
+                { "width": "50px", "targets": [0, 1, 2] }
+            ]
+        });
+
+        function drawLineChart(data, selector) {
 
             var margin = { top: 20, right: 20, bottom: 70, left: 40 },
                 width = 600 - margin.left - margin.right,
@@ -120,7 +181,7 @@
                 .orient("left")
                 .ticks(10);
 
-            var svg = d3.select("#svg").append("svg")
+            var svg = d3.select(selector).append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
@@ -164,11 +225,11 @@
 
         }
 
-        function displayDataList(items) {
-            table.clear().draw();
+        function displayPersonCommentList(items) {
+            tablePersonComments.clear().draw();
 
             for (let i = 0; i < items.length; ++i) {
-                table.row.add([
+                tablePersonComments.row.add([
                     items[i].author,
                     items[i].text,
                     items[i].date,
@@ -177,15 +238,45 @@
             }
         }
 
-        function search(timeSpan, personEmail) {
-            $("#svg").empty();
+        function displayPostCommentList(items) {
+            tablePostComments.clear().draw();
+
+            for (let i = 0; i < items.length; ++i) {
+                tablePostComments.row.add([
+                    items[i].author,
+                    items[i].text,
+                    items[i].date,
+                    items[i].postTitle,
+                    items[i].writtenBy
+                ]).draw();
+            }
+        }
+
+        function searchPersonComment(timeSpan, personEmail) {
+            $("#person-comment-svg").empty();
 
             $.ajax({
                 method: 'GET',
                 url: '/api/personStats/personCommentStats?personEmail=' + personEmail + '&timeSpan=' + timeSpan,
                 success: function (res) {
-                    drawLineChart(res.chartInfo);
-                    displayDataList(res.chartDtos);
+                    drawLineChart(res.chartInfo, '#person-comment-svg');
+                    displayPersonCommentList(res.chartDtos);
+                },
+                error: function (res) {
+                    alert(res.statusText);
+                }
+            });
+        }
+
+        function searchPostComment(timeSpan, personEmail) {
+            $("#post-comment-svg").empty();
+
+            $.ajax({
+                method: 'GET',
+                url: '/api/personStats/postCommentStats?personEmail=' + personEmail + '&timeSpan=' + timeSpan,
+                success: function (res) {
+                    drawLineChart(res.chartInfo, '#post-comment-svg');
+                    displayPostCommentList(res.chartDtos);
                 },
                 error: function (res) {
                     alert(res.statusText);
@@ -199,13 +290,20 @@
                 ajax: defaultSelectAjax("/api/newsletter/users", item => ({ id: item.id, text: item.email }))
             });
 
-            $('button#search-stats').click(function () {
-                search($('select[name="time-span"] option:selected').val(), $('.personsSelect option:selected').text());
+            $('button#search-person-stats').click(function () {
+                searchPersonComment($('select[name="time-span-person"] option:selected').val(), $('.personsSelect option:selected').text());
+                searchPostComment($('select[name="time-span-post"] option:selected').val(),
+                    $('.personsSelect option:selected').text());
             });
 
 
-            $('select[name="time-span"]').change(function () {
-                search($('select[name="time-span"] option:selected').val(), $('.personsSelect option:selected').text());
+            $('select[name="time-span-person"]').change(function () {
+                searchPersonComment($('select[name="time-span-person"] option:selected').val(), $('.personsSelect option:selected').text());
+            });
+
+
+            $('select[name="time-span-post"]').change(function () {
+                searchPostComment($('select[name="time-span-post"] option:selected').val(), $('.personsSelect option:selected').text());
             });
         });
     </script>

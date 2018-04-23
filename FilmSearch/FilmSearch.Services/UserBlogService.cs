@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FilmSearch.DAL;
 using FilmSearch.Models;
+using FilmSearch.Models.DTO;
 using FilmSearch.Utils;
 using Microsoft.AspNetCore.Identity;
 
@@ -74,6 +75,30 @@ namespace FilmSearch.Services
             
             _unitOfWork.PostCommentRepository.Add(comment);
             _unitOfWork.Save();
+        }
+
+        public List<PostCommentChartDTO> GetCommentChartList(IEnumerable<PostComment> pc, string personEmail)
+        {
+            List<PostCommentChartDTO> toReturn = new List<PostCommentChartDTO>();
+
+            foreach (var postComment in pc)
+            {
+                Post post = _unitOfWork.PostRepository.GetByKey(postComment.PostId);
+                AppUser postAuthor = _userManager.FindByIdAsync(postComment.AuthorId).Result;
+
+                PostCommentChartDTO toAdd = new PostCommentChartDTO()
+                {
+                    Author =  personEmail,
+                    Date =  postComment.CreationDate,
+                    PostTitle = post.Title,
+                    WrittenBy = $"{postAuthor.UserName} {postAuthor.Surname}",
+                    Text = postComment.Text
+                };
+
+                toReturn.Add(toAdd);
+            }
+
+            return toReturn;
         }
 
         public List<PostComment> GetPostComments(long postId)
