@@ -69,7 +69,7 @@
                             }
 
 
-                            <label class="control-label">General estimate: <span id="score-@(role.Id)">@(role.Performance)</span></label>
+                            <label class="control-label">General estimate: <span id="score-@(role.Id)">@(Math.Round(role.Performance, 2))</span></label>
                         </div>
                     }
 
