@@ -24,17 +24,23 @@
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
 }
 
+<br/>
 <div class="row" style="margin-top: 15px">
-    <div class="col-sm-6 col-sm-push-3">
+    <div class="col-sm-8 col-sm-push-2">
         <div class="form-group">
-            <label class="control-label">Select user email</label>
-            <select class="personsSelect form-control" id="usersSelect"></select>
-        </div>
-        <div class="form-group">
-            <button type="button" id="search-person-stats" class="btn btn-info btn-block">Search</button>
+            <div class="col-sm-3">
+                <label class="control-label pull-right">Select email:</label>
+            </div>
+            <div class="col-sm-5">
+                <select class="personsSelect form-control" id="usersSelect"></select>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" id="search-person-stats" class="btn btn-info btn-block">Search</button>
+            </div>
         </div>
     </div>
 </div>
+<br/>
 
 <div class="row well" style="margin-top: 15px;">
     <div class="row">
@@ -46,7 +52,7 @@
                         <option value="week">Week</option>
                         <option value="month">Month</option>
                         <option value="year">Year</option>
-                        <option value="all">All</option>
+                        @*<option value="all">All</option>*@
                     </select>
                 </div>
             </div>
@@ -60,20 +66,20 @@
                 <div class="col-xs-12">
                     <table id="person-comments" class="display" style="width: 100%">
                         <thead>
-                        <tr>
-                            <th>
-                                Author
-                            </th>
-                            <th>
-                                Text
-                            </th>
-                            <th>
-                                Date
-                            </th>
-                            <th>
-                                Person
-                            </th>
-                        </tr>
+                            <tr>
+                                <th>
+                                    Author
+                                </th>
+                                <th>
+                                    Text
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Person
+                                </th>
+                            </tr>
                         </thead>
                         <tbody id="person-comment-container"></tbody>
                     </table>
@@ -93,7 +99,7 @@
                         <option value="week">Week</option>
                         <option value="month">Month</option>
                         <option value="year">Year</option>
-                        <option value="all">All</option>
+                        @*<option value="all">All</option>*@
                     </select>
                 </div>
             </div>
@@ -161,7 +167,7 @@
             ]
         });
 
-        function drawLineChart(data, selector) {
+        function drawLineChart(data, selector, timeSpan) {
 
             var margin = { top: 20, right: 20, bottom: 70, left: 40 },
                 width = 600 - margin.left - margin.right,
@@ -171,10 +177,13 @@
 
             var y = d3.scale.linear().range([height, 0]);
 
+
+            var timeFormat = (timeSpan !== "year") ? "%d %b" : "%b";
+
             var xAxis = d3.svg.axis()
                 .scale(x)
                 .orient("bottom")
-                .tickFormat(d3.time.format("%y-%m-%d"));
+                .tickFormat(d3.time.format(timeFormat));
 
             var yAxis = d3.svg.axis()
                 .scale(y)
@@ -186,14 +195,14 @@
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+                    "translate(" + margin.left + "," + margin.top + ")");
 
-            data.forEach(function (d) {
+            data.forEach(function(d) {
                 d.date = new Date(d.date);
             });
 
-            x.domain(data.map(function (d) { return d.date; }));
-            y.domain([0, d3.max(data, function (d) { return d.items; })]);
+            x.domain(data.map(function(d) { return d.date; }));
+            y.domain([0, d3.max(data, function(d) { return d.items; })]);
 
             svg.append("g")
                 .attr("class", "x axis")
@@ -218,10 +227,10 @@
                 .data(data)
                 .enter().append("rect")
                 .style("fill", "steelblue")
-                .attr("x", function (d) { return x(d.date); })
+                .attr("x", function(d) { return x(d.date); })
                 .attr("width", x.rangeBand())
-                .attr("y", function (d) { return y(d.items); })
-                .attr("height", function (d) { return height - y(d.items); });
+                .attr("y", function(d) { return y(d.items); })
+                .attr("height", function(d) { return height - y(d.items); });
 
         }
 
@@ -253,57 +262,70 @@
         }
 
         function searchPersonComment(timeSpan, personEmail) {
+
+            if (personEmail === "") return;
+
             $("#person-comment-svg").empty();
 
             $.ajax({
                 method: 'GET',
                 url: '/api/personStats/personCommentStats?personEmail=' + personEmail + '&timeSpan=' + timeSpan,
-                success: function (res) {
-                    drawLineChart(res.chartInfo, '#person-comment-svg');
+                success: function(res) {
+                    if (res.chartInfo.length > 0) {
+                        drawLineChart(res.chartInfo, '#person-comment-svg', timeSpan);
+                    }
                     displayPersonCommentList(res.chartDtos);
                 },
-                error: function (res) {
+                error: function(res) {
                     alert(res.statusText);
                 }
             });
         }
 
         function searchPostComment(timeSpan, personEmail) {
+
+            if (personEmail === "") return;
+
             $("#post-comment-svg").empty();
 
             $.ajax({
                 method: 'GET',
                 url: '/api/personStats/postCommentStats?personEmail=' + personEmail + '&timeSpan=' + timeSpan,
                 success: function (res) {
-                    drawLineChart(res.chartInfo, '#post-comment-svg');
+                    if (res.chartInfo.length > 0) {
+                        drawLineChart(res.chartInfo, '#post-comment-svg', timeSpan);
+                    }               
                     displayPostCommentList(res.chartDtos);
                 },
-                error: function (res) {
+                error: function(res) {
                     alert(res.statusText);
                 }
             });
         }
 
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('.personsSelect').select2({
                 ajax: defaultSelectAjax("/api/newsletter/users", item => ({ id: item.id, text: item.email }))
             });
 
-            $('button#search-person-stats').click(function () {
-                searchPersonComment($('select[name="time-span-person"] option:selected').val(), $('.personsSelect option:selected').text());
+            $('button#search-person-stats').click(function() {
+                searchPersonComment($('select[name="time-span-person"] option:selected').val(),
+                    $('.personsSelect option:selected').text());
                 searchPostComment($('select[name="time-span-post"] option:selected').val(),
                     $('.personsSelect option:selected').text());
             });
 
 
-            $('select[name="time-span-person"]').change(function () {
-                searchPersonComment($('select[name="time-span-person"] option:selected').val(), $('.personsSelect option:selected').text());
+            $('select[name="time-span-person"]').change(function() {
+                searchPersonComment($('select[name="time-span-person"] option:selected').val(),
+                    $('.personsSelect option:selected').text());
             });
 
 
-            $('select[name="time-span-post"]').change(function () {
-                searchPostComment($('select[name="time-span-post"] option:selected').val(), $('.personsSelect option:selected').text());
+            $('select[name="time-span-post"]').change(function() {
+                searchPostComment($('select[name="time-span-post"] option:selected').val(),
+                    $('.personsSelect option:selected').text());
             });
         });
     </script>

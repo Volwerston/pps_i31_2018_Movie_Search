@@ -18,7 +18,7 @@ namespace FilmSearch.Controllers.API
 {
     [Produces("application/json")]
     [Route("api/personStats")]
-    [Authorize/*(Roles="Administrator")*/]
+    [Authorize(Roles = "Administrator")]
     public class PersonStatsApiController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -45,11 +45,24 @@ namespace FilmSearch.Controllers.API
 
             pc = Filter(timeSpan, pc, x => x.CreationDate);
 
-            List<LineDateChartDTO> dlc = pc.GroupBy(x => x.CreationDate).Select(y => new LineDateChartDTO()
+            List<LineDateChartDTO> dlc = null;
+
+            if (timeSpan != "year")
             {
-                Date   = DateTime.ParseExact(y.Key, "M/d/yyyy", CultureInfo.InvariantCulture),
-                Items = y.Count()
-            }).ToList();
+                dlc = pc.GroupBy(x => x.CreationDate).Select(y => new LineDateChartDTO()
+                {
+                    Date = DateTime.ParseExact(y.Key, "M/d/yyyy", CultureInfo.InvariantCulture),
+                    Items = y.Count()
+                }).OrderBy(x => x.Date).ToList();
+            }
+            else
+            {
+                dlc = pc.GroupBy(x => DateTime.ParseExact(x.CreationDate, "M/d/yyyy", CultureInfo.InvariantCulture).Month).Select(y => new LineDateChartDTO()
+                {
+                    Date = DateTime.ParseExact(y.First().CreationDate, "M/d/yyyy", CultureInfo.InvariantCulture),
+                    Items = y.Count()
+                }).OrderBy(x => x.Date.Month).ToList();
+            }
 
             return Json(new StatisticsResult<PersonCommentChartDTO>()
             {
@@ -69,11 +82,25 @@ namespace FilmSearch.Controllers.API
 
             pc = Filter(timeSpan, pc, x=>x.CreationDate);
 
-            List<LineDateChartDTO> dlc = pc.GroupBy(x => x.CreationDate).Select(y => new LineDateChartDTO()
+            List<LineDateChartDTO> dlc = null;
+
+            if (timeSpan != "year")
             {
-                Date = DateTime.ParseExact(y.Key, "M/d/yyyy", CultureInfo.InvariantCulture),
-                Items = y.Count()
-            }).ToList();
+                dlc = pc.GroupBy(x => x.CreationDate).Select(y => new LineDateChartDTO()
+                {
+                    Date = DateTime.ParseExact(y.Key, "M/d/yyyy", CultureInfo.InvariantCulture),
+                    Items = y.Count()
+                }).OrderBy(x => x.Date).ToList();
+            }
+            else
+            {
+                dlc = pc.GroupBy(x => DateTime.ParseExact(x.CreationDate, "M/d/yyyy", CultureInfo.InvariantCulture).Month).Select(y => new LineDateChartDTO()
+                {
+                    Date = DateTime.ParseExact(y.First().CreationDate, "M/d/yyyy", CultureInfo.InvariantCulture),
+                    Items = y.Count()
+                }).OrderBy(x => x.Date.Month).ToList();
+            }
+           
 
             return Json(new StatisticsResult<PostCommentChartDTO>()
             {
@@ -91,22 +118,22 @@ namespace FilmSearch.Controllers.API
                 case "day":
                     return toFilter
                         .Where(x => 
-                            (DateTime.Now - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture)).TotalDays == 0
+                            Math.Abs((DateTime.Now.Date - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture).Date).Days) <= 1
                             );
                 case "week":
                     return toFilter
                         .Where(x =>
-                            (DateTime.Now - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture)).TotalDays <= 7
+                            Math.Abs((DateTime.Now.Date - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture).Date).Days) <= 7
                             );
                 case "month":
                     return toFilter
                         .Where(x =>
-                            (DateTime.Now - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture)).TotalDays <= 30
+                            Math.Abs((DateTime.Now.Date - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture).Date).Days) <= 30
                         );
                 case "year":
                     return toFilter
                         .Where(x =>
-                            (DateTime.Now - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture)).TotalDays <= 365
+                            Math.Abs((DateTime.Now - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture)).Days) <= 365
                         );
                 default:
                     return toFilter;
