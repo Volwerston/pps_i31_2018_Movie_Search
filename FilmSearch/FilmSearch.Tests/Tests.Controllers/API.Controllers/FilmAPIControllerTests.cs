@@ -62,7 +62,7 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
             {
                 Assert.True(true);
             }
-            
+
         }
         [Fact]
         public void GetGenresTest()

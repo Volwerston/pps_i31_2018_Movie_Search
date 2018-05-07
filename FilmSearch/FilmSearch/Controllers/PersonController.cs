@@ -22,7 +22,7 @@ namespace FilmSearch.Controllers
         private PersonService personService;
         private UserManager<AppUser> _userManager;
 
-        private string GetUserId() => this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+       private string GetUserId() => this.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
         public PersonController(IUnitOfWork uow, IHostingEnvironment _env, PersonService _personService, UserManager<AppUser> userMgr)
         {

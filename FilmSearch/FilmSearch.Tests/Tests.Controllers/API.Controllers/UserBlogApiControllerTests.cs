@@ -45,14 +45,25 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
         public void DeleteCommentsToPost()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            uow.Setup(x => x.PostCommentRepository.GetByKey(1)).Returns(fakePostComments.Where(x => x.Id == 1).FirstOrDefault());
-            uow.Setup(x => x.PostCommentRepository.GetPostComments(1)).Returns(fakePostComments);
+            uow.Setup(x => x.PostCommentRepository.GetByKey((long)10)).Returns(new PostComment()
+            {
+                Id=1
+            }
+            );
+            uow.Setup(x => x.PostCommentRepository.GetPostComments((long)10)).Returns(new List<PostComment>()
+            {
+                new PostComment()
+                {
+                    Id=10
+                }
+            }
+            );
             
             UserManager<AppUser> um = new FakeUserManager();
             UserBlogService ubs = new UserBlogService(uow.Object, um);
             UserBlogApiController UBC = new UserBlogApiController(ubs);
 
-            var result = UBC.DeleteCommentsToPost(1) as EmptyResult;
+            var result = UBC.DeleteCommentsToPost(10) as EmptyResult;
             uow.Verify(x => x.PostCommentRepository.Delete(It.IsAny<long>()));
             
         }

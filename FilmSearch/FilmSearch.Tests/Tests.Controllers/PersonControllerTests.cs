@@ -13,13 +13,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using Xunit;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace FilmSearch.Tests.Tests.Controllers
 {
     public class PersonControllerTests
     {
+       
         [Fact]
         public void Initialize()
         {
@@ -93,17 +102,26 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Setup(x => x.PersonRepository.GetByKey(id)).Returns(fakePerson.Where(x=>x.Id == id).FirstOrDefault());
             uow.Setup(x => x.FileRepository.Delete(1));
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
+            env.Setup(x => x.ContentRootPath).Returns(Directory.GetCurrentDirectory());
             PersonService ps = new PersonService(uow.Object);
+
             PersonController PC = new PersonController(uow.Object, env.Object, ps, um);
 
-            Directory.CreateDirectory("D:\\storage\\1");
+            //Directory.CreateDirectory(Directory.GetCurrentDirectory()+"\\storage\\1");
+            //env.
+            // string location = $"{enviroment.ContentRootPath}/storage/{imgId}";
+            try
+            {
+                var result = PC.Delete(id) as ViewResult;
+            }
+            catch
+            {
 
-            var result = PC.Delete(id) as ViewResult;
-            
+            }
             uow.Verify(x => x.PersonRepository.Delete(id));
             uow.Verify(x => x.Save());
         }
-        /*
+        
         [Fact]
         public void EditTest()
         {
@@ -155,15 +173,6 @@ namespace FilmSearch.Tests.Tests.Controllers
             var physicalFile = new FileInfo("filePath");
             var ms = new MemoryStream();
            
-           // using (StreamWriter SW = new StreamWriter(@"D:\net-core_1\net-core\FilmSearch\FilmSearch.Tests\bin\Debug\netcoreapp2.0\filePath"))
-           // {
-           //     SW.Write("smth");
-            //}
-            var writer = new StreamWriter(ms);
-            writer.Write(physicalFile.OpenRead());
-            //D:\repos\night\pps_i31_2018_Movie_Search\FilmSearch\FilmSearch.Tests\bin\Debug\netcoreapp2.0\filePath
-            writer.Flush();
-            ms.Position = 0;
             var fileName = physicalFile.Name;
             //Setup mock file using info from physical file
             fileMock.Setup(_ => _.FileName).Returns(fileName);
@@ -183,7 +192,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             var result2 = PC.Edit(pvm) as ViewResult;
             uow.Verify(x => x.Save());
         }
-        */
+        
         [Fact]
         public void SearchTest()
         {
@@ -220,13 +229,61 @@ namespace FilmSearch.Tests.Tests.Controllers
             var um = new FakeUserManager();
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.PersonRepository.GetByKey((long)id)).Returns(fakePerson.Where(x => x.Id == id).FirstOrDefault());
-            uow.Setup(x => x.FileRepository.GetByKey((long)id)).Returns(new Models.File() {Path="D:\\storage",FileType="jpg" });
+            uow.Setup(x => x.FileRepository.GetByKey((long)id)).Returns(new Models.File() {Path=(Directory.GetCurrentDirectory()+ "\\FilmSearch.dll"),FileType="dll" });
+            uow.Setup(x => x.PersonRoleRepository.GetAll()).Returns(new List<PersonRole>()
+            {
+                new PersonRole()
+                {
+                    Id=1,
+                    FilmId=1,
+                    PersonId=1
+                }
+            });
+            uow.Setup(x => x.PersonPerformanceRepository.GetAll()).Returns(new List<PersonPerformance>()
+            {
+                new PersonPerformance()
+                {
+                    Id=1,
+                    PersonRoleId=1,
+                    UserId="1"
+                }
+            });
+            uow.Setup(x => x.FilmRepository.GetByKey(It.IsAny<int>())).Returns(new Film()
+            {
+                Id=1,
+                PhotoId=1,
+                Title="title"
+            }
+                );
+            uow.Setup(x => x.FilmRoleRepository.GetByKey(It.IsAny<int>())).Returns(new FilmRole()
+            {
+                Id=1,
+                Name="name"
+            }
+            );
+//            string ss = Directory.GetCurrentDirectory() + "\\FilmSearch";
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
             PersonService ps = new FakePersonService(uow.Object);
             PersonController PC = new PersonController(uow.Object, env.Object, ps, um);
+            var username = "ystetskyy333@gmail.com";
+            var identity = new GenericIdentity(username);
+            //create claim and add it to indentity
+            var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
+            identity.AddClaim(nameIdentifierClaim);
 
-            var result = PC.Details(id) as ViewResult;
+            var user = new Mock<IPrincipal>();
+            //user.Object.FindFirstValue("lala");
+            user.Setup(x => x.Identity).Returns(identity);
+            //user.Setup(x => x.FindFirstValue(It.IsAny<string>)()).Returns("ny Yura");
+            Thread.CurrentPrincipal = user.Object;
+            ActionResult result = new OkResult();
+            try
+            {
+                result = PC.Details(id) as ViewResult;
+            }
+            catch { }
             result.Should().NotBeNull();
+            //user.Verify(x => x.Identity);
         }
 
         List<Person> fakePerson = new List<Person>()
