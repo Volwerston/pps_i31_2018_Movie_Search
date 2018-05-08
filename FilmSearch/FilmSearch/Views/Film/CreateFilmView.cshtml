@@ -37,6 +37,11 @@
                 </select>
             </div>
             <div class="form-group">
+                <label class="control-label">Playwriter</label>
+                <select class="personsSelect form-control" id="playwriterSelect">
+                </select>
+            </div>
+            <div class="form-group">
                 <label class="control-label">Actors</label>
                 <select multiple class="personsSelect form-control" id="actorsSelect">
                 </select>
@@ -72,34 +77,36 @@
 
 
         function saveMovie(photoId) {
-            var title = document.getElementById("title").value;
-            var stop = requireNonNull(title, () => {
+            let title = document.getElementById("title").value;
+            
+            let stop = requireNonNull(title, () => {
                     document.getElementById("titleValidation").innerHTML = "Title is not set";
                 });
             if (stop) return;
 
             var releaseDate = convertToDefaultDateFormat(document.getElementById("releaseDate").value);
-            var stop = requireNonNull(releaseDate, () => {
+            stop = requireNonNull(releaseDate, () => {
                     document.getElementById("releaseDateValidation").innerHTML = "Release date is not set";
                 });
             if (stop) return;
 
             var description = document.getElementById("description").value;
-            var stop = requireNonNull(description, () => {
+            stop = requireNonNull(description, () => {
                     document.getElementById("descriptionValidation").innerHTML = "Description is not set";
                 });
-
             if (stop) return;
 
-            var director = getIds(document.getElementById("directorSelect"))[0];
-            var actors = getIds(document.getElementById("actorsSelect"));
-            var genres = getIds(document.getElementById("genresSelect"));
+            let director = getIds(document.getElementById("directorSelect"))[0];
+            let playwriter = getIds(document.getElementById("playwriterSelect"))[0];
+            let actors = getIds(document.getElementById("actorsSelect"));
+            let genres = getIds(document.getElementById("genresSelect"));
 
-            var requestData = {
+            let requestData = {
                 title: title,
                 releaseDate: releaseDate,
                 shortDescription: description,
                 director: director,
+                playwriter: playwriter,
                 actors: actors,
                 genres: genres,
                 photo: {

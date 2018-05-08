@@ -26,6 +26,8 @@ namespace FilmSearch.Models
         
         public List<Person> Actors { get; set; }
         
+        public Person Playwriter { get; set; }
+        
         public List<Genre> Genres { get; set; }
 
 
@@ -54,11 +56,12 @@ namespace FilmSearch.Models
                 Photo = film.Photo
             };
         }
-        public static FilmModel Of(Film film, List<Person> actors, Person director, List<Genre> genres)
+        public static FilmModel Of(Film film, List<Person> actors, Person director, Person playwriter, List<Genre> genres)
         {
             var filmViewModel = Of(film);
             filmViewModel.Actors = actors;
             filmViewModel.Director = director;
+            filmViewModel.Playwriter = playwriter;
             filmViewModel.Genres = genres.Select(g => new Genre
             {
                 Id = g.Id,

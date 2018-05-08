@@ -63,6 +63,7 @@ namespace FilmSearch.Migrations
             
             _unitOfWork.FilmRoleRepository.Add(new FilmRole {Name = "Actor"});
             _unitOfWork.FilmRoleRepository.Add(new FilmRole {Name = "Director"});
+            _unitOfWork.FilmRoleRepository.Add(new FilmRole {Name = "Playwriter"});
         }
 
         private void PrePopulatePersons()

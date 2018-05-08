@@ -58,6 +58,22 @@
                 <select disabled="disabled" class="personsSelect form-control" id="directorSelect">
                 </select>
             </div>
+            <div class="form-group" hidden="true" id="playwriterSelectDiv">
+                <label class="control-label">Playwriter</label>
+                <select disabled="disabled" class="personsSelect form-control" id="playwriterSelect">
+                </select>
+            </div>
+            <div class="form-group" id="playwriterSpanDiv">
+                <label class="control-label">Playwriter</label>
+                <p>
+                    @if (Model.Film.Playwriter != null)
+                    {
+                        <a href="@Url.Action("ShowFilmViews", "Film")?sortOrder=asc&sortValue=title&name=&playwriterId=@Model.Film.Playwriter.Id">
+                            <span>@Model.Film.Playwriter.FullName</span>
+                        </a>
+                    }
+                </p>
+            </div>
             <div class="form-group">
                 <label class="control-label">Actors</label>
                 <select disabled="disabled" multiple class="personsSelect form-control" id="actorsSelect">
@@ -141,6 +157,24 @@
             </text>
         }
         
+        initials = [];
+        @if (Model.Film.Playwriter != null)
+        {
+            <text>
+                initials.push({ id: @Model.Film.Playwriter.Id, text: '@Model.Film.Playwriter.FullName' });
+            </text>
+        }
+        $('#playwriterSelect').select2({
+            data: initials,
+            ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
+        });
+        @if (Model.Film.Playwriter != null)
+        {
+            <text>
+                $('#playwriterSelect').val('@Model.Film.Playwriter.Id');
+            </text>
+        }
+        
 
 
         function adjustHeight(el) {
@@ -151,6 +185,11 @@
         function enableElements() {
             document.getElementById("releaseDate").disabled = "";
             document.getElementById("directorSelect").disabled = "";
+            
+            document.getElementById("playwriterSelect").disabled = "";
+            document.getElementById("playwriterSelectDiv").hidden = "";
+            document.getElementById("playwriterSpanDiv").hidden = "true";
+            
             document.getElementById("actorsSelect").disabled = "";
             document.getElementById("genresSelect").disabled = "";
             document.getElementById("description").disabled = "";
@@ -159,6 +198,11 @@
         function disableElements() {
             document.getElementById("releaseDate").disabled = "disabled";
             document.getElementById("directorSelect").disabled = "disabled";
+            
+            document.getElementById("playwriterSelect").disabled = "disabled";
+            document.getElementById("playwriterSelectDiv").hidden = "true";
+            document.getElementById("playwriterSpanDiv").hidden = "";
+            
             document.getElementById("actorsSelect").disabled = "disabled";
             document.getElementById("genresSelect").disabled = "disabled";
             document.getElementById("description").disabled = "disabled";
@@ -193,6 +237,7 @@
             if (stop) return;
 
             var director = getIds(document.getElementById("directorSelect"))[0];
+            var playwriter = getIds(document.getElementById("playwriterSelect"))[0];
             var actors = getIds(document.getElementById("actorsSelect"));
             var genres = getIds(document.getElementById("genresSelect"));
             
@@ -202,6 +247,7 @@
                 releaseDate: releaseDate,
                 shortDescription: description,
                 director: director,
+                playwriter: playwriter,
                 actors: actors,
                 genres: genres
                 @if (Model.Film.Photo != null)

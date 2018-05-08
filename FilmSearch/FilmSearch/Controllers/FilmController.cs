@@ -29,7 +29,7 @@ namespace FilmSearch.Controllers
         }
 
         [HttpGet]
-        public IActionResult ShowFilmViews(string sortOrder, string sortValue, string name)
+        public IActionResult ShowFilmViews(string sortOrder, string sortValue, string name, long playwriterId = 0)
         {
             var sortQuery = new SortQuery
             {
@@ -39,7 +39,8 @@ namespace FilmSearch.Controllers
 
             var filterQuery = new FilmFilterQuery
             {
-                Title = name
+                Title = name,
+                PlaywriterId = playwriterId
             };
             
             return View(

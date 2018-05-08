@@ -29,6 +29,7 @@ namespace FilmSearch.Controllers.API
             var film = _filmService.AddFilm(
                 FilmModel.To(filmModel),
                 filmModel.Director,
+                filmModel.Playwriter,
                 filmModel.Actors,
                 filmModel.Genres
                 );
@@ -43,6 +44,7 @@ namespace FilmSearch.Controllers.API
             var film = _filmService.UpdateFilm(
                 FilmModel.To(filmModel),
                 filmModel.Director,
+                filmModel.Playwriter,
                 filmModel.Actors,
                 filmModel.Genres
             );

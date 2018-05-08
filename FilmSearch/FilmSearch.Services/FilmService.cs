@@ -41,7 +41,8 @@ namespace FilmSearch.Services
             return _unitOfWork.FilmPerformanceRepository.GetFilmPerformances(filmId).ToList();;
         }
 
-        public Film UpdateFilm(Film film, Person directorModel, IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
+        public Film UpdateFilm(Film film, Person directorModel, Person playwriterModel,
+            IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
         {
             if (film.Photo?.Id != null && film.Photo?.Id != 0)
             {
@@ -76,13 +77,20 @@ namespace FilmSearch.Services
                 var director = _unitOfWork.PersonRepository.GetByKey(directorModel.Id);
                 AddFilmDirector(director, film);
             }
+            
+            if (playwriterModel != null)
+            {
+                var playwriter = _unitOfWork.PersonRepository.GetByKey(playwriterModel.Id);
+                AddFilmPlaywriter(playwriter, film);
+            }
 
             _unitOfWork.Save();
 
             return film;
         }
 
-        public Film AddFilm(Film film, Person directorModel, IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
+        public Film AddFilm(Film film, Person directorModel, Person playwriterModel,
+            IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
         {
             if (film.Photo?.Id != 0)
             {
@@ -113,6 +121,12 @@ namespace FilmSearch.Services
                 var director = _unitOfWork.PersonRepository.GetByKey(directorModel.Id);
                 AddFilmDirector(director, film);
             }
+            
+            if (playwriterModel != null)
+            {
+                var playwriter = _unitOfWork.PersonRepository.GetByKey(playwriterModel.Id);
+                AddFilmPlaywriter(playwriter, film);
+            }
 
             _unitOfWork.Save();
 
@@ -132,6 +146,11 @@ namespace FilmSearch.Services
         public Person GetFilmDirector(long id)
         {
             return _unitOfWork.PersonRoleRepository.DirectorByFilmId(id);
+        }
+        
+        public Person GetFilmPlaywriter(long id)
+        {
+            return _unitOfWork.PersonRoleRepository.PlaywriterByFilmId(id);
         }
 
         public double RateFilm(long filmId, string userId, long score)
@@ -189,7 +208,14 @@ namespace FilmSearch.Services
             var sortFunction = GetFilmSortFunction(sortQuery);
             var filterFunction = GetFilmFilterFunction(filmFilterQuery);
 
-            return films.Where(filterFunction).OrderBy(f => f, sortFunction);
+            var dbResult = films.Where(filterFunction).OrderBy(f => f, sortFunction).ToList();
+
+            if (filmFilterQuery.PlaywriterId != 0)
+            {
+                dbResult = dbResult.Where(f => GetFilmPlaywriter(f.Id)?.Id == filmFilterQuery.PlaywriterId).ToList();
+            }
+            
+            return dbResult;
         }
         
         public FilmModel GetFilmView(long id)
@@ -198,19 +224,21 @@ namespace FilmSearch.Services
 
             var genres = film.Genres.Select(fg => fg.Genre).ToList();
             var director = GetFilmDirector(id);
+            var playwriter = GetFilmPlaywriter(id);
             var actors = GetFilmActors(id);
 
             
-            return FilmModel.Of(film, actors, director, genres);
+            return FilmModel.Of(film, actors, director, playwriter, genres);
         }
 
         public FilmModel GetFilmView(Film film)
         {
             var genres = film.Genres.Select(fg => fg.Genre).ToList();
             var director = GetFilmDirector(film.Id);
+            var playwriter = GetFilmPlaywriter(film.Id);
             var actors = GetFilmActors(film.Id);
 
-            return FilmModel.Of(film, actors, director, genres);
+            return FilmModel.Of(film, actors, director, playwriter, genres);
         }
 
         public void DeleteFilm(long id)
@@ -269,6 +297,23 @@ namespace FilmSearch.Services
                 Film = film,
                 FilmRole = filmRole,
                 Person = director,
+                Performance = 0
+            };
+            
+            _unitOfWork.PersonRoleRepository.Add(personRole);
+        }
+        
+        private void AddFilmPlaywriter(Person playwriter, Film film)
+        {
+            if (playwriter == null) return;
+            
+            var filmRole = _unitOfWork.FilmRoleRepository.GetByRoleName(FilmRole.PLAYWRITER_ROLE);
+            
+            var personRole =  new PersonRole
+            {
+                Film = film,
+                FilmRole = filmRole,
+                Person = playwriter,
                 Performance = 0
             };
             

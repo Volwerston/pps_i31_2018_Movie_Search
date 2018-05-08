@@ -8,6 +8,8 @@ namespace FilmSearch.DAL
         IEnumerable<Person> ActorsByFilmId(long filmId);
 
         Person DirectorByFilmId(long filmId);
+        
+        Person PlaywriterByFilmId(long filmId);
 
         void DeletePersonRolesByFilm(long filmId);
     }
