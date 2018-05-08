@@ -51,7 +51,7 @@ namespace FilmSearch.Controllers.API
         {
             IEnumerable<Person> allPerson = _unitOfWork.PersonRepository.GetAll();
 
-            IEnumerable<Person> filtered = new PersonSelectQueryBuilder(allPerson).Filter(param);
+            IEnumerable<Person> filtered = new PersonSelectQueryBuilder(allPerson).Filter(param, _unitOfWork);
 
             List<Tuple<Person, string>> toReturn = new List<Tuple<Person, string>>();
             

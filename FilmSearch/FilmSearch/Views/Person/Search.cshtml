@@ -27,6 +27,20 @@
                 <span asp-validation-for="Country" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Role</label>
+                <input name="Role" class="form-control" />
+            </div>
+            <div class="form-group">
                 <button type="button" id="search-person" class="btn btn-default btn-block btn-info">Search</button>
             </div>
         </form>
@@ -57,6 +71,9 @@
                 Name: $('input[name="Name"]').val(),
                 Surname: $('input[name="Surname"]').val(),
                 Country: $('input[name="Country"]').val(),
+                StartDate: $('input[name="StartDate"]').val(),
+                EndDate: $('input[name="EndDate"]').val(),
+                Role: $('input[name="Role"]').val(),
                 LastId: lastId,
                 ChunkSize: chunkSize
             };

@@ -10,5 +10,7 @@ namespace FilmSearch.Models.View
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Country { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }
