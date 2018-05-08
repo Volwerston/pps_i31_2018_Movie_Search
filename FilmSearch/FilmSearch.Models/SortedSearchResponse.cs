@@ -8,5 +8,6 @@ namespace FilmSearch.Models
         public List<T> Data { get; set; }
         public K Filter { get; set; }
         public SortQuery SortQuery { get; set; }
+        public K AwardFilter { get; set; }
     }
 }

@@ -26,6 +26,9 @@
         
         IPostCommentRepository PostCommentRepository { get; }
         
+        IAwardRepository AwardRepository { get; }
+
+        IFilmAwardRepository FilmAwardRepository { get; }
         void Save();
     }
 }

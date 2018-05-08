@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using FilmSearch.Models.Entities;
 using FilmSearch.Utils;
 
 namespace FilmSearch.Models
@@ -30,6 +31,7 @@ namespace FilmSearch.Models
         
         public List<Genre> Genres { get; set; }
 
+        public List<Award> Awards { get; set; }
 
         public static Film To(FilmModel filmModel)
         {
@@ -56,7 +58,7 @@ namespace FilmSearch.Models
                 Photo = film.Photo
             };
         }
-        public static FilmModel Of(Film film, List<Person> actors, Person director, Person playwriter, List<Genre> genres)
+        public static FilmModel Of(Film film, List<Person> actors, Person director, Person playwriter, List<Genre> genres, List<Award> awards)
         {
             var filmViewModel = Of(film);
             filmViewModel.Actors = actors;
@@ -67,7 +69,7 @@ namespace FilmSearch.Models
                 Id = g.Id,
                 Name = g.Name
             }).ToList();
-
+            filmViewModel.Awards = awards;
             return filmViewModel;
         }
     }

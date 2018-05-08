@@ -13,6 +13,10 @@
         <input type="search" value="@Model.Filter.Title" id="titleSearch"/>
         <input type="button" value="Search" onclick="onSubmit(this)"/>
     </p>
+    <p>
+        Find by awards:
+        <input type="search" value="@Model.AwardFilter.Title" id="awardSearch" />
+    </p>
 </form>
 <hr />
 
@@ -233,6 +237,13 @@
 						                                 "/api/file/" + @film.Photo.Id)"/><div class="info">
 						<h2 class="title"><a href="@(Url.Action("FilmView", "Film", new {id = film.Id}))">@(film.Title)</a></h2>
 						<p class="desc">@(film.ShortDescription)</p>
+                            @if (film.Awards != null)
+                            {
+                                @foreach(var award in film.Awards)
+                                {
+                                    <p>@award.Name</p>
+                                }
+                            }
 					</div>
 				</li>
 			</ul>

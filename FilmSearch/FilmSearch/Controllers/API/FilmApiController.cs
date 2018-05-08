@@ -31,7 +31,8 @@ namespace FilmSearch.Controllers.API
                 filmModel.Director,
                 filmModel.Playwriter,
                 filmModel.Actors,
-                filmModel.Genres
+                filmModel.Genres,
+                null
                 );
 
             return new ObjectResult(_filmService.GetFilmView(film));

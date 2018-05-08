@@ -30,10 +30,18 @@ namespace FilmSearch.DAL.Impl
 
         private IPostCommentRepository _postCommentRepository;
 
+        private IAwardRepository _awardRepository;
+
+        private IFilmAwardRepository _filmAwardRepository;
+
         public UnitOfWork(FilmSearchContext context)
         {
             _context = context;
         }
+
+        public IAwardRepository AwardRepository => _awardRepository ?? (_awardRepository = new AwardRepository(_context));
+
+        public IFilmAwardRepository FilmAwardRepository => _filmAwardRepository ?? (_filmAwardRepository = new FilmAwardRepository(_context));
 
         public IFileRepository FileRepository => _fileRepository ?? (_fileRepository = new FileRepository(_context));
 
@@ -66,7 +74,7 @@ namespace FilmSearch.DAL.Impl
         
         public IPostCommentRepository PostCommentRepository =>
             _postCommentRepository ?? (_postCommentRepository = new PostCommentRepository(_context));
-        
+
         public void Save()
         {
             _context.SaveChanges();

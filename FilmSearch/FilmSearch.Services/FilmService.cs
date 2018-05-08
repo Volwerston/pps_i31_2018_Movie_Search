@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FilmSearch.DAL;
 using FilmSearch.Models;
+using FilmSearch.Models.Entities;
 using FilmSearch.Utils;
 using FilmSearch.Utils.Exceptions;
 using Microsoft.AspNetCore.Identity;
@@ -90,7 +91,7 @@ namespace FilmSearch.Services
         }
 
         public Film AddFilm(Film film, Person directorModel, Person playwriterModel,
-            IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
+            IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels, IEnumerable<Award> awardModels)
         {
             if (film.Photo?.Id != 0)
             {
@@ -128,6 +129,12 @@ namespace FilmSearch.Services
                 AddFilmPlaywriter(playwriter, film);
             }
 
+            /*
+            if (awardModels != null)
+            {
+                var awards = _unitOfWork.AwardRepository.GetByKey(awardModels.Select)
+            }
+            */
             _unitOfWork.Save();
 
             return film;
@@ -141,6 +148,17 @@ namespace FilmSearch.Services
         public List<Person> GetFilmActors(long id)
         {
             return _unitOfWork.PersonRoleRepository.ActorsByFilmId(id).ToList();
+        }
+
+        public List<Award> GetFilmAwards(long id)
+        {
+            var filmAwards = _unitOfWork.FilmAwardRepository.GetAll().Where(x => x.FilmId == id).ToList();
+            var awards = new List<Award>();
+            foreach (var fa in filmAwards)
+            {
+                awards.Add(_unitOfWork.AwardRepository.GetByKey(fa.AwardId));
+            }
+            return awards;
         }
 
         public Person GetFilmDirector(long id)
@@ -227,8 +245,8 @@ namespace FilmSearch.Services
             var playwriter = GetFilmPlaywriter(id);
             var actors = GetFilmActors(id);
 
-            
-            return FilmModel.Of(film, actors, director, playwriter, genres);
+            var awards = GetFilmAwards(id);
+            return FilmModel.Of(film, actors, director, playwriter, genres,awards);
         }
 
         public FilmModel GetFilmView(Film film)
@@ -237,8 +255,9 @@ namespace FilmSearch.Services
             var director = GetFilmDirector(film.Id);
             var playwriter = GetFilmPlaywriter(film.Id);
             var actors = GetFilmActors(film.Id);
+            var awards = GetFilmAwards(film.Id);
 
-            return FilmModel.Of(film, actors, director, playwriter, genres);
+            return FilmModel.Of(film, actors, director, playwriter, genres,awards);
         }
 
         public void DeleteFilm(long id)

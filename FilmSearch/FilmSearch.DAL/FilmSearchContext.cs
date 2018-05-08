@@ -63,5 +63,9 @@ namespace FilmSearch.DAL
         public DbSet<PostOpinion> PostOpinions { get; set; }
 
         public DbSet<PersonComment> PersonComments { get; set; }
+
+        public DbSet<Award> Awards { get; set; }
+
+        public DbSet<FilmAward> FilmAwards { get; set; }
     }
 }
