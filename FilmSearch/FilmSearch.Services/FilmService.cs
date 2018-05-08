@@ -43,7 +43,7 @@ namespace FilmSearch.Services
 
         public Film UpdateFilm(Film film, Person directorModel, IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
         {
-            if (film?.Photo.Id != 0)
+            if (film.Photo?.Id != null && film.Photo?.Id != 0)
             {
                 var photo = _unitOfWork.FileRepository.GetByKey(film.Photo.Id);
                 film.Photo = photo;
