@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FilmSearch.Models.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace FilmSearch.Models
@@ -11,7 +12,8 @@ namespace FilmSearch.Models
         public string ShortDescription { get; set; }
         public double Performance { get; set; }
         public ICollection<FilmGenre> Genres { get; set; } = new List<FilmGenre>();
-        
+        public ICollection<FilmAward> Awards { get; set; } = new List<FilmAward>();
+
         public long? PhotoId { get; set; }
         public File Photo { get; set; }
     }

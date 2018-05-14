@@ -43,7 +43,7 @@ namespace FilmSearch.Services
         }
 
         public Film UpdateFilm(Film film, Person directorModel, Person playwriterModel,
-            IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels)
+            IEnumerable<Person> actorModels, IEnumerable<Genre> genreModels, IEnumerable<Award> awardsModels = null)
         {
             if (film.Photo?.Id != null && film.Photo?.Id != 0)
             {
@@ -57,7 +57,9 @@ namespace FilmSearch.Services
 
             _unitOfWork.PersonRoleRepository.DeletePersonRolesByFilm(film.Id);
             _unitOfWork.FilmGenreRepository.DeleteFilmGenresByFilmId(film.Id);
-            
+
+            _unitOfWork.FilmAwardRepository.DeleteFilmAwardsByFilmId(film.Id);
+
             _unitOfWork.FilmRepository.Update(film);
             _unitOfWork.Save();
 
@@ -83,6 +85,12 @@ namespace FilmSearch.Services
             {
                 var playwriter = _unitOfWork.PersonRepository.GetByKey(playwriterModel.Id);
                 AddFilmPlaywriter(playwriter, film);
+            }
+
+            if (awardsModels != null)
+            {
+                var awards = _unitOfWork.AwardRepository.AwardsByIds(awardsModels.Select(g => g.Id)).ToList();
+                AddAwards(awards, film);
             }
 
             _unitOfWork.Save();
@@ -129,12 +137,13 @@ namespace FilmSearch.Services
                 AddFilmPlaywriter(playwriter, film);
             }
 
-            /*
             if (awardModels != null)
             {
-                var awards = _unitOfWork.AwardRepository.GetByKey(awardModels.Select)
+                //var awards = _unitOfWork.AwardRepository.GetByKey(awardModels)
+                var awards = _unitOfWork.AwardRepository.AwardsByIds(awardModels.Select(g => g.Id)).ToList();
+                AddAwards(awards, film);
             }
-            */
+
             _unitOfWork.Save();
 
             return film;
@@ -214,10 +223,22 @@ namespace FilmSearch.Services
             return _unitOfWork.GenreRepository.GenresByName(name).ToList();
         }
 
+        public List<Award> GetAwardsByName(string name)
+        {
+            name = name ?? "";
+            return _unitOfWork.AwardRepository.AwardsByName(name).ToList();
+        }
+
         public (List<Genre>, int) GetGenresByNamePaginated(string name, int page)
         {
             var genres = GetGenresByName(name);
             return (genres.Skip(PageSize * (page - 1)).Take(PageSize).ToList(), genres.Count());
+        }
+
+        public (List<Award>, int) GetAwardsByNamePaginated(string name, int page)
+        {
+            var awards = GetAwardsByName(name);
+            return (awards.Skip(PageSize * (page - 1)).Take(PageSize).ToList(), awards.Count());
         }
 
         public IEnumerable<Film> GetFilms(SortQuery sortQuery, FilmFilterQuery filmFilterQuery)
@@ -347,6 +368,18 @@ namespace FilmSearch.Services
                 {
                     Film = film,
                     Genre = genre
+                });
+            }
+        }
+
+        private void AddAwards(List<Award> awards, Film film)
+        {
+            foreach (var award in awards)
+            {
+                film.Awards.Add(new FilmAward
+                {
+                    Film = film,
+                    Award = award
                 });
             }
         }

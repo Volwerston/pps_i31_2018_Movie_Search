@@ -7,6 +7,7 @@ using FilmSearch.Services;
 using FilmSearch.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using FilmSearch.Models.Entities;
 
 namespace FilmSearch.Controllers.API
 {
@@ -32,7 +33,7 @@ namespace FilmSearch.Controllers.API
                 filmModel.Playwriter,
                 filmModel.Actors,
                 filmModel.Genres,
-                null
+                filmModel.Awards
                 );
 
             return new ObjectResult(_filmService.GetFilmView(film));
@@ -47,7 +48,8 @@ namespace FilmSearch.Controllers.API
                 filmModel.Director,
                 filmModel.Playwriter,
                 filmModel.Actors,
-                filmModel.Genres
+                filmModel.Genres,
+                filmModel.Awards
             );
 
             return new ObjectResult(_filmService.GetFilmView(film));
@@ -62,6 +64,20 @@ namespace FilmSearch.Controllers.API
             {
                 Count = genres.Count(),
                 Data = genres.ToList(),
+                PageSize = FilmService.PageSize,
+                TotalCount = totalCount
+            });
+        }
+
+        [HttpGet("awards")]
+        public IActionResult GetAwards([FromQuery]string q, [FromQuery] int page)
+        {
+            var (awards, totalCount) = _filmService.GetAwardsByNamePaginated(q, page);
+
+            return new ObjectResult(new PaginatedResponse<Award>
+            {
+                Count = awards.Count(),
+                Data = awards.ToList(),
                 PageSize = FilmService.PageSize,
                 TotalCount = totalCount
             });

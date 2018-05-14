@@ -69,6 +69,11 @@ namespace FilmSearch.Models
                 Id = g.Id,
                 Name = g.Name
             }).ToList();
+            filmViewModel.Awards = awards.Select(a => new Award
+            {
+                Id = a.Id,
+                Name = a.Name
+            }).ToList();
             filmViewModel.Awards = awards;
             return filmViewModel;
         }

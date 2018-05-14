@@ -12,9 +12,10 @@ using System;
 namespace FilmSearch.Migrations
 {
     [DbContext(typeof(FilmSearchContext))]
-    partial class FilmSearchContextModelSnapshot : ModelSnapshot
+    [Migration("20180514094833_Awards-Update")]
+    partial class AwardsUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -310,8 +311,6 @@ namespace FilmSearch.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
 
                     b.Property<long>("FilmId");
 

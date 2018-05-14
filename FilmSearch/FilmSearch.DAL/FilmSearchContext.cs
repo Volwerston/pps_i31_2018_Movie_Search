@@ -32,6 +32,18 @@ namespace FilmSearch.DAL
                 .HasOne(fg => fg.Genre)
                 .WithMany(g => g.Films)
                 .HasForeignKey(fg => fg.GenreId);
+
+            modelBuilder.Entity<FilmAward>()
+                .HasKey(fa => new { fa.FilmId, fa.AwardId });
+            modelBuilder.Entity<FilmAward>()
+                .HasOne(fa => fa.Film)
+                .WithMany(f => f.Awards)
+                .HasForeignKey(fa => fa.FilmId);
+            modelBuilder.Entity<FilmAward>()
+                .HasOne(fa => fa.Award)
+                .WithMany(a => a.Films)
+                .HasForeignKey(fa => fa.AwardId);
+
         }
 
         public DbSet<File> Files { get; set; }

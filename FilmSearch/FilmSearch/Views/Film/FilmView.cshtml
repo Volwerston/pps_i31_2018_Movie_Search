@@ -50,44 +50,44 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Release Date</label>
-                <input disabled="disabled" type="date" class="form-control" data-provider="datepicker" id="releaseDate"/>
+                <input disabled="disabled" type="date" class="form-control" data-provider="datepicker" id="releaseDate" />
                 <span id="releaseDateValidation" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Director</label>
-                <select disabled="disabled" class="personsSelect form-control" id="directorSelect">
-                </select>
+                <select disabled="disabled" class="personsSelect form-control" id="directorSelect"></select>
             </div>
             <div class="form-group" hidden="true" id="playwriterSelectDiv">
                 <label class="control-label">Playwriter</label>
-                <select disabled="disabled" class="personsSelect form-control" id="playwriterSelect">
-                </select>
+                <select disabled="disabled" class="personsSelect form-control" id="playwriterSelect"></select>
             </div>
             <div class="form-group" id="playwriterSpanDiv">
                 <label class="control-label">Playwriter</label>
                 <p>
                     @if (Model.Film.Playwriter != null)
-                    {
-                        <a href="@Url.Action("ShowFilmViews", "Film")?sortOrder=asc&sortValue=title&name=&playwriterId=@Model.Film.Playwriter.Id">
-                            <span>@Model.Film.Playwriter.FullName</span>
-                        </a>
-                    }
+            {
+                <a href="@Url.Action("ShowFilmViews", "Film")?sortOrder=asc&sortValue=title&name=&playwriterId=@Model.Film.Playwriter.Id">
+                    <span>@Model.Film.Playwriter.FullName</span>
+                </a>
+    }
                 </p>
             </div>
             <div class="form-group">
                 <label class="control-label">Actors</label>
-                <select disabled="disabled" multiple class="personsSelect form-control" id="actorsSelect">
-                </select>
+                <select disabled="disabled" multiple class="personsSelect form-control" id="actorsSelect"></select>
             </div>
             <div class="form-group">
                 <label class="control-label">Genres</label>
-                <select disabled="disabled" multiple class="form-control" id="genresSelect">
-                </select>
+                <select disabled="disabled" multiple class="form-control" id="genresSelect"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Awards</label>
+                <select disabled="disabled" multiple class="form-control" id="awardsSelect"></select>
             </div>
             <div class="form-group">
                 <label class="control-label">Score: </label>
                 <span id="score">@Model.Film.Performance</span>
-            </div>       
+            </div>
         </form>
         
     </div>
@@ -113,7 +113,7 @@
         document.getElementById("releaseDate").value = convertFromDefaultDateFormat("@Model.Film.ReleaseDate");
 
         var initials = [];
-        @foreach (var genre in Model.Film.Genres ?? new List<Genre>())
+        @foreach (var genre in (Model.Film.Genres ?? new List<Genre>()))
         {
             <text>
                 initials.push({ id: @genre.Id, text: '@genre.Name' });
@@ -124,7 +124,21 @@
             ajax: defaultSelectAjax("/api/film/genres", item => ({ id: item.id, text: item.name }))
         });
         $('#genresSelect').val(initials.map(o => o.id)).trigger('change');
-        
+
+        var initials2 = [];
+         @foreach (var award in (Model.Film.Awards ?? new List<Award>()))
+        {
+            <text>
+                initials2.push({ id: @award.Id, text: '@award.Name' });
+            </text>
+        }
+
+        $('#awardsSelect').select2({
+            data: initials2,
+            ajax: defaultSelectAjax("/api/film/awards", item => ({ id: item.id, text: item.name }))
+        });
+        $('#awardsSelect').val(initials2.map(o => o.id)).trigger('change');
+
         initials = [];
         @foreach (var actor in Model.Film.Actors ?? new List<Person>())
         {
@@ -192,6 +206,7 @@
             
             document.getElementById("actorsSelect").disabled = "";
             document.getElementById("genresSelect").disabled = "";
+            document.getElementById("awardsSelect").disabled = "";
             document.getElementById("description").disabled = "";
         }
 
@@ -205,6 +220,7 @@
             
             document.getElementById("actorsSelect").disabled = "disabled";
             document.getElementById("genresSelect").disabled = "disabled";
+            document.getElementById("awardsSelect").disabled = "disabled";
             document.getElementById("description").disabled = "disabled";
         }
 
@@ -240,6 +256,8 @@
             var playwriter = getIds(document.getElementById("playwriterSelect"))[0];
             var actors = getIds(document.getElementById("actorsSelect"));
             var genres = getIds(document.getElementById("genresSelect"));
+
+            var awards = getIds(document.getElementById("awardsSelect"));
             
             var requestData = {
                 id: @Model.Film.Id,
@@ -249,7 +267,8 @@
                 director: director,
                 playwriter: playwriter,
                 actors: actors,
-                genres: genres
+                genres: genres,
+                awards: awards
                 @if (Model.Film.Photo != null)
                 {
                     <text>

@@ -14,17 +14,17 @@
             <div id="allValidation" class="text-danger"></div>
             <div class="form-group">
                 <label class="control-label">Title</label>
-                <input class="form-control" id="title"/>
+                <input class="form-control" id="title" />
                 <span id="titleValidation" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Release Date</label>
-                <input type="date" class="form-control" data-provider="datepicker" id="releaseDate"/>
+                <input type="date" class="form-control" data-provider="datepicker" id="releaseDate" />
                 <span id="releaseDateValidation" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Photo</label>
-                <input type="file" class="form-control" id="photoFile"/>
+                <input type="file" class="form-control" id="photoFile" />
             </div>
             <div class="form-group">
                 <label class="control-label">Short Description</label>
@@ -33,26 +33,26 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Director</label>
-                <select class="personsSelect form-control" id="directorSelect">
-                </select>
+                <select class="personsSelect form-control" id="directorSelect"></select>
             </div>
             <div class="form-group">
                 <label class="control-label">Playwriter</label>
-                <select class="personsSelect form-control" id="playwriterSelect">
-                </select>
+                <select class="personsSelect form-control" id="playwriterSelect"></select>
             </div>
             <div class="form-group">
                 <label class="control-label">Actors</label>
-                <select multiple class="personsSelect form-control" id="actorsSelect">
-                </select>
+                <select multiple class="personsSelect form-control" id="actorsSelect"></select>
             </div>
             <div class="form-group">
                 <label class="control-label">Genres</label>
-                <select multiple class="form-control" id="genresSelect">
-                </select>
+                <select multiple class="form-control" id="genresSelect"></select>
             </div>
             <div class="form-group">
-                <input type="button" class="btn btn-default btn-block btn-info" value="Submit" onclick="onSubmit(this)"/>
+                <label class="control-label">Awards</label>
+                <select multiple class="form-control" id="awardsSelect"></select>
+            </div>
+            <div class="form-group">
+                <input type="button" class="btn btn-default btn-block btn-info" value="Submit" onclick="onSubmit(this)" />
             </div>
         </form>
     </div>
@@ -68,6 +68,9 @@
         });
         $('.personsSelect').select2({
             ajax: defaultSelectAjax("/api/person", item => ({ id: item.id, text: item.fullName }))
+        });
+        $('#awardsSelect').select2({
+            ajax: defaultSelectAjax("/api/film/awards", item => ({ id: item.id, text: item.name }))
         });
 
         function getIds(selectElement) {
@@ -100,6 +103,7 @@
             let playwriter = getIds(document.getElementById("playwriterSelect"))[0];
             let actors = getIds(document.getElementById("actorsSelect"));
             let genres = getIds(document.getElementById("genresSelect"));
+            let awards = getIds(document.getElementById("awardsSelect"));
 
             let requestData = {
                 title: title,
@@ -109,6 +113,7 @@
                 playwriter: playwriter,
                 actors: actors,
                 genres: genres,
+                awards: awards,
                 photo: {
                     id: photoId
                 }

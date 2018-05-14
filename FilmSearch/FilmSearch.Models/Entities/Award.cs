@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace FilmSearch.Models.Entities
+namespace FilmSearch.Models
 {
     public class Award
     {
         public long Id { get; set; }
 
-        [Required]
         public string Name { get; set; }
+
+        public List<FilmAward> Films { get; set; } = new List<FilmAward>();
     }
 }
