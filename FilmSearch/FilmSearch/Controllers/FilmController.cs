@@ -41,16 +41,17 @@ namespace FilmSearch.Controllers
             {
                 Title = name,
                 PlaywriterId = playwriterId
+                
             };
             var awardQuery = new FilmFilterQuery
             {
-                Title = name,
+                Title = award,
                 PlaywriterId = playwriterId
             };
             return View(
                 new SortedSearchResponse<FilmModel, FilmFilterQuery> {
                     Data = _filmService
-                        .GetFilms(sortQuery, filterQuery)
+                        .GetFilms(sortQuery, filterQuery,awardQuery)
                         .Select(film => _filmService.GetFilmView(film))
                         .ToList(),
                     SortQuery = sortQuery,

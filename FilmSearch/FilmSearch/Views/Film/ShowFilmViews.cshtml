@@ -256,8 +256,8 @@
     <script>
         var url = "@Url.Action("ShowFilmViews", "Film")";
         
-        function buildLink(sortOrder, sortValue, title) {
-            return url + "?sortOrder=" + sortOrder + "&sortValue=" + sortValue + "&name=" + encodeURI(title);
+        function buildLink(sortOrder, sortValue, title, award) {
+            return url + "?sortOrder=" + sortOrder + "&sortValue=" + sortValue + "&name=" + encodeURI(title) + "&award=" + award;
         }
 
         function onSubmit(btn) {
@@ -268,8 +268,9 @@
             var sortValue = sortValueSelect[sortValueSelect.selectedIndex].value;
 
             var title = document.getElementById("titleSearch").value;
+            var award = document.getElementById("awardSearch").value;
 
-            window.location.href = buildLink(sortOrder, sortValue, title);
+            window.location.href = buildLink(sortOrder, sortValue, title, award);
         }
     </script>
 }

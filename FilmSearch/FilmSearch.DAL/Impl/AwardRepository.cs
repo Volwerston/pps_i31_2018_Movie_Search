@@ -14,7 +14,7 @@ namespace FilmSearch.DAL.Impl
         }
         public IEnumerable<Award> AwardsByIds(IEnumerable<long> ids)
         {
-            return _dbSet.Where(genre => ids.Contains(genre.Id)).ToList(); ;
+            return _dbSet.Where(award => ids.Contains(award.Id)).ToList(); ;
         }
 
         public IEnumerable<Award> AwardsByName(string name)

@@ -241,7 +241,7 @@ namespace FilmSearch.Services
             return (awards.Skip(PageSize * (page - 1)).Take(PageSize).ToList(), awards.Count());
         }
 
-        public IEnumerable<Film> GetFilms(SortQuery sortQuery, FilmFilterQuery filmFilterQuery)
+        public IEnumerable<Film> GetFilms(SortQuery sortQuery, FilmFilterQuery filmFilterQuery, FilmFilterQuery awardQuery)
         {
             var films = _unitOfWork.FilmRepository.GetAll();
             var sortFunction = GetFilmSortFunction(sortQuery);
@@ -254,6 +254,34 @@ namespace FilmSearch.Services
                 dbResult = dbResult.Where(f => GetFilmPlaywriter(f.Id)?.Id == filmFilterQuery.PlaywriterId).ToList();
             }
             
+            if (awardQuery.Title != null)
+            {
+                awardQuery.PlaywriterId = 0;
+                foreach (var f in dbResult)
+                {
+                    f.Awards = _unitOfWork.FilmAwardRepository.FilmAwardsByFilmId(f.Id).ToList();
+                }
+                foreach (var f in dbResult)
+                {
+                    foreach (var a in f.Awards)
+                    {
+                        a.Award = _unitOfWork.AwardRepository.GetByKey(a.AwardId);
+                    }
+                }
+                //dbResult = dbResult.Where(f => f.Awards.Select(x => x.Award.Name).Contains(awardQuery.Title)).ToList();
+                var toRet = new List<Film>();
+                foreach  (var f in dbResult)
+                {
+                    foreach (var a in f.Awards)
+                    if (a.Award.Name.Contains(awardQuery.Title))
+                        {
+                            toRet.Add(f);
+                            break;
+                        }
+                }
+                dbResult = toRet;
+            }
+
             return dbResult;
         }
         
