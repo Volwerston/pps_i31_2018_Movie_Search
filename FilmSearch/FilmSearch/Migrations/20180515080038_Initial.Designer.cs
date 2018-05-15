@@ -12,8 +12,8 @@ using System;
 namespace FilmSearch.Migrations
 {
     [DbContext(typeof(FilmSearchContext))]
-    [Migration("20180417035205_Final1")]
-    partial class Final1
+    [Migration("20180515080038_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -72,6 +72,18 @@ namespace FilmSearch.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.Award", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Awards");
                 });
 
             modelBuilder.Entity("FilmSearch.Models.Comment", b =>
@@ -181,6 +193,19 @@ namespace FilmSearch.Migrations
                     b.HasIndex("PhotoId");
 
                     b.ToTable("Films");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.FilmAward", b =>
+                {
+                    b.Property<long>("FilmId");
+
+                    b.Property<long>("AwardId");
+
+                    b.HasKey("FilmId", "AwardId");
+
+                    b.HasIndex("AwardId");
+
+                    b.ToTable("FilmAwards");
                 });
 
             modelBuilder.Entity("FilmSearch.Models.FilmGenre", b =>
@@ -524,6 +549,19 @@ namespace FilmSearch.Migrations
                     b.HasOne("FilmSearch.Models.File", "Photo")
                         .WithMany()
                         .HasForeignKey("PhotoId");
+                });
+
+            modelBuilder.Entity("FilmSearch.Models.FilmAward", b =>
+                {
+                    b.HasOne("FilmSearch.Models.Award", "Award")
+                        .WithMany("Films")
+                        .HasForeignKey("AwardId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FilmSearch.Models.Film", "Film")
+                        .WithMany("Awards")
+                        .HasForeignKey("FilmId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("FilmSearch.Models.FilmGenre", b =>

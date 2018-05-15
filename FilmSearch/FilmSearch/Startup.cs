@@ -1,6 +1,5 @@
 ﻿using FilmSearch.DAL;
 using FilmSearch.DAL.Impl;
-using FilmSearch.Migrations;
 using FilmSearch.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,8 +38,8 @@ namespace FilmSearch
                 .AddDefaultTokenProviders();
             
             //Populates db
-            services.AddSingleton<PrePopulateData>();
-            services.BuildServiceProvider().GetService<PrePopulateData>()?.PrePopulate();
+            //services.AddSingleton<PrePopulateData>();
+            //services.BuildServiceProvider().GetService<PrePopulateData>()?.PrePopulate();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
