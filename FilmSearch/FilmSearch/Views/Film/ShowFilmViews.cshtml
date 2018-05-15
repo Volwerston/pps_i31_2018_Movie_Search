@@ -17,6 +17,10 @@
         Find by awards:
         <input type="search" value="@Model.AwardFilter.Title" id="awardSearch" />
     </p>
+	<p>
+		Find by playwriter:
+		<input type="search" value="@Model.Filter.Playwriter" id="playwriterSearch" />
+	</p>
 </form>
 <hr />
 
@@ -256,8 +260,9 @@
     <script>
         var url = "@Url.Action("ShowFilmViews", "Film")";
         
-        function buildLink(sortOrder, sortValue, title, award) {
-            return url + "?sortOrder=" + sortOrder + "&sortValue=" + sortValue + "&name=" + encodeURI(title) + "&award=" + award;
+        function buildLink(sortOrder, sortValue, title, award, playwriter) {
+            return url + "?sortOrder=" + sortOrder + "&sortValue=" + sortValue + "&name=" + encodeURI(title) + "&award=" + award
+	            + "&playwriter=" + playwriter;
         }
 
         function onSubmit(btn) {
@@ -269,8 +274,9 @@
 
             var title = document.getElementById("titleSearch").value;
             var award = document.getElementById("awardSearch").value;
+	        var playwriter = document.getElementById("playwriterSearch").value;
 
-            window.location.href = buildLink(sortOrder, sortValue, title, award);
+            window.location.href = buildLink(sortOrder, sortValue, title, award, playwriter);
         }
     </script>
 }

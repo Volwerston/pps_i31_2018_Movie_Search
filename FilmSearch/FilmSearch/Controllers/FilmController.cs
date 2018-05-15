@@ -29,7 +29,7 @@ namespace FilmSearch.Controllers
         }
 
         [HttpGet]
-        public IActionResult ShowFilmViews(string sortOrder, string sortValue, string name, string award, long playwriterId = 0)
+        public IActionResult ShowFilmViews(string sortOrder, string sortValue, string name, string award, string playwriter, long playwriterId = 0)
         {
             var sortQuery = new SortQuery
             {
@@ -40,7 +40,8 @@ namespace FilmSearch.Controllers
             var filterQuery = new FilmFilterQuery
             {
                 Title = name,
-                PlaywriterId = playwriterId
+                PlaywriterId = playwriterId,
+                Playwriter = playwriter
                 
             };
             var awardQuery = new FilmFilterQuery
@@ -51,7 +52,7 @@ namespace FilmSearch.Controllers
             return View(
                 new SortedSearchResponse<FilmModel, FilmFilterQuery> {
                     Data = _filmService
-                        .GetFilms(sortQuery, filterQuery,awardQuery)
+                        .GetFilms(sortQuery, filterQuery, awardQuery)
                         .Select(film => _filmService.GetFilmView(film))
                         .ToList(),
                     SortQuery = sortQuery,

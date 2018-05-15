@@ -253,6 +253,11 @@ namespace FilmSearch.Services
             {
                 dbResult = dbResult.Where(f => GetFilmPlaywriter(f.Id)?.Id == filmFilterQuery.PlaywriterId).ToList();
             }
+            if (filmFilterQuery.Playwriter != null)
+            {
+                dbResult = dbResult.Where(f => 
+                    GetFilmPlaywriter(f.Id)?.Name?.ToLower()?.Contains(filmFilterQuery.Playwriter.ToLower()) ?? false).ToList();
+            }
             
             if (awardQuery.Title != null)
             {

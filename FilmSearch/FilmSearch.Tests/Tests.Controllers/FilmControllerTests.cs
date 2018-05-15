@@ -41,7 +41,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             FilmService fs = new FilmService(uow.Object);
 
             FilmController FC = new FilmController(fs);
-            var result = (FC.ShowFilmViews(FilmConstants.SortAsc, FilmConstants.SortTitle, name,"")
+            var result = (FC.ShowFilmViews(FilmConstants.SortAsc, FilmConstants.SortTitle, name,"", "")
                 as ViewResult).Model as SortedSearchResponse<FilmModel, FilmFilterQuery>;
             var real = result.Data.Select(x => FilmModel.To(x)).ToList();
             var expected = fakeFilms.Where(x => x.Title.Contains(name)).ToList();
