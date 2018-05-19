@@ -139,7 +139,6 @@ namespace FilmSearch.Services
 
             if (awardModels != null)
             {
-                //var awards = _unitOfWork.AwardRepository.GetByKey(awardModels)
                 var awards = _unitOfWork.AwardRepository.AwardsByIds(awardModels.Select(g => g.Id)).ToList();
                 AddAwards(awards, film);
             }
