@@ -54,7 +54,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             Assert.Equal(fakePerson, result);
         }
         //EXCEPTION?
-        [Fact(Skip = "Fails. Should be fixed")]
+        [Fact]
         public void Create()
         {
             var um = new FakeUserManager();
@@ -122,7 +122,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Verify(x => x.Save());
         }
         
-        [Fact(Skip = "Fails. Should be fixed")]
+        [Fact]
         public void EditTest()
         {
             long id = 1;

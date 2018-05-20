@@ -25,7 +25,7 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
             FC.Should().NotBeNull();
         }
         
-        [Fact(Skip = "Fails on linux machine. Should be fixed")]
+        [Fact]
         public void SaveFile()
         {
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
@@ -57,7 +57,7 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
              //   file.Should().NotBeNull();
             //}
         }
-        [Fact(Skip = "Fails on linux machine. Should be fixed")]
+        [Fact]
         public void SaveFroalaImageTest()
         {
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();

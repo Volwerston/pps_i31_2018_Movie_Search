@@ -51,7 +51,7 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
 
         }
         
-        [Fact(Skip = "Doesn't check anything. Should be either removed or fixed")]
+        [Fact]
         public void UpdateFilmTest()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
@@ -92,7 +92,7 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
 
         }
 
-        [Fact(Skip = "Fails. Should be fixed")]
+        [Fact]
         public void CRUDFilmTest()
         {
             string q = "drama";
