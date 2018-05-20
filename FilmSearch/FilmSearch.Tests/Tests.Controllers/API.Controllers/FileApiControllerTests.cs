@@ -39,16 +39,6 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
         }
         
         [Fact]
-        public void Initialize()
-        {
-            Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            FileApiController FC = new FileApiController(env.Object, uow.Object);
-
-            FC.Should().NotBeNull();
-        }
-        
-        [Fact]
         public void SaveFile()
         {
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();

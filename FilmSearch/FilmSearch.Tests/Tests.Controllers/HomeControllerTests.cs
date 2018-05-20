@@ -20,14 +20,6 @@ namespace FilmSearch.Tests.Tests.Controllers
     public class HomeControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            Mock<ILogger<HomeController>> logger = new Mock<ILogger<HomeController>>();
-            Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
-            HomeController HC = new HomeController(logger.Object, env.Object);
-            HC.Should().NotBeNull();
-        }
-        [Fact]
         public void Index()
         {
             Mock<ILogger<HomeController>> logger = new Mock<ILogger<HomeController>>();

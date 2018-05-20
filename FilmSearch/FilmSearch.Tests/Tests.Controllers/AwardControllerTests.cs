@@ -21,13 +21,6 @@ namespace FilmSearch.Tests.Tests.Controllers
     public class AwardControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            AwardController AC = new AwardController(uow.Object);
-            AC.Should().NotBeNull();
-        }
-        [Fact]
         public void IndexTest()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();

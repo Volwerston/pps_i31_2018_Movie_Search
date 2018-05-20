@@ -20,17 +20,6 @@ namespace FilmSearch.Tests.Tests.Controllers
     public class FilmControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            uow.Setup(x => x.FilmGenreRepository);
-            FilmService fs = new FilmService(uow.Object);
-
-            FilmController FC = new FilmController(fs);
-
-            FC.Should().NotBeNull();
-        }
-        [Fact]
         public void ShowFilmViews()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();

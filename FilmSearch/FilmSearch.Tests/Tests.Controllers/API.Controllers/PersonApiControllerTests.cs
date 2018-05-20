@@ -18,16 +18,6 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
     public class PersonApiControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            PersonService ps = new PersonService(uow.Object);
-            Mock<Microsoft.Extensions.Configuration.IConfiguration> conf = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
-            PersonApiController pc = new PersonApiController(ps, uow.Object, conf.Object);
-
-            pc.Should().NotBeNull();
-        }
-        [Fact]
         public void GetAllPersonsTest()
         {
             string q = String.Empty;

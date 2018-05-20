@@ -16,17 +16,6 @@ namespace FilmSearch.Tests.Tests.Controllers
     public class AuthControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            UserManager<AppUser> um = new FakeUserManager();
-            SignInManager<AppUser> sim = new FakeSignInManager();
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            RoleManager<IdentityRole> rm = new FakeRoleManager();
-            AuthController AC = new AuthController(um, sim,uow.Object,rm);
-
-            AC.Should().NotBeNull();
-        }
-        [Fact]
         public void RegisterTest()
         {
             UserManager<AppUser> um = new FakeUserManager();

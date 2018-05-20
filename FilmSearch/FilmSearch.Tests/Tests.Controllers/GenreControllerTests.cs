@@ -21,13 +21,6 @@ namespace FilmSearch.Tests.Tests.Controllers
 {
     public class GenreControllerTests
     {
-        [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            GenreController GC = new GenreController(uow.Object);
-            GC.Should().NotBeNull();
-        }
 
         [Fact]
         public void IndexTest()

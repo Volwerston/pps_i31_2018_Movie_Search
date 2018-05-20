@@ -19,16 +19,6 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
     public class UserBlogApiControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            UserManager<AppUser> um = new FakeUserManager();
-            UserBlogService ubs = new UserBlogService(uow.Object, um);
-            UserBlogApiController UBC = new UserBlogApiController(ubs);
-
-            UBC.Should().NotBeNull();
-        }
-        [Fact]
         public void GetCommentsToPostTest()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();

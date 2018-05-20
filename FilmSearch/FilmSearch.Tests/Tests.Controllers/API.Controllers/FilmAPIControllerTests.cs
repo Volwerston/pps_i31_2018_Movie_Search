@@ -19,15 +19,6 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
 {
     public class FilmAPIControllerTests
     {
-        [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            FilmService fs = new FilmService(uow.Object);
-            FilmApiController FC = new FilmApiController(fs);
-
-            FC.Should().NotBeNull();
-        }
         
         //NOT WORJING
         [Fact(Skip = "Doesn't check anything. Should be either removed or fixed")]

@@ -13,13 +13,6 @@ namespace FilmSearch.Tests.Tests.Controllers
 {
     public class LogControllerTests
     {
-        [Fact]
-        public void Initialize()
-        {
-            Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
-            LogController LC = new LogController(env.Object);
-            LC.Should().NotBeNull();
-        }
 
         [Fact]
         public void ViewTest()

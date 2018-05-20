@@ -16,15 +16,6 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
 {
     public class PersonStatsApiControllerTests
     {
-        [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            UserManager<AppUser> um = new FakeUserManager();
-            PersonStatsApiController PAC = new PersonStatsApiController(uow.Object, um, new Services.PersonService(uow.Object), new Services.UserBlogService(uow.Object, um));
-
-            PAC.Should().NotBeNull();
-        }
 
         [Fact]
         public void PersonCommentStatsTest()

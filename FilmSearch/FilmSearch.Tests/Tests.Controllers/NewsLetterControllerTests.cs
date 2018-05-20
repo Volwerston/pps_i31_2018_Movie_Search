@@ -12,12 +12,6 @@ namespace FilmSearch.Tests.Tests.Controllers
     public class NewsLetterControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            NewsletterController NLC = new NewsletterController();
-            NLC.Should().NotBeNull();
-        }
-        [Fact]
         public void Index()
         {
             NewsletterController NLC = new NewsletterController();

@@ -26,16 +26,6 @@ namespace FilmSearch.Tests.Tests.Controllers
             {
             }
         }
-
-        [Fact]
-        public void Initialize()
-        {
-            UserManager<AppUser> um = new FakeUserManager();
-            Mock<IUserValidator<AppUser>> uv = new Mock<IUserValidator<AppUser>>();
-            AccountController AC = new AccountController(um, uv.Object);
-
-            AC.Should().NotBeNull();
-        }
         
         [Fact]
         public void DisableUser()

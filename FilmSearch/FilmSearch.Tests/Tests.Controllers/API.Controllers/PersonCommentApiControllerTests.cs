@@ -16,15 +16,6 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
     public class PersonCommentApiControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            UserManager<AppUser> um = new FakeUserManager();
-            PersonCommentApiController PCC = new PersonCommentApiController(uow.Object,um);
-
-            PCC.Should().NotBeNull();
-        }
-        [Fact]
         public void AddTest()
         {
             var comment = new Models.Entities.DTO.PersonCommentDTO() { AuthorId = "1", Id = 1, PersonId = 1, CreationDate = DateTime.Today.ToString(), Text = "text" };

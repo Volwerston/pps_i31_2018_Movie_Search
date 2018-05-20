@@ -15,15 +15,6 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
     public class NewsletterApiControllerTests
     {
         [Fact]
-        public void Initialize()
-        {
-            UserManager<AppUser> um = new FakeUserManager();
-            Mock<Microsoft.Extensions.Configuration.IConfiguration> conf = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
-            NewsletterApiController NAC = new NewsletterApiController(new Services.UserService(um), new Services.MailService(), um,conf.Object);
-
-            NAC.Should().NotBeNull();
-        }
-        [Fact]
         public void GetAllTest()
         {
             UserManager<AppUser> um = new FakeUserManager();
