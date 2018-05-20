@@ -16,6 +16,7 @@ namespace FilmSearch.DAL.Impl
         {
             return _context.FilmAwards.Where(x => x.FilmId == filmId);
         }
+        
         public void DeleteFilmAwardsByFilmId(long filmId)
         {
             var awards = _dbSet
