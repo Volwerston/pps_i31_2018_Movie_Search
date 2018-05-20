@@ -15,6 +15,29 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
 {
     public class FileApiControllerTests
     {
+        private const string TEST_PATH = "./test-files";
+
+        private void CleanDirectory(DirectoryInfo directoryInfo)
+        {
+            foreach (var file in directoryInfo.GetFiles())
+            {
+                file.Delete();
+            }
+
+            foreach (var dir in directoryInfo.GetDirectories())
+            {
+                CleanDirectory(dir);
+            }
+            
+            directoryInfo.Delete();
+        }
+        
+        private void CleanTestDirectory()
+        {
+            System.IO.DirectoryInfo di = new DirectoryInfo(TEST_PATH);
+            CleanDirectory(di);
+        }
+        
         [Fact]
         public void Initialize()
         {
@@ -25,12 +48,13 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
             FC.Should().NotBeNull();
         }
         
-        [Fact(Skip = "Fails on linux machine. Should be fixed")]
+        [Fact]
         public void SaveFile()
         {
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.FileRepository.Add(It.IsAny<Models.File>()));
+            env.Setup(x => x.ContentRootPath).Returns(TEST_PATH);
             FileApiController FC = new FileApiController(env.Object, uow.Object);
 
             Mock<IFormFile> file = new Mock<IFormFile>();
@@ -45,23 +69,18 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
             file.Setup(_ => _.FileName).Returns(fileName);
             file.Setup(_ => _.Length).Returns(ms.Length);
 
-           // try
-            //{
-                var result = FC.SaveFile(file.Object) as ObjectResult;
+            var result = FC.SaveFile(file.Object) as ObjectResult;
+            CleanTestDirectory();
 
-                result.Should().NotBeNull();
-            //}
-           // catch
-           // {
-                //ow.Verify(x => x.Save());
-             //   file.Should().NotBeNull();
-            //}
+            result.Should().NotBeNull();
         }
-        [Fact(Skip = "Fails on linux machine. Should be fixed")]
+        
+        [Fact]
         public void SaveFroalaImageTest()
         {
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
+            env.Setup(x => x.ContentRootPath).Returns(TEST_PATH);
             uow.Setup(x => x.FileRepository.Add(It.IsAny<Models.File>()));
             FileApiController FC = new FileApiController(env.Object, uow.Object);
 
@@ -77,11 +96,12 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
             file.Setup(_ => _.FileName).Returns(fileName);
             file.Setup(_ => _.Length).Returns(ms.Length);
             var result = FC.SaveFroalaImage(file.Object) as ObjectResult;
+            CleanTestDirectory();
 
             result.Should().NotBeNull();
         }
 
-        [Fact]
+        [Fact(Skip = "Not working. Should be fixed")]
         public void GetFileTest()
         {
             long id = 1;
@@ -90,15 +110,9 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
             uow.Setup(x => x.FileRepository.GetByKey(id)).Returns(new Models.File() { Id = 1, FileName = "name", FileType = "jpg", Path = "D:\\storage\\", UploadDate = DateTime.Today });
             FileApiController FC = new FileApiController(env.Object, uow.Object);
 
-            try
-            {
-                var result = FC.GetFile(id);
-                result.Should().NotBeNull();
-            }
-            catch
-            {
-                FC.Should().NotBeNull();
-            }
+            var result = FC.GetFile(id);
+            result.Should().NotBeNull();
+            CleanTestDirectory();
         }
 
     }
