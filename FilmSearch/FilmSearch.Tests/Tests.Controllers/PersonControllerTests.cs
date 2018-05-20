@@ -86,10 +86,10 @@ namespace FilmSearch.Tests.Tests.Controllers
                 Surname = "Do",
                 Photo = fileMock.Object
             };
-
             var result = (PC.Create(pvm) as ViewResult);
             uow.Verify(x => x.Save());
             var result2 = PC.Create() as ViewResult;
+            //Assert.Equal(new PersonViewModel(), result2.Model);
             result2.Should().NotBeNull();
         }
         [Fact]

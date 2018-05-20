@@ -57,8 +57,13 @@ namespace FilmSearch.Tests
         }
         public override Task<AppUser> FindByEmailAsync(string email)
         {
-            return Task.FromResult<AppUser>(new AppUser() { Email="example@gmail.com",Id="1",UserName="Name"});
+            return Task.FromResult<AppUser>(fakeUser);
         }
+        public override Task<AppUser> FindByIdAsync(string userId)
+        {
+            return Task.FromResult<AppUser>(fakeUser);
+        }
+        static AppUser fakeUser = new AppUser() { Email = "example@gmail.com", Id = "1", UserName = "Name" };
     }
     class FakeIdentityResult : IdentityResult
         {

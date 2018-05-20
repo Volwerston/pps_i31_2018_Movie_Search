@@ -35,13 +35,14 @@ namespace FilmSearch.Tests.Tests.Controllers
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.FilmRepository.GetAll()).Returns(fakeFilms);
+            uow.Setup(x => x.FilmAwardRepository.GetAll()).Returns(new List<FilmAward>());
             int param = 1;
             string name = "Name";
             uow.Setup(x => x.PersonRoleRepository.DirectorByFilmId(param)).Returns(new Person() { Name = "Dir" });
             FilmService fs = new FilmService(uow.Object);
 
             FilmController FC = new FilmController(fs);
-            var result = (FC.ShowFilmViews(FilmConstants.SortAsc, FilmConstants.SortTitle, name,"", "")
+            var result = (FC.ShowFilmViews(FilmConstants.SortAsc, FilmConstants.SortTitle, name,null, null)
                 as ViewResult).Model as SortedSearchResponse<FilmModel, FilmFilterQuery>;
             var real = result.Data.Select(x => FilmModel.To(x)).ToList();
             var expected = fakeFilms.Where(x => x.Title.Contains(name)).ToList();
@@ -58,6 +59,8 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Setup(x => x.FilmRepository.GetAll()).Returns(fakeFilms);
             uow.Setup(x => x.FilmRepository.GetByKey(id)).Returns(fakeFilms.Where(x => x.Id == id).FirstOrDefault());
             uow.Setup(x => x.FilmPerformanceRepository.GetAll()).Returns(perfomances);
+            uow.Setup(x => x.FilmAwardRepository.GetAll()).Returns(fakeFilmAwards);
+            uow.Setup(x => x.AwardRepository.GetByKey(It.IsAny<Object>())).Returns(fakeAward);
             //int param = 1;
             //  string name = "Name";
             uow.Setup(x => x.PersonRoleRepository.DirectorByFilmId(id)).Returns(new Person() { Name = "Dir" });
@@ -78,8 +81,9 @@ namespace FilmSearch.Tests.Tests.Controllers
             
             ///////////////////////
 
-            var result = (FC.FilmView(id) as ViewResult).Model;
-            result.Should().NotBeNull();
+            var result = ((FC.FilmView(id) as ViewResult).Model as FilmViewModel);
+            Assert.Equal(result.Film.Id, fakeFilms[0].Id);
+           // result.Should().NotBeNull();
             //param++;
         }
         
@@ -135,5 +139,14 @@ namespace FilmSearch.Tests.Tests.Controllers
         {
             new FilmPerformance(){ Id=1,FilmId=1,Performance=5}
         };
+        static List<FilmAward> fakeFilmAwards = new List<FilmAward>()
+        {
+            new FilmAward()
+            {
+                AwardId=1,
+                FilmId=1
+            }
+        };
+        static Award fakeAward = new Award() { Id = 1, Name = "Oscar" };
     }
 }

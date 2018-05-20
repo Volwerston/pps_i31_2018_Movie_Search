@@ -63,6 +63,20 @@ namespace FilmSearch.Tests.Tests.Controllers
             var result = (UBC.BlogView(id) as ViewResult).Model as PostView;
             Assert.Equal(id, result.Id);
         }
+        [Fact]
+        public void UserBlogViewsTest()
+        {
+            string userId = "1";
+            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
+            uow.Setup(x => x.PostRepository.GetAll()).Returns(fakeposts);
+            uow.Setup(x => x.PostRepository.PostsByUserId(userId)).Returns(fakeposts);
+            UserManager<AppUser> um = new FakeUserManager();
+            UserBlogService ubs = new UserBlogService(uow.Object, um);
+            UserBlogController UBC = new UserBlogController(ubs);
+
+            var result = (UBC.UserBlogViews("1") as ViewResult);
+            result.Model.Should().NotBeNull();
+        }
         List<Post> fakeposts = new List<Post>()
             {
                 new Post(){Author=new AppUser(),AuthorId="1",CreationTime=DateTime.Today,Id=1,ImageId=1,ShortDescription="",Text="",Title="Title"},

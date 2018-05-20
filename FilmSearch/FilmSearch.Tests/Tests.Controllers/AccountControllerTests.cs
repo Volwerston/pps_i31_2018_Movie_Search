@@ -91,6 +91,16 @@ namespace FilmSearch.Tests.Tests.Controllers
             var result = (AC.Ban() as ViewResult).Model as List<AppUser>;
             result.Should().NotBeNull();
         }
+        [Fact]
+        public void PersonStatsTest()
+        {
+            UserManager<AppUser> um = new FakeUserManager();
+            Mock<IUserValidator<AppUser>> uv = new Mock<IUserValidator<AppUser>>();
+            AccountController AC = new AccountController(um, uv.Object);
+
+            var result = (AC.PersonStats() as ViewResult);
+            result.Should().NotBeNull();
+        }
         AppUser fakeUser = new AppUser()
         {
             Id = "1",
