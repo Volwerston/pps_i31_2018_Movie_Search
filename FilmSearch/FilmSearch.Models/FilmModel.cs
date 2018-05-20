@@ -74,7 +74,6 @@ namespace FilmSearch.Models
                 Id = a.Id,
                 Name = a.Name
             }).ToList();
-            filmViewModel.Awards = awards;
             return filmViewModel;
         }
     }

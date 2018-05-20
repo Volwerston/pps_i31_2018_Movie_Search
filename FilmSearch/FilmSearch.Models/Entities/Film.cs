@@ -4,6 +4,16 @@ using System.Collections.Generic;
 
 namespace FilmSearch.Models
 {
+    public static class FilmConstants
+    {
+        public const string SortDesc = "desc";
+        public const string SortAsc = "asc";
+
+        public const string SortTitle = "title";
+        public const string SortDate = "date";
+        public const string SortRate = "rate";
+    }
+    
     public class Film
     {
         public long Id { get; set; }

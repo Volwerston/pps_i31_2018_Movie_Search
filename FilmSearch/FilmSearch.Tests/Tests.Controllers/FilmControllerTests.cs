@@ -34,14 +34,16 @@ namespace FilmSearch.Tests.Tests.Controllers
         public void ShowFilmViews()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            uow.Setup(x => x.FilmRepository.GetAll()).Returns(fakeFilms);
             int param = 1;
             string name = "Name";
+            
+            uow.Setup(x => x.FilmRepository.GetFilms(It.IsAny<SortQuery>(), It.IsAny<FilmFilterQuery>())).Returns(fakeFilms);
             uow.Setup(x => x.PersonRoleRepository.DirectorByFilmId(param)).Returns(new Person() { Name = "Dir" });
+            uow.Setup(x => x.FilmAwardRepository.GetAll()).Returns(new List<FilmAward>());
             FilmService fs = new FilmService(uow.Object);
 
             FilmController FC = new FilmController(fs);
-            var result = (FC.ShowFilmViews(FilmConstants.SortAsc, FilmConstants.SortTitle, name,"", "")
+            var result = (FC.ShowFilmViews(FilmConstants.SortAsc, FilmConstants.SortTitle, name, new List<long>(), "")
                 as ViewResult).Model as SortedSearchResponse<FilmModel, FilmFilterQuery>;
             var real = result.Data.Select(x => FilmModel.To(x)).ToList();
             var expected = fakeFilms.Where(x => x.Title.Contains(name)).ToList();
@@ -58,6 +60,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Setup(x => x.FilmRepository.GetAll()).Returns(fakeFilms);
             uow.Setup(x => x.FilmRepository.GetByKey(id)).Returns(fakeFilms.Where(x => x.Id == id).FirstOrDefault());
             uow.Setup(x => x.FilmPerformanceRepository.GetAll()).Returns(perfomances);
+            uow.Setup(x => x.FilmAwardRepository.GetAll()).Returns(new List<FilmAward>());
             //int param = 1;
             //  string name = "Name";
             uow.Setup(x => x.PersonRoleRepository.DirectorByFilmId(id)).Returns(new Person() { Name = "Dir" });

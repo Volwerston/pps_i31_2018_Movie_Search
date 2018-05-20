@@ -5,22 +5,43 @@
     ViewData["Title"] = "Films";
 }
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
 <h2>Films</h2>
 
 <form>
-    <p>
-        Find by title:
-        <input type="search" value="@Model.Filter.Title" id="titleSearch"/>
-        <input type="button" value="Search" onclick="onSubmit(this)"/>
-    </p>
-    <p>
-        Find by awards:
-        <input type="search" value="@Model.AwardFilter.Title" id="awardSearch" />
-    </p>
-	<p>
-		Find by playwriter:
-		<input type="search" value="@Model.Filter.Playwriter" id="playwriterSearch" />
-	</p>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-3">
+				<p>Find by title:</p>
+				<p>Find by playwriter:</p>
+				<p>Find by awards:</p>
+
+			</div>
+			<div class="col-sm-9">
+				<div>
+					<input type="search" value="@Model.Filter.Title" style="width: 250px;" id="titleSearch"/>
+					<input type="button" value="Search" onclick="onSubmit(this)"/>
+				</div>
+				<div>
+					<input type="search" value="@Model.Filter.Playwriter" style="width: 250px; margin-top: 2px" id="playwriterSearch"/>
+				</div>
+				<div>
+					<select multiple class="form-control" id="awardsSelect" style="width: 250px; margin-top: 2px"></select>
+				</div>
+			</div>
+		</div>
+	</div>
+@*	<p>*@
+@*		Find by title:*@
+@*	</p>*@
+@*	<p>*@
+@*		Find by playwriter:*@
+@*		<input type="search" value="@Model.Filter.Playwriter" style="width: 250px" id="playwriterSearch"/>*@
+@*	</p>*@
+@*	<p>*@
+@*		Find by awards:*@
+@*		<select multiple class="form-control" id="awardsSelect" style="width: 250px"></select>*@
+@*	</p>*@
 </form>
 <hr />
 
@@ -257,12 +278,29 @@
 
 @section Scripts
 {
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+	<script src="~/js/utils.js"></script>
+	<script src="~/js/dynamicSelect.js"></script>
     <script>
+	    $('#awardsSelect').select2({
+		    ajax: defaultSelectAjax("/api/film/awards", item => ({ id: item.id, text: item.name }))
+	    });
+	    
+	    
         var url = "@Url.Action("ShowFilmViews", "Film")";
         
-        function buildLink(sortOrder, sortValue, title, award, playwriter) {
-            return url + "?sortOrder=" + sortOrder + "&sortValue=" + sortValue + "&name=" + encodeURI(title) + "&award=" + award
-	            + "&playwriter=" + playwriter;
+	    function getIds(selectElement) {
+		    return [].slice.call(selectElement.selectedOptions)
+			    .map(opt => opt.value);
+	    }
+	    
+        function buildLink(sortOrder, sortValue, title, awards, playwriter) {
+            return url + 
+	            "?sortOrder=" + sortOrder + 
+	            "&sortValue=" + sortValue + 
+	            "&name=" + encodeURI(title) + 
+	            "&awards=" + encodeURI(awards.join(',')) +
+	            "&playwriter=" + encodeURI(playwriter);
         }
 
         function onSubmit(btn) {
@@ -273,10 +311,10 @@
             var sortValue = sortValueSelect[sortValueSelect.selectedIndex].value;
 
             var title = document.getElementById("titleSearch").value;
-            var award = document.getElementById("awardSearch").value;
 	        var playwriter = document.getElementById("playwriterSearch").value;
+	        let awards = getIds(document.getElementById("awardsSelect"));
 
-            window.location.href = buildLink(sortOrder, sortValue, title, award, playwriter);
+            window.location.href = buildLink(sortOrder, sortValue, title, awards, playwriter);
         }
     </script>
 }

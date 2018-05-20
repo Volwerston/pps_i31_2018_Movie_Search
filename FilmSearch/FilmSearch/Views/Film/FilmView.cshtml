@@ -125,19 +125,19 @@
         });
         $('#genresSelect').val(initials.map(o => o.id)).trigger('change');
 
-        var initials2 = [];
-         @foreach (var award in (Model.Film.Awards ?? new List<Award>()))
+        initials = [];
+        @foreach (var award in (Model.Film.Awards ?? new List<Award>()))
         {
             <text>
-                initials2.push({ id: @award.Id, text: '@award.Name' });
+                initials.push({ id: @award.Id, text: '@award.Name' });
             </text>
         }
 
         $('#awardsSelect').select2({
-            data: initials2,
+            data: initials,
             ajax: defaultSelectAjax("/api/film/awards", item => ({ id: item.id, text: item.name }))
         });
-        $('#awardsSelect').val(initials2.map(o => o.id)).trigger('change');
+        $('#awardsSelect').val(initials.map(o => o.id)).trigger('change');
 
         initials = [];
         @foreach (var actor in Model.Film.Actors ?? new List<Person>())
