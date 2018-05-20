@@ -37,7 +37,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             result.Should().BeNull();
         }
         
-        [Fact(Skip = "Doesn't check anything. Should be either fixed or removed (more preferable)")]
+        [Fact]
         public void Error()
         {
             Mock<ILogger<HomeController>> logger = new Mock<ILogger<HomeController>>();
