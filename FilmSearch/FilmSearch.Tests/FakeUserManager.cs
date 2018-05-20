@@ -52,24 +52,29 @@ namespace FilmSearch.Tests
 
         public override Task<IdentityResult> CreateAsync(AppUser user, string password)
         {
-            //return new Task<IdentityResult>(() => { return new IdentityResult(); });
             return Task.FromResult<IdentityResult>(new FakeIdentityResult(user.UserName == "Name"));
         }
+        
         public override Task<AppUser> FindByEmailAsync(string email)
         {
-            return Task.FromResult<AppUser>(fakeUser);
+            return Task.FromResult<AppUser>(FakeUser);
         }
+        
         public override Task<AppUser> FindByIdAsync(string userId)
         {
-            return Task.FromResult<AppUser>(fakeUser);
+            return Task.FromResult<AppUser>(FakeUser);
         }
-        static AppUser fakeUser = new AppUser() { Email = "example@gmail.com", Id = "1", UserName = "Name" };
+        
+        public static AppUser FakeUser = new AppUser() { Email = "example@gmail.com", Id = "1", UserName = "Name" };
     }
+    
+    
+    
     class FakeIdentityResult : IdentityResult
-        {
-            public FakeIdentityResult(bool toRet) : base()
+    {
+        public FakeIdentityResult(bool toRet) : base()
         {
             Succeeded = toRet;
         }
-        }
+    }    
 }

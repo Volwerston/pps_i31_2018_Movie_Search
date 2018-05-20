@@ -16,51 +16,47 @@ namespace FilmSearch.Tests.Tests.Controllers
 {
     public class UserBlogControllerTests
     {
-        [Fact]
-        public void Initialize()
-        {
-            Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            UserManager<AppUser> um = new FakeUserManager();
-            UserBlogService ubs = new UserBlogService(uow.Object, um);
-            UserBlogController UBC = new UserBlogController(ubs);
-
-            UBC.Should().NotBeNull();
-        }
+        
         [Fact]
         public void CreateBlogTest()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             UserManager<AppUser> um = new FakeUserManager();
             UserBlogService ubs = new UserBlogService(uow.Object, um);
-            UserBlogController UBC = new UserBlogController(ubs);
+            UserBlogController ubc = new UserBlogController(ubs);
 
-            var result = UBC.CreateBlog() as ViewResult;
+            var result = ubc.CreateBlog() as ViewResult;
             result.Should().NotBeNull();
         }
+        
         [Fact]
         public void BlogViews()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            uow.Setup(x => x.PostRepository.GetAll()).Returns(fakeposts);
+            uow.Setup(x => x.PostRepository.GetAll()).Returns(_fakePosts);
             UserManager<AppUser> um = new FakeUserManager();
             UserBlogService ubs = new UserBlogService(uow.Object, um);
-            UserBlogController UBC = new UserBlogController(ubs);
+            UserBlogController ubc = new UserBlogController(ubs);
 
-            var result = (UBC.BlogViews() as ViewResult).Model as IEnumerable<PostView>;
-            Assert.Equal(fakeposts.Select(x => x.Id), result.Select(x => x.Id));
-            //result.Should().NotBeNull();
+            var result = (ubc.BlogViews() as ViewResult)?.Model as IEnumerable<PostView>;
+            
+            Assert.NotNull(result);
+            Assert.Equal(_fakePosts.Select(x => x.Id), result.Select(x => x.Id));
         }
         [Fact]
         public void BlogView()
         {
-            long id = 1;
+            const long id = 1
+                ;
             UserManager<AppUser> um = new FakeUserManager();
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            uow.Setup(x => x.PostRepository.GetByKey(id)).Returns(fakeposts.Where(x => x.Id == id).FirstOrDefault());
+            uow.Setup(x => x.PostRepository.GetByKey(id)).Returns(_fakePosts.FirstOrDefault(x => x.Id == id));
             UserBlogService ubs = new UserBlogService(uow.Object, um);
-            UserBlogController UBC = new UserBlogController(ubs);
+            UserBlogController ubc = new UserBlogController(ubs);
 
-            var result = (UBC.BlogView(id) as ViewResult).Model as PostView;
+            var result = (ubc.BlogView(id) as ViewResult)?.Model as PostView;
+            
+            Assert.NotNull(result);
             Assert.Equal(id, result.Id);
         }
         [Fact]
@@ -68,19 +64,49 @@ namespace FilmSearch.Tests.Tests.Controllers
         {
             string userId = "1";
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
-            uow.Setup(x => x.PostRepository.GetAll()).Returns(fakeposts);
-            uow.Setup(x => x.PostRepository.PostsByUserId(userId)).Returns(fakeposts);
+            uow.Setup(x => x.PostRepository.PostsByUserId(userId)).Returns(_fakePosts);
             UserManager<AppUser> um = new FakeUserManager();
+            
             UserBlogService ubs = new UserBlogService(uow.Object, um);
-            UserBlogController UBC = new UserBlogController(ubs);
+            UserBlogController ubc = new UserBlogController(ubs);
 
-            var result = (UBC.UserBlogViews("1") as ViewResult);
-            result.Model.Should().NotBeNull();
+            var result = ubc.UserBlogViews("1") as ViewResult;
+           
+            Assert.NotNull(result);
+
+            var model = result.Model as UserBlogView;
+            
+            Assert.NotNull(model);
+            
+            Assert.Equal(model.Posts.Count, _fakePosts.Count);
+            Assert.Equal(model.AppUser, FakeUserManager.FakeUser);
         }
-        List<Post> fakeposts = new List<Post>()
+        
+
+        private readonly List<Post> _fakePosts = new List<Post>()
             {
-                new Post(){Author=new AppUser(),AuthorId="1",CreationTime=DateTime.Today,Id=1,ImageId=1,ShortDescription="",Text="",Title="Title"},
-                new Post(){Author=new AppUser(),AuthorId="1",CreationTime=DateTime.Today,Id=2,ImageId=1,ShortDescription="",Text="",Title="Another"}
+                new Post()
+                {
+                    Author = new AppUser(),
+                    AuthorId = "1",
+                    CreationTime = new DateTime(1, 1, 1),
+                    Id = 1,
+                    ImageId = 1,
+                    ShortDescription = "",
+                    Text = "",
+                    Title ="Title"
+                },
+                new Post()
+                {
+                    Author = new AppUser(),
+                    AuthorId = "1",
+                    CreationTime = new DateTime(1, 1, 1),
+                    Id = 2,
+                    ImageId = 1,
+                    ShortDescription = "",
+                    Text = "",
+                    Title = "Another"
+                }
             };
     }
 }

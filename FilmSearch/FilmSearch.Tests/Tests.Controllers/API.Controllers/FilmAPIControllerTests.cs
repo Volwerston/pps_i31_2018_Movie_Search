@@ -28,6 +28,7 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
 
             FC.Should().NotBeNull();
         }
+        
         //NOT WORJING
         [Fact(Skip = "Doesn't check anything. Should be either removed or fixed")]
         public void AddFilmTest()
