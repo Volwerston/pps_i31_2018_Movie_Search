@@ -4,20 +4,22 @@ module FilmAnalytics =
     open FilmSearch.Models
     open System.Linq
     open Microsoft.EntityFrameworkCore
- 
-    let private context = DbContext.context
+    open DbContext
+
     
     let topRatedFilms n =
+        let context = context()
         query { 
-            for film in context().Films do
+            for film in context.Films do
             sortByDescending film.Performance
             select film
             take n 
         } |> Seq.toList
                 
     let worstRatedFilms n = 
+        let context = context()
         query { 
-            for film in context().Films do
+            for film in context.Films do
             sortBy film.Performance
             select film
             take n
@@ -25,13 +27,15 @@ module FilmAnalytics =
                 
     
     let averageFilmRate () =
+        let context = context()
         query { 
-             for film in context().Films do
+             for film in context.Films do
              averageBy film.Performance
         }
     
     let medianFilmRate () = 
-        let films = context().Films;
+        let context = context()
+        let films = context.Films;
         let filmsCount = films.Count()
         query { 
             for film in films do

@@ -10,16 +10,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FilmSearch.Services
 {
-    public static class FilmConstants
-    {
-        public const string SortDesc = "desc";
-        public const string SortAsc = "asc";
-
-        public const string SortTitle = "title";
-        public const string SortDate = "date";
-        public const string SortRate = "rate";
-    }
-    
     public class FilmService
     {
         
@@ -240,66 +230,22 @@ namespace FilmSearch.Services
             return (awards.Skip(PageSize * (page - 1)).Take(PageSize).ToList(), awards.Count());
         }
 
-        public IEnumerable<Film> GetFilms(SortQuery sortQuery, FilmFilterQuery filmFilterQuery, FilmFilterQuery awardQuery)
+        public SortedSearchResponse<FilmModel, FilmFilterQuery> GetFilms(SortQuery sortQuery, FilmFilterQuery filmFilterQuery)
         {
-            var films = _unitOfWork.FilmRepository.GetAll();
-            var sortFunction = GetFilmSortFunction(sortQuery);
-            var filterFunction = GetFilmFilterFunction(filmFilterQuery);
-
-            var dbResult = films.Where(filterFunction).OrderBy(f => f, sortFunction).ToList();
-
-            if (filmFilterQuery.PlaywriterId != 0)
+            return new SortedSearchResponse<FilmModel, FilmFilterQuery>
             {
-                dbResult = dbResult.Where(f => GetFilmPlaywriter(f.Id)?.Id == filmFilterQuery.PlaywriterId).ToList();
-            }
-            if (filmFilterQuery.Playwriter != null)
-            {
-                dbResult = dbResult.Where(f => 
-                    GetFilmPlaywriter(f.Id)?.Name?.ToLower()?.Contains(filmFilterQuery.Playwriter.ToLower()) ?? false).ToList();
-            }
-            
-            if (awardQuery.Title != null)
-            {
-                awardQuery.PlaywriterId = 0;
-                foreach (var f in dbResult)
-                {
-                    f.Awards = _unitOfWork.FilmAwardRepository.FilmAwardsByFilmId(f.Id).ToList();
-                }
-                foreach (var f in dbResult)
-                {
-                    foreach (var a in f.Awards)
-                    {
-                        a.Award = _unitOfWork.AwardRepository.GetByKey(a.AwardId);
-                    }
-                }
-                //dbResult = dbResult.Where(f => f.Awards.Select(x => x.Award.Name).Contains(awardQuery.Title)).ToList();
-                var toRet = new List<Film>();
-                foreach  (var f in dbResult)
-                {
-                    foreach (var a in f.Awards)
-                    if (a.Award.Name.Contains(awardQuery.Title))
-                        {
-                            toRet.Add(f);
-                            break;
-                        }
-                }
-                dbResult = toRet;
-            }
-
-            return dbResult;
+                Data = _unitOfWork.FilmRepository
+                    .GetFilms(sortQuery, filmFilterQuery)
+                    .Select(GetFilmView)
+                    .ToList(),
+                SortQuery = sortQuery,
+                Filter = filmFilterQuery
+            };
         }
         
         public FilmModel GetFilmView(long id)
         {
-            var film = GetFilm(id);
-
-            var genres = film.Genres.Select(fg => fg.Genre).ToList();
-            var director = GetFilmDirector(id);
-            var playwriter = GetFilmPlaywriter(id);
-            var actors = GetFilmActors(id);
-
-            var awards = GetFilmAwards(id);
-            return FilmModel.Of(film, actors, director, playwriter, genres,awards);
+            return GetFilmView(GetFilm(id));
         }
 
         public FilmModel GetFilmView(Film film)
@@ -310,34 +256,13 @@ namespace FilmSearch.Services
             var actors = GetFilmActors(film.Id);
             var awards = GetFilmAwards(film.Id);
 
-            return FilmModel.Of(film, actors, director, playwriter, genres,awards);
+            return FilmModel.Of(film, actors, director, playwriter, genres, awards);
         }
 
         public void DeleteFilm(long id)
         {
             _unitOfWork.FilmRepository.Delete(id);
             _unitOfWork.Save();
-        }
-
-        private IComparer<Film> GetFilmSortFunction(SortQuery sortQuery)
-        {
-            return Comparer<Film>.Create((f1, f2) =>
-            {
-                if (sortQuery.Order == FilmConstants.SortDesc)
-                {
-                    var temp = f2;
-                    f2 = f1;
-                    f1 = temp;
-                }
-                
-                switch (sortQuery.Value)
-                {
-                        case FilmConstants.SortDate:
-                            return f1.ReleaseDate.Date.CompareTo(f2.ReleaseDate.Date);
-                        default:
-                            return string.Compare(f1.Title, f2.Title, StringComparison.Ordinal);
-                }
-            });
         }
         
         private void AddFilmActors(List<Person> actors, Film film)
@@ -416,17 +341,6 @@ namespace FilmSearch.Services
             }
         }
 
-        private Func<Film, bool> GetFilmFilterFunction(FilmFilterQuery filmFilterQuery)
-        {
-            Func<Film, bool> filmFilter = film => true;
-            if (filmFilterQuery.Title != null)
-            {
-                var filter = filmFilter;
-                filmFilter = film => filter(film) && film.Title.ToLower().Contains(filmFilterQuery.Title.ToLower());
-            }
-
-            return filmFilter;
-        }
 
     }
 }
