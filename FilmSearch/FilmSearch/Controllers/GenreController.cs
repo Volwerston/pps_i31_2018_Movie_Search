@@ -27,6 +27,13 @@ namespace FilmSearch.Controllers
         {
             try
             {
+                int existing =  _unitOfWork.FilmGenreRepository.GetAll().Where(x => x.GenreId == id).Count();
+
+                if(existing > 0)
+                {
+                    throw new Exception("You cannot remove genres which are used by films");
+                }
+
                 _unitOfWork.GenreRepository.Delete(id);
                 _unitOfWork.Save();
 

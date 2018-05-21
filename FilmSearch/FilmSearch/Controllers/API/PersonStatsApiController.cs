@@ -118,7 +118,7 @@ namespace FilmSearch.Controllers.API
                 case "day":
                     return toFilter
                         .Where(x => 
-                            Math.Abs((DateTime.Now.Date - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture).Date).Days) <= 1
+                            Math.Abs((DateTime.Now.Date - DateTime.ParseExact(selector(x), "M/d/yyyy", CultureInfo.InvariantCulture).Date).Days) == 0
                             );
                 case "week":
                     return toFilter

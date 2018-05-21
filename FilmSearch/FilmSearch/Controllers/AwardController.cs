@@ -27,6 +27,14 @@ namespace FilmSearch.Controllers
         {
             try
             {
+                int existing = _unitOfWork.FilmAwardRepository.GetAll().Where(x => x.AwardId == id).Count();
+
+                if (existing > 0)
+                {
+                    throw new Exception("You cannot remove awards which are used by films");
+                }
+
+
                 _unitOfWork.AwardRepository.Delete(id);
                 _unitOfWork.Save();
 
