@@ -37,14 +37,12 @@ namespace FilmSearch.Tests.Tests.Controllers
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.GenreRepository.GetAll()).Returns(fakeGenres);
+            uow.Setup(x => x.FilmGenreRepository.GetAll()).Returns(fakeFilmGenres);
             GenreController GC = new GenreController(uow.Object);
-            var result = (GC.Remove(1)) as OkResult;
-            uow.Verify(x => x.GenreRepository.Delete(It.IsAny<Object>()));
-            uow.Verify(x => x.Save());
-            Assert.Equal(200, result.StatusCode);
-            result = (GC.Remove(100)) as OkResult;
-
-
+            var result = (GC.Remove(1)) as ObjectResult;
+            Assert.Equal(500, result.StatusCode);
+            var result2 = (GC.Remove(100)) as OkResult;
+            Assert.Equal(200, result2.StatusCode);
         }
         [Fact]
         public void AddTest()
@@ -74,6 +72,14 @@ namespace FilmSearch.Tests.Tests.Controllers
             {
                 Id=3,
                 Name="Documentary"
+            }
+        };
+        List<FilmGenre> fakeFilmGenres = new List<FilmGenre>()
+        {
+            new FilmGenre()
+            {
+                FilmId=1,
+                GenreId=1
             }
         };
     }

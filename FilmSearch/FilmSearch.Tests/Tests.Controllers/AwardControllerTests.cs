@@ -36,14 +36,12 @@ namespace FilmSearch.Tests.Tests.Controllers
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.AwardRepository.GetAll()).Returns(fakeAwards);
+            uow.Setup(x => x.FilmAwardRepository.GetAll()).Returns(fakeFilmAwards);
             AwardController GC = new AwardController(uow.Object);
-            var result = (GC.Remove(1)) as OkResult;
-            uow.Verify(x => x.AwardRepository.Delete(It.IsAny<Object>()));
-            uow.Verify(x => x.Save());
-            Assert.Equal(200, result.StatusCode);
-            result = (GC.Remove(100)) as OkResult;
-
-
+            var result = (GC.Remove(1)) as ObjectResult;
+            Assert.Equal(500, result.StatusCode);
+            var result2 = (GC.Remove(100)) as OkResult;
+            Assert.Equal(200, result2.StatusCode);
         }
         [Fact]
         public void AddTest()
@@ -70,6 +68,19 @@ namespace FilmSearch.Tests.Tests.Controllers
                 Name="Saturn"
             }
 
+        };
+        List<FilmAward> fakeFilmAwards = new List<FilmAward>()
+        {
+            new FilmAward()
+            {
+                AwardId=1,
+                FilmId=1
+            },
+            new FilmAward()
+            {
+                AwardId=2,
+                FilmId=1
+            }
         };
     }
 }
