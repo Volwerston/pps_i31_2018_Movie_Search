@@ -19,9 +19,9 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
 {
     public class FilmAPIControllerTests
     {
-        
+
         //NOT WORJING
-        [Fact(Skip = "Doesn't check anything. Should be either removed or fixed")]
+        [Fact]
         public void AddFilmTest()
         {
 
@@ -29,36 +29,49 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
             FilmService fs = new FilmService(uow.Object);
             FilmApiController FC = new FilmApiController(fs);
 
-            try
-            {
-                var result = (FC.AddFilm(fm) as ObjectResult).Value as Film;
-                var expected = FilmModel.To(fm);
-                Assert.Equal(expected, result);
-            }
-            catch
-            {
-                Assert.True(true);
-            }
+            uow.Setup(x => x.PersonRoleRepository.DeletePersonRolesByFilm(1));
+            uow.Setup(x => x.FilmGenreRepository.DeleteFilmGenresByFilmId(1));
+            uow.Setup(x => x.FilmAwardRepository.DeleteFilmAwardsByFilmId(1));
+            uow.Setup(x => x.FilmRepository.Update(FilmModel.To(fm)));
+            uow.Setup(x => x.Save());
+            uow.Setup(x => x.GenreRepository.GenresByIds(It.IsAny<List<long>>())).Returns(fakeGenres);
+            uow.Setup(x => x.PersonRepository.PersonsByIds(It.IsAny<List<long>>())).Returns(fakePeople);
+            uow.Setup(x => x.PersonRepository.GetByKey(It.IsAny<long>())).Returns(fakePeople[0]);
+            uow.Setup(x => x.AwardRepository.AwardsByIds(It.IsAny<List<long>>())).Returns(fakeAwards);
+            uow.Setup(x => x.FilmRoleRepository.GetByRoleName(It.IsAny<string>())).Returns(fakeFilmRoles[0]);
+            uow.Setup(x => x.FileRepository.GetByKey(1)).Returns(new File());
+
+            var result = (FC.AddFilm(fm) as ObjectResult).Value as FilmModel;
+            result.Should().NotBeNull();
+                //var expected = FilmModel.To(fm);
+                //Assert.Equal(expected, result);
+            
 
 
         }
-        
-        [Fact(Skip = "Doesn't check anything. Should be either removed or fixed")]
+
+        [Fact]
         public void UpdateFilmTest()
         {
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             FilmService fs = new FilmService(uow.Object);
             FilmApiController FC = new FilmApiController(fs);
-            try
-            {
-                var result = (FC.UpdateFilm(fm) as ObjectResult).Value as Film;
-                var expected = FilmModel.To(fm);
-                Assert.Equal(expected, result);
-            }
-            catch
-            {
-                Assert.True(true);
-            }
+            uow.Setup(x => x.PersonRoleRepository.DeletePersonRolesByFilm(1));
+            uow.Setup(x => x.FilmGenreRepository.DeleteFilmGenresByFilmId(1));
+            uow.Setup(x => x.FilmAwardRepository.DeleteFilmAwardsByFilmId(1));
+            uow.Setup(x => x.FilmRepository.Update(FilmModel.To(fm)));
+            uow.Setup(x => x.Save());
+            uow.Setup(x => x.GenreRepository.GenresByIds(It.IsAny<List<long>>())).Returns(fakeGenres);
+            uow.Setup(x => x.PersonRepository.PersonsByIds(It.IsAny<List<long>>())).Returns(fakePeople);
+            uow.Setup(x => x.PersonRepository.GetByKey(It.IsAny<long>())).Returns(fakePeople[0]);
+            uow.Setup(x => x.AwardRepository.AwardsByIds(It.IsAny<List<long>>())).Returns(fakeAwards);
+            uow.Setup(x => x.FilmRoleRepository.GetByRoleName(It.IsAny<string>())).Returns(fakeFilmRoles[0]);
+            uow.Setup(x => x.FileRepository.GetByKey(1)).Returns(new File() { Id = 1 });
+            var result = (FC.UpdateFilm(fm) as ObjectResult).Value as FilmModel;
+            result.Should().NotBeNull();
+            //var expected = fm;
+            //Assert.Equal(expected, result);
+
 
         }
         [Fact]
@@ -84,7 +97,7 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
 
         }
 
-        [Fact(Skip = "Fails. Should be fixed")]
+        [Fact]
         public void CRUDFilmTest()
         {
             string q = "drama";
@@ -166,9 +179,9 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
         };
         Film fakeFilm = new Film()
         {
-            Id=1,
-            Title="Name",
-            Performance=6
+            Id = 1,
+            Title = "Name",
+            Performance = 6
         };
         List<Award> fakeAwards = new List<Award>()
         {
@@ -182,10 +195,50 @@ namespace FilmSearch.Tests.Tests.Controllers.API.Controllers
         {
             Id = 1,
             Title = "title",
-            Director = new Person(),
+            Director = new Person()
+            {
+                Id = 1,
+                Name = "Person"
+            },
+            Playwriter = new Person()
+            {
+                Id = 1,
+                Name = "Person"
+            },
+            Photo = new File() { Id=1},
+            Performance=5,
+            ShortDescription="Short Description",
             Actors = new List<Person>(),
             Genres = new List<Genre>(),
-            ReleaseDate = DateTime.ParseExact("06/15/2008", "d", CultureInfo.InvariantCulture).ToString().Replace('.','/')
+            Awards = new List<Award>(),
+            ReleaseDate = "12/12/1990"//DateTime.ParseExact("06/15/2008", "d", CultureInfo.InvariantCulture).ToString().Replace('/','.')
+        };
+        List<Genre> fakeGenres = new List<Genre>()
+        {
+            new Genre()
+            {
+                Id=1,
+                Name="Drama"
+            }
+
+        };
+        List<Person> fakePeople = new List<Person>()
+        {
+            new Person()
+            {
+                Id=1,
+                Name="Person",
+                Country="USA"
+            }
+        };
+        List<FilmRole> fakeFilmRoles = new List<FilmRole>()
+        {
+            new FilmRole()
+            {
+                Id=1,
+                Name="DIRECTOR"
+            }
+
         };
     }
 }

@@ -47,6 +47,13 @@ namespace FilmSearch.Tests
                     AccessFailedCount =1,
                     Email="examle@smth.com",
                     UserName="name"
+                },
+                new AppUser()
+                {
+                    Id="",
+                    AccessFailedCount=1,
+                    Email="yae@mail.com",
+                    UserName="tester-to-test"
                 }
         }.AsQueryable();
 

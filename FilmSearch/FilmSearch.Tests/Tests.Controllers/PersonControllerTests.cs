@@ -28,7 +28,7 @@ namespace FilmSearch.Tests.Tests.Controllers
 {
     public class PersonControllerTests
     {
-       
+
         [Fact]
         public void List()
         {
@@ -42,9 +42,8 @@ namespace FilmSearch.Tests.Tests.Controllers
             var result = (pc.List() as ViewResult).Model as List<Person>;
             Assert.Equal(_fakePersons, result);
         }
-        
-        //EXCEPTION?
-        [Fact(Skip = "Fails. Should be fixed")]
+
+        [Fact]
         public void Create()
         {
             var um = new FakeUserManager();
@@ -76,19 +75,19 @@ namespace FilmSearch.Tests.Tests.Controllers
                 Surname = "Do",
                 Photo = fileMock.Object
             };
-            
+
             var result = pc.Create(pvm) as ViewResult;
             uow.Verify(x => x.Save());
-            
+
             //Should not be in the same UNIT(!) test
-            /*
+
             var result2 = pc.Create() as ViewResult;
             result2.Should().NotBeNull();
-            */
+
         }
-        
-        
-        
+
+
+
         [Fact(Skip = "Fails after removing empty catch block. IOException")]
         public void DeleteTest()
         {
@@ -96,7 +95,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             var um = new FakeUserManager();
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.PersonRepository.GetAll()).Returns(_fakePersons);
-            uow.Setup(x => x.PersonRepository.GetByKey(id)).Returns(_fakePersons.Where(x=>x.Id == id).FirstOrDefault());
+            uow.Setup(x => x.PersonRepository.GetByKey(id)).Returns(_fakePersons.Where(x => x.Id == id).FirstOrDefault());
             uow.Setup(x => x.FileRepository.Delete(1));
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
             env.Setup(x => x.ContentRootPath).Returns(Directory.GetCurrentDirectory());
@@ -109,7 +108,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Verify(x => x.PersonRepository.Delete(id));
             uow.Verify(x => x.Save());
         }
-        
+
         [Fact(Skip = "Fails. Should be fixed")]
         public void EditTest()
         {
@@ -139,8 +138,8 @@ namespace FilmSearch.Tests.Tests.Controllers
             });
             uow.Setup(x => x.FilmRepository.GetByKey(id)).Returns(new Film()
             {
-                Id=id,
-                Title="title"
+                Id = id,
+                Title = "title"
             });
             uow.Setup(x => x.FileRepository.GetByKey(id)).Returns(new Models.File());
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
@@ -160,7 +159,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             var fileMock = new Mock<IFormFile>();
             var physicalFile = new FileInfo("filePath");
             var ms = new MemoryStream();
-           
+
             var fileName = physicalFile.Name;
             //Setup mock file using info from physical file
             fileMock.Setup(_ => _.FileName).Returns(fileName);
@@ -180,7 +179,7 @@ namespace FilmSearch.Tests.Tests.Controllers
             var result2 = PC.Edit(pvm) as ViewResult;
             uow.Verify(x => x.Save());
         }
-        
+
         [Fact]
         public void SearchTest()
         {
@@ -209,62 +208,57 @@ namespace FilmSearch.Tests.Tests.Controllers
             uow.Verify(x => x.Save());
 
         }
-        
-        [Fact(Skip = "Fails after removing empty catch block. IOException")]
+
+        [Fact]
         public void DetailsTest()
         {
             int id = 1;
             var um = new FakeUserManager();
             Mock<IUnitOfWork> uow = new Mock<IUnitOfWork>();
             uow.Setup(x => x.PersonRepository.GetByKey((long)id)).Returns(_fakePersons.Where(x => x.Id == id).FirstOrDefault());
-            uow.Setup(x => x.FileRepository.GetByKey((long)id)).Returns(new Models.File() {Path=(Directory.GetCurrentDirectory()+ "\\FilmSearch.dll"),FileType="dll" });
-            uow.Setup(x => x.PersonRoleRepository.GetAll()).Returns(new List<PersonRole>()
-            {
-                new PersonRole()
-                {
-                    Id=1,
-                    FilmId=1,
-                    PersonId=1
-                }
-            });
-            uow.Setup(x => x.PersonPerformanceRepository.GetAll()).Returns(new List<PersonPerformance>()
-            {
-                new PersonPerformance()
-                {
-                    Id=1,
-                    PersonRoleId=1,
-                    UserId="1"
-                }
-            });
+            uow.Setup(x => x.FileRepository.GetByKey((long)id)).Returns(new Models.File() { Path = (Directory.GetCurrentDirectory() + "\\FilmSearch.dll"), FileType = "dll" });
+            uow.Setup(x => x.PersonRoleRepository.GetAll()).Returns(fakePersonRoles);
+            uow.Setup(x => x.PersonPerformanceRepository.GetAll()).Returns(fakePersonPerfomances);
             uow.Setup(x => x.FilmRepository.GetByKey(It.IsAny<int>())).Returns(new Film()
             {
-                Id=1,
-                PhotoId=1,
-                Title="title"
+                Id = 1,
+                PhotoId = 1,
+                Title = "title"
             }
                 );
             uow.Setup(x => x.FilmRoleRepository.GetByKey(It.IsAny<int>())).Returns(new FilmRole()
             {
-                Id=1,
-                Name="name"
+                Id = 1,
+                Name = "name"
             }
             );
-            
+
             Mock<IHostingEnvironment> env = new Mock<IHostingEnvironment>();
             PersonService ps = new FakePersonService(uow.Object);
             PersonController PC = new PersonController(uow.Object, env.Object, ps, um);
+            /*
             var username = "ystetskyy333@gmail.com";
             var identity = new GenericIdentity(username);
             //create claim and add it to indentity
             var nameIdentifierClaim = new Claim(ClaimTypes.NameIdentifier, username);
             identity.AddClaim(nameIdentifierClaim);
-
+            
             var user = new Mock<IPrincipal>();
             user.Setup(x => x.Identity).Returns(identity);
             Thread.CurrentPrincipal = user.Object;
-            ActionResult result = new OkResult();
-           
-            result = PC.Details(id) as ViewResult;
+            */
+            PC.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+           {
+                new Claim(ClaimTypes.Name, "username")
+           }, "someAuthTypeName"))
+                }
+            };
+
+            var result = PC.Details(id) as ViewResult;
             result.Should().NotBeNull();
         }
 
@@ -280,6 +274,24 @@ namespace FilmSearch.Tests.Tests.Controllers
                 PhotoId=1,
                 Photo= new Models.File()
             }
+        };
+        List<PersonRole> fakePersonRoles = new List<PersonRole>()
+        {
+                new PersonRole()
+                {
+                    Id=1,
+                    FilmId=1,
+                    PersonId=1
+                }
+        };
+        List<PersonPerformance> fakePersonPerfomances = new List<PersonPerformance>()
+        {
+             new PersonPerformance()
+                {
+                    Id=1,
+                    PersonRoleId=1,
+                    UserId="1"
+                }
         };
     }
 }
