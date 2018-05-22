@@ -31,7 +31,11 @@ namespace FilmSearch.DAL.Impl
 
         public List<Film> GetFilms(SortQuery sortQuery, FilmFilterQuery filmFilterQuery)
         {
-            return SortFilms(FilterFilms(_dbSet, filmFilterQuery), sortQuery).ToList();
+            return SortFilms(FilterFilms(
+                _dbSet.Include(f => f.Photo)
+                      .Include(f => f.Genres).ThenInclude(fg => fg.Genre),
+                filmFilterQuery),
+                sortQuery).ToList();
         }
         
 
